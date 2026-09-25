@@ -1,20 +1,23 @@
-import { Inter, Manrope } from "next/font/google";
+import localFont from "next/font/local";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 import { Cursor } from "@/components/motion/cursor";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 
-const inter = Inter({
+// Self-hosted (SIL OFL, see src/fonts/LICENSE-*), so builds never depend
+// on fetching from Google Fonts. Variable fonts, Latin subset.
+const inter = localFont({
+  src: "../../fonts/inter-latin-variable.woff2",
   variable: "--font-inter",
-  subsets: ["latin"],
+  weight: "100 900",
   display: "swap",
 });
 
-const manrope = Manrope({
+const manrope = localFont({
+  src: "../../fonts/manrope-latin-variable.woff2",
   variable: "--font-manrope",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: "200 800",
   display: "swap",
 });
 

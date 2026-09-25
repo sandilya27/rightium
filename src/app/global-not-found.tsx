@@ -7,6 +7,7 @@ import { site } from "@/lib/site";
 // Served for any URL that matches no route. The app has two root
 // layouts (site + admin), so this page brings its own document.
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   title: `Page not found | ${site.name}`,
   robots: { index: false },
 };
