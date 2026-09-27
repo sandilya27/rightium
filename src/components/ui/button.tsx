@@ -2,55 +2,37 @@ import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-type Variant =
-  | "primary"
-  | "accent"
-  | "glass"
-  | "outline"
-  | "ghost"
-  | "invert"
-  | "glass-dark";
+/**
+ * Square buttons, four variants, no radius anywhere.
+ *
+ * `accent` is the one that asks for money; `ink` is the working
+ * default; `outline` and `outline-invert` are the alternative on light
+ * and dark ground. Every variant resolves to teal on hover, so the
+ * accent colour marks the moment of commitment rather than decorating
+ * the page.
+ */
+type Variant = "accent" | "ink" | "outline" | "outline-invert" | "invert";
 type Size = "sm" | "md" | "lg";
 
 const base =
-  "group/btn pill-sheen relative isolate inline-flex items-center justify-center gap-2 overflow-hidden rounded-pill font-medium whitespace-nowrap " +
-  "transition-[transform,background-color,border-color,color,box-shadow] duration-[180ms] ease-[cubic-bezier(0.23,1,0.32,1)] " +
-  "active:scale-[0.97] disabled:pointer-events-none disabled:opacity-55";
+  "group/btn inline-flex items-center justify-center gap-3 font-medium whitespace-nowrap " +
+  "transition-[background-color,border-color,color,transform] duration-[250ms] ease-[cubic-bezier(0.23,1,0.32,1)] " +
+  "disabled:pointer-events-none disabled:opacity-70";
+
+const hover = "[@media(hover:hover)_and_(pointer:fine)]:hover:";
 
 const variants: Record<Variant, string> = {
-  primary:
-    "pill-gloss-dark bg-ink text-white border border-transparent " +
-    "shadow-[0_1px_2px_rgba(0,0,0,0.18),0_12px_30px_-14px_rgba(0,0,0,0.75)] " +
-    "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-[#191919] " +
-    "[@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_2px_4px_rgba(0,0,0,0.2),0_18px_40px_-16px_rgba(0,0,0,0.8)]",
-  accent:
-    "pill-gloss-dark bg-gradient-accent text-white border border-transparent " +
-    "shadow-[0_1px_2px_rgba(0,0,0,0.12),0_14px_32px_-14px_var(--accent)] " +
-    "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-accent-hover",
-  glass:
-    "pill-gloss border border-white/80 bg-white/55 text-ink backdrop-blur-xl backdrop-saturate-150 " +
-    "shadow-[0_1px_2px_rgba(0,0,0,0.04),0_14px_36px_-20px_rgba(0,0,0,0.4)] " +
-    "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-white/80 " +
-    "[@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_2px_6px_rgba(0,0,0,0.05),0_20px_44px_-22px_rgba(0,0,0,0.45)]",
-  outline:
-    "border border-[var(--line-strong)] bg-transparent text-ink " +
-    "[@media(hover:hover)_and_(pointer:fine)]:hover:border-ink [@media(hover:hover)_and_(pointer:fine)]:hover:bg-[rgba(0,0,0,0.04)]",
-  ghost:
-    "border border-transparent bg-transparent text-ink-2 " +
-    "[@media(hover:hover)_and_(pointer:fine)]:hover:text-ink [@media(hover:hover)_and_(pointer:fine)]:hover:bg-[rgba(0,0,0,0.05)]",
-  invert:
-    "pill-gloss bg-white text-ink border border-transparent shadow-[0_10px_30px_-16px_rgba(0,0,0,0.6)] " +
-    "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-white/92",
-  "glass-dark":
-    "pill-gloss-dark border border-white/15 bg-white/[0.06] text-white backdrop-blur-xl " +
-    "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-white/[0.12] " +
-    "[@media(hover:hover)_and_(pointer:fine)]:hover:border-white/25",
+  accent: `bg-accent text-white border border-accent ${hover}bg-accent-hover ${hover}border-accent-hover ${hover}-translate-y-px`,
+  ink: `bg-deep text-white border border-deep ${hover}bg-accent ${hover}border-accent`,
+  outline: `border border-deep bg-transparent text-deep ${hover}bg-deep ${hover}text-white`,
+  "outline-invert": `border border-white/45 bg-transparent text-white ${hover}bg-white ${hover}text-deep ${hover}border-white`,
+  invert: `bg-white text-deep border border-white ${hover}bg-accent-soft`,
 };
 
 const sizes: Record<Size, string> = {
-  sm: "h-9 px-4 text-[0.8125rem]",
-  md: "h-11 px-5 text-[0.875rem]",
-  lg: "h-[52px] px-7 text-[0.9375rem]",
+  sm: "h-10 px-[18px] text-[0.84375rem]",
+  md: "h-[50px] px-6 text-[0.90625rem]",
+  lg: "h-[54px] px-7 text-[0.9375rem]",
 };
 
 type CommonProps = {
@@ -62,7 +44,7 @@ type CommonProps = {
 
 export function ButtonLink({
   href,
-  variant = "primary",
+  variant = "accent",
   size = "md",
   className,
   children,
@@ -74,33 +56,24 @@ export function ButtonLink({
   return (
     <Link
       href={href}
-      data-cursor="link"
       className={cn(base, variants[variant], sizes[size], className)}
       {...rest}
     >
-      <span className="relative z-10 inline-flex items-center gap-2">
-        {children}
-      </span>
+      {children}
     </Link>
   );
 }
 
 export function Button({
-  variant = "primary",
+  variant = "accent",
   size = "md",
   className,
   children,
   ...rest
 }: CommonProps & ComponentProps<"button">) {
   return (
-    <button
-      data-cursor="link"
-      className={cn(base, variants[variant], sizes[size], className)}
-      {...rest}
-    >
-      <span className="relative z-10 inline-flex items-center gap-2">
-        {children}
-      </span>
+    <button className={cn(base, variants[variant], sizes[size], className)} {...rest}>
+      {children}
     </button>
   );
 }
@@ -113,7 +86,7 @@ export function ArrowRight({ className }: { className?: string }) {
       fill="none"
       aria-hidden
       className={cn(
-        "size-4 shrink-0 transition-transform duration-[260ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
+        "size-[15px] shrink-0 transition-transform duration-[260ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
         "[@media(hover:hover)_and_(pointer:fine)]:group-hover/btn:translate-x-[3px]",
         className,
       )}
@@ -129,30 +102,52 @@ export function ArrowRight({ className }: { className?: string }) {
   );
 }
 
-/** Small circular arrow badge — the template's card affordance. */
-export function ArrowBadge({ className }: { className?: string }) {
+/** The teal check the deliverable lists are built from. */
+export function Tick({ className }: { className?: string }) {
   return (
-    <span
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
       aria-hidden
+      className={cn("size-4 shrink-0", className)}
+    >
+      <path
+        d="M3 8.5l3 3 7-7"
+        stroke="var(--accent)"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/**
+ * Text link with a teal rule under it — the design's "more" affordance.
+ * Used wherever a section points at its own index page.
+ */
+export function TextLink({
+  href,
+  children,
+  className,
+  invert = false,
+}: {
+  href: string;
+  children: ReactNode;
+  className?: string;
+  invert?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
       className={cn(
-        "grid size-9 shrink-0 place-items-center rounded-full border border-[var(--line)] bg-white text-ink",
-        "transition-[background-color,color,border-color,transform] duration-[280ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
-        "[@media(hover:hover)_and_(pointer:fine)]:group-hover/card:bg-accent",
-        "[@media(hover:hover)_and_(pointer:fine)]:group-hover/card:text-white",
-        "[@media(hover:hover)_and_(pointer:fine)]:group-hover/card:border-accent",
-        "[@media(hover:hover)_and_(pointer:fine)]:group-hover/card:rotate-[-45deg]",
+        "group/btn inline-flex items-center gap-2.5 border-b-[1.5px] border-accent pb-[3px] text-[0.90625rem] font-medium",
+        invert ? "text-white" : "text-deep",
         className,
       )}
     >
-      <svg viewBox="0 0 16 16" fill="none" className="size-[14px]">
-        <path
-          d="M3 8h10m0 0L9 4m4 4-4 4"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </span>
+      {children}
+      <ArrowRight className="size-[14px]" />
+    </Link>
   );
 }

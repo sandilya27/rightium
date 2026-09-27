@@ -1,100 +1,87 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────
-   Design tokens.
+   Design tokens — Rightium, editorial evidence.
 
-   The palette is the one piece carried over from the first build:
-   black bleeding into midnight indigo, an electric indigo accent and a
-   pale periwinkle for highlights. Everything else — type, layout,
-   photography treatment, motion — is new.
+   Deep navy carries the brand, paper carries the reading, and a
+   single teal accent marks every place a decision gets made. Type
+   is Newsreader (a serif with real italics, for display and pull
+   quotes) over IBM Plex Sans (for running text and UI).
 
-   Dark sections carry the brand; light sections carry the reading.
+   Nothing is rounded. Rules, not cards with soft corners: the
+   layout reads as a document, which is what the firm sells.
    ───────────────────────────────────────────────────────────── */
 
 :root {
   /* Surfaces */
   --paper: #ffffff;
-  --surface: #f5f6fb;
-  --surface-2: #eceffb;
-  --raised: #ffffff;
+  --surface: #f3f6f8;
+  --surface-2: #e6edf1;
 
   /* Ink */
-  --ink: #07051a;
-  --ink-2: #4a4860;
-  --ink-3: rgba(74, 72, 96, 0.6);
-  --line: rgba(10, 6, 40, 0.08);
-  --line-strong: rgba(10, 6, 40, 0.14);
+  --ink: #0b1b2b;
+  --ink-heading: #0a1f33;
+  --ink-body: #2d3d4c;
+  --ink-2: #56677a;
+  --line: rgba(10, 31, 51, 0.1);
+  --line-strong: rgba(10, 31, 51, 0.14);
 
-  /* Accent — electric indigo */
-  --accent: #3a1fd6;
-  --accent-hover: #2c14b3;
-  --accent-bright: #8a7bff;
-  --accent-soft: #e9ebff;
-  --accent-line: rgba(58, 31, 214, 0.24);
-  --accent-glow: rgba(58, 31, 214, 0.16);
+  /* Accent — teal */
+  --accent: #00a8b6;
+  --accent-hover: #0891a0;
+  --accent-bright: #3cc4cf;
+  --accent-soft: #e6f6f8;
+  --danger: #c0392b;
 
-  /* Inverted sections — black to midnight indigo */
-  --deep: #020108;
-  --deep-2: #0b0630;
-  --deep-3: #170b63;
-  --deep-4: #2a14a8;
-  --deep-line: rgba(255, 255, 255, 0.1);
-  --deep-card: rgba(255, 255, 255, 0.04);
+  /* Inverted sections — navy */
+  --deep: #0a1f33;
+  --deep-lift: #0f2f4c;
+  --deep-ink-well: #061524;
+  --deep-line: rgba(255, 255, 255, 0.14);
   --deep-ink: #ffffff;
-  --deep-ink-2: rgba(214, 210, 245, 0.68);
-
-  /* Gradients */
-  --gradient-deep:
-    radial-gradient(120% 70% at 35% 115%, rgba(42, 20, 168, 0.75) 0%, rgba(23, 11, 99, 0.55) 40%, transparent 75%),
-    linear-gradient(180deg, var(--deep) 0%, var(--deep) 30%, var(--deep-2) 70%, var(--deep-3) 100%);
-  --gradient-accent: linear-gradient(100deg, var(--accent-bright) 0%, var(--accent) 100%);
-  --gradient-text: linear-gradient(100deg, #d9d3ff 0%, #8a7bff 45%, #5b3dff 100%);
-  --gradient-text-light: linear-gradient(100deg, #5b3dff 0%, #3a1fd6 50%, #170b63 100%);
-
-  /* Geometry */
-  --r-pill: 100px;
-  --r-card: 24px;
-  --r-block: 36px;
-  --r-sm: 10px;
+  --deep-ink-2: rgba(255, 255, 255, 0.75);
+  --deep-ink-3: rgba(255, 255, 255, 0.55);
 
   /* Motion */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
   /* Rhythm */
   --gutter: 1.25rem;
-  --nav-h: 76px;
+  --nav-h: 64px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 2.5rem;
+    --nav-h: 76px;
+  }
 }
 
 @theme inline {
   --color-paper: var(--paper);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
-  --color-raised: var(--raised);
   --color-ink: var(--ink);
+  --color-ink-heading: var(--ink-heading);
+  --color-ink-body: var(--ink-body);
   --color-ink-2: var(--ink-2);
-  --color-ink-3: var(--ink-3);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
-  --color-accent-soft: var(--accent-soft);
-  --color-accent-line: var(--accent-line);
-  --color-deep: var(--deep);
-  --color-deep-2: var(--deep-2);
-  --color-deep-3: var(--deep-3);
   --color-accent-bright: var(--accent-bright);
+  --color-accent-soft: var(--accent-soft);
+  --color-deep: var(--deep);
+  --color-deep-lift: var(--deep-lift);
+  --color-deep-well: var(--deep-ink-well);
   --color-deep-line: var(--deep-line);
   --color-deep-ink: var(--deep-ink);
   --color-deep-ink-2: var(--deep-ink-2);
+  --color-deep-ink-3: var(--deep-ink-3);
 
-  --radius-pill: var(--r-pill);
-  --radius-card: var(--r-card);
-  --radius-block: var(--r-block);
-
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-manrope), var(--font-inter), sans-serif;
+  --font-sans: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
@@ -107,12 +94,13 @@
 html {
   -webkit-text-size-adjust: 100%;
   background: var(--deep);
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: clip;
@@ -139,61 +127,82 @@ html.lenis body {
 }
 
 /* ── Type ─────────────────────────────────────────────────────
-   Manrope for display, set tight and heavy enough to hold its own
-   over photography. Inter for running text.
+   Newsreader is set at weight 400 throughout — the design leans on
+   size and italic, never on bold, which is what keeps a serif from
+   looking like a brochure.
    ───────────────────────────────────────────────────────────── */
 
-.font-display {
-  font-family: var(--font-manrope), var(--font-inter), sans-serif;
-  font-weight: 600;
-  letter-spacing: -0.035em;
+.font-serif {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-weight: 400;
 }
 
-.display-2xl {
-  font-size: clamp(2.9rem, 6.2vw, 5.75rem);
+.display-hero {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2.6rem, 6.4vw, 6.25rem);
   line-height: 0.98;
-  letter-spacing: -0.055em;
-  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
-.display-xl {
-  font-size: clamp(2.9rem, 7vw, 6rem);
-  line-height: 0.98;
-  letter-spacing: -0.05em;
-  font-weight: 600;
+.display-page {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2.35rem, 5.2vw, 4.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
 }
 
 .display-lg {
-  font-size: clamp(2.4rem, 5.2vw, 4.4rem);
-  line-height: 1.02;
-  letter-spacing: -0.045em;
-  font-weight: 600;
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2rem, 4.2vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
 }
 
 .display-md {
-  font-size: clamp(2rem, 3.8vw, 3.35rem);
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-  font-weight: 600;
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.8rem, 3.4vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
 }
 
 .display-sm {
-  font-size: clamp(1.4rem, 2.2vw, 1.85rem);
-  line-height: 1.18;
-  letter-spacing: -0.03em;
-  font-weight: 600;
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 2.3vw, 2.1rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* The italic accent clause inside a display line. */
+.accent-em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.on-deep .accent-em,
+.accent-em-bright {
+  font-style: italic;
+  color: var(--accent-bright);
 }
 
 .eyebrow {
-  font-size: 0.6875rem;
+  font-size: 0.78125rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  font-variant-numeric: tabular-nums;
+  color: var(--accent);
 }
 
-.prose-lede {
-  font-size: clamp(1rem, 1.25vw, 1.1875rem);
+.on-deep .eyebrow {
+  color: var(--accent-bright);
+}
+
+.lede {
+  font-size: clamp(1rem, 1.3vw, 1.0625rem);
   line-height: 1.6;
   color: var(--ink-2);
   text-wrap: pretty;
@@ -203,56 +212,8 @@ html.lenis body {
   text-wrap: balance;
 }
 
-/* ── Gradients ────────────────────────────────────────────── */
-
-@utility bg-gradient-deep {
-  background-color: var(--deep);
-  background-image: var(--gradient-deep);
-}
-
-@utility bg-gradient-accent {
-  background-color: var(--accent);
-  background-image: var(--gradient-accent);
-}
-
-@utility text-gradient {
-  background-image: var(--gradient-text);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-@utility text-gradient-light {
-  background-image: var(--gradient-text-light);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* Slow sheen across a gradient word. Constant motion, so CSS. */
-.text-shimmer {
-  background-image: linear-gradient(
-    100deg,
-    #c9c1ff 0%,
-    #8a7bff 30%,
-    #ffffff 50%,
-    #8a7bff 70%,
-    #5b3dff 100%
-  );
-  background-size: 220% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: shimmer 6s linear infinite;
-}
-
-@keyframes shimmer {
-  from {
-    background-position: 110% 0;
-  }
-  to {
-    background-position: -110% 0;
-  }
+.num {
+  font-variant-numeric: tabular-nums;
 }
 
 /* ── Layout ───────────────────────────────────────────────── */
@@ -264,289 +225,170 @@ html.lenis body {
   padding-inline: var(--gutter);
 }
 
-@media (min-width: 768px) {
-  :root {
-    --gutter: 2.5rem;
-    --nav-h: 84px;
-  }
-}
-
-/* Component classes live in a layer so Tailwind utilities on the
-   same element (position, radius, size) always win. */
-@layer components {
-/* ── Atmosphere ───────────────────────────────────────────────
-   The living gradient behind every dark section: three blurred
-   orbs drifting on long, offset loops so the pattern never visibly
-   repeats. Transform-only, so it stays on the compositor.
-   ───────────────────────────────────────────────────────────── */
-
-.mesh {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.mesh > span {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(80px);
-  will-change: transform;
-}
-
-.mesh > span:nth-child(1) {
-  width: 52vw;
-  height: 52vw;
-  left: -12vw;
-  top: -18vw;
-  background: radial-gradient(closest-side, rgba(58, 31, 214, 0.75), transparent);
-  animation: drift-a 22s var(--ease-in-out) infinite alternate;
-}
-
-.mesh > span:nth-child(2) {
-  width: 46vw;
-  height: 46vw;
-  right: -14vw;
-  top: 4vw;
-  background: radial-gradient(closest-side, rgba(138, 123, 255, 0.45), transparent);
-  animation: drift-b 26s var(--ease-in-out) infinite alternate;
-}
-
-.mesh > span:nth-child(3) {
-  width: 60vw;
-  height: 40vw;
-  left: 20vw;
-  bottom: -22vw;
-  background: radial-gradient(closest-side, rgba(42, 20, 168, 0.8), transparent);
-  animation: drift-c 30s var(--ease-in-out) infinite alternate;
-}
-
-@keyframes drift-a {
-  to {
-    transform: translate3d(14vw, 10vw, 0) scale(1.12);
-  }
-}
-
-@keyframes drift-b {
-  to {
-    transform: translate3d(-12vw, 14vw, 0) scale(0.9);
-  }
-}
-
-@keyframes drift-c {
-  to {
-    transform: translate3d(-10vw, -8vw, 0) scale(1.15);
-  }
-}
-
-/* Fine grid, faded out at the edges. */
-.grid-lines {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-  background-size: 64px 64px;
-  -webkit-mask-image: radial-gradient(70% 60% at 50% 40%, #000, transparent 78%);
-  mask-image: radial-gradient(70% 60% at 50% 40%, #000, transparent 78%);
-}
-
-/* Film grain — takes the digital flatness off large gradients. */
-.grain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.08;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
 /* ── Photography ──────────────────────────────────────────────
-   Stock photos from different shoots never look like one brand.
-   Running them all through the same indigo duotone does: the image
-   is flattened to luminance, then the brand gradient is laid over
-   it in `color` blend, so shadows land on midnight and highlights on
-   periwinkle.
+   Stock from different shoots never reads as one brand. Flattening
+   every image to luminance and multiplying the teal-to-navy ramp
+   over it makes them a set: shadows land on navy, highlights on
+   teal.
    ───────────────────────────────────────────────────────────── */
 
-.duotone {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-  background: var(--deep-2);
-}
+@layer components {
+  .plate {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--deep);
+  }
 
-.duotone img {
-  filter: grayscale(1) contrast(1.08) brightness(0.95);
-}
+  .plate img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.05);
+    opacity: 0.7;
+  }
 
-.duotone::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(140deg, #5b3dff 0%, #2a14a8 45%, #0b0630 100%);
-  mix-blend-mode: color;
-  opacity: 0.9;
-  z-index: 1;
-}
+  .plate::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      160deg,
+      rgba(0, 168, 182, 0.45),
+      rgba(6, 21, 36, 0.9)
+    );
+    mix-blend-mode: multiply;
+  }
 
-/* Softer variant for light sections: colour, not a full wash. */
-.duotone-soft img {
-  filter: grayscale(0.55) contrast(1.04);
-}
+  /* Wide banner variant: the wash runs left-to-right so display type
+     sitting on the left stays on solid navy. */
+  .plate-banner img {
+    opacity: 0.32;
+    filter: grayscale(1);
+  }
 
-.duotone-soft::after {
-  opacity: 0.45;
-}
+  .plate-banner::after {
+    background: linear-gradient(90deg, var(--deep) 30%, rgba(10, 31, 51, 0.7) 100%);
+    mix-blend-mode: normal;
+  }
 
-/* ── Spotlight card ───────────────────────────────────────────
-   A radial highlight that follows the pointer. The position comes
-   from --mx / --my set on pointermove (see SpotlightCard); CSS does
-   the drawing, so there is no re-render per frame.
-   ───────────────────────────────────────────────────────────── */
+  /* The radial lift behind dark sections. */
+  .deep-field {
+    position: relative;
+    background: var(--deep);
+    color: var(--deep-ink);
+    isolation: isolate;
+    overflow: hidden;
+  }
 
-.spotlight {
-  position: relative;
-  isolation: isolate;
-}
+  .deep-field::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      80% 80% at 90% 40%,
+      var(--deep-lift) 0%,
+      var(--deep) 55%,
+      var(--deep-ink-well) 100%
+    );
+  }
 
-.spotlight::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
-  z-index: 0;
-  background: radial-gradient(
-    420px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(138, 123, 255, 0.22),
-    transparent 60%
-  );
-  transition: opacity 400ms var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .spotlight:hover::before {
-    opacity: 1;
+  .deep-field > * {
+    position: relative;
   }
 }
 
+/* ── Rules and lists ──────────────────────────────────────── */
+
+.rule-top {
+  border-top: 1px solid var(--line-strong);
 }
 
-/* ── Glossy pills ─────────────────────────────────────────── */
-
-.pill-gloss::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+.on-deep .rule-top {
+  border-top-color: var(--deep-line);
 }
 
-.pill-gloss-dark::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 55%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-.pill-sheen::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 45%;
-  left: -60%;
-  pointer-events: none;
-  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
-  transform: translate3d(0, 0, 0);
-  transition: transform 0s;
+/* A card that lifts on hover. Square, bordered, no shadow at rest. */
+.lift {
+  transition:
+    transform 400ms var(--ease-out),
+    box-shadow 400ms var(--ease-out),
+    border-color 300ms var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .pill-sheen:hover::after {
-    transform: translate3d(360%, 0, 0);
-    transition: transform 720ms cubic-bezier(0.23, 1, 0.32, 1);
+  .lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 30px 60px -40px rgba(6, 21, 36, 0.4);
   }
 }
 
-/* Live dot — a pulse ring behind a solid dot. */
-.pulse-dot {
-  position: relative;
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background: var(--accent-bright);
-}
+/* ── Entrance ─────────────────────────────────────────────── */
 
-.pulse-dot::after {
-  content: "";
-  position: absolute;
-  inset: -5px;
-  border-radius: inherit;
-  border: 1px solid var(--accent-bright);
-  animation: pulse-ring 2.4s var(--ease-out) infinite;
-}
-
-@keyframes pulse-ring {
+@keyframes rise {
   from {
-    transform: scale(0.4);
-    opacity: 0.8;
-  }
-  to {
-    transform: scale(1.3);
     opacity: 0;
-  }
-}
-
-/* Gentle idle float for hero chips. */
-@keyframes float-y {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(0, -10px, 0);
-  }
-}
-
-.float-slow {
-  animation: float-y 7s var(--ease-in-out) infinite;
-}
-
-.float-slower {
-  animation: float-y 9s var(--ease-in-out) infinite;
-  animation-delay: -3s;
-}
-
-/* Testimonial tab progress. */
-@keyframes tab-fill {
-  from {
-    transform: scaleX(0);
+    transform: translateY(26px);
   }
   to {
-    transform: scaleX(1);
+    opacity: 1;
+    transform: none;
   }
+}
+
+.rise {
+  animation: rise 0.95s var(--ease-out) both;
 }
 
 /* ── Focus ────────────────────────────────────────────────── */
 
 :focus-visible {
-  outline: 2px solid var(--accent-bright);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 2px;
 }
 
-/* ── Marquee (predetermined motion → CSS, off main thread) ── */
+/* ── Forms ────────────────────────────────────────────────── */
+
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.field {
+  height: 3rem;
+  padding-inline: 0.875rem;
+  border: 1px solid var(--line-strong);
+  background: #fff;
+  font-size: 0.9375rem;
+  color: var(--ink-heading);
+  width: 100%;
+  transition: border-color 200ms var(--ease-out);
+}
+
+textarea.field {
+  height: auto;
+  padding: 0.875rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 168, 182, 0.18);
+}
+
+.field-error,
+.field[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+/* ── Marquee ──────────────────────────────────────────────── */
 
 @keyframes marquee-x {
   from {
@@ -562,44 +404,20 @@ html.lenis body {
   will-change: transform;
 }
 
-.marquee-reverse .marquee-track {
-  animation-direction: reverse;
-}
-
 .marquee-host:hover .marquee-track {
   animation-play-state: paused;
-}
-
-/* ── Link underline ───────────────────────────────────────── */
-
-.link-underline {
-  background-image: linear-gradient(currentColor, currentColor);
-  background-size: 0% 1px;
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  transition: background-size 320ms var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .link-underline:hover {
-    background-size: 100% 1px;
-  }
 }
 
 /* ── Reduced motion ───────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-track,
-  .mesh > span,
-  .text-shimmer,
-  .float-slow,
-  .float-slower,
-  .pulse-dot::after {
+  .rise {
     animation: none;
   }
 
-  .pill-sheen::after {
-    display: none;
+  .lift:hover {
+    transform: none;
   }
 
   *,

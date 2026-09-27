@@ -21,21 +21,17 @@ export function renderOgImage({ eyebrow, title }: { eyebrow: string; title: stri
           justifyContent: "space-between",
           padding: "72px 80px",
           color: "#ffffff",
-          backgroundColor: "#0b0630",
+          backgroundColor: "#0a1f33",
           backgroundImage:
-            "radial-gradient(circle at 85% 10%, rgba(138,123,255,0.55), transparent 45%), radial-gradient(circle at 10% 100%, rgba(58,31,214,0.7), transparent 50%), linear-gradient(135deg, #020108 0%, #170b63 60%, #2a14a8 100%)",
+            "radial-gradient(circle at 85% 40%, rgba(0,168,182,0.28), transparent 55%), linear-gradient(135deg, #0f2f4c 0%, #0a1f33 55%, #061524 100%)",
           fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <svg width="56" height="56" viewBox="0 0 26 26">
-            <rect width="26" height="26" rx="8" fill="#ffffff" />
-            <circle cx="12" cy="12" r="5.4" fill="none" stroke="#0b0630" strokeWidth="2" />
-            <circle cx="19.5" cy="6.5" r="3.4" fill="#8a7bff" />
-          </svg>
-          <span style={{ fontSize: 40, fontWeight: 700, letterSpacing: "-0.03em" }}>
+        <div style={{ display: "flex", alignItems: "flex-end", gap: 10 }}>
+          <span style={{ fontSize: 44, fontWeight: 500, letterSpacing: "-0.01em" }}>
             {site.name}
           </span>
+          <span style={{ width: 12, height: 12, backgroundColor: "#00a8b6", marginBottom: 8 }} />
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
@@ -44,7 +40,7 @@ export function renderOgImage({ eyebrow, title }: { eyebrow: string; title: stri
               fontSize: 24,
               textTransform: "uppercase",
               letterSpacing: "0.14em",
-              color: "rgba(255,255,255,0.65)",
+              color: "#3cc4cf",
             }}
           >
             {eyebrow}
@@ -52,9 +48,9 @@ export function renderOgImage({ eyebrow, title }: { eyebrow: string; title: stri
           <span
             style={{
               fontSize: title.length > 60 ? 58 : 72,
-              fontWeight: 700,
-              lineHeight: 1.05,
-              letterSpacing: "-0.035em",
+              fontWeight: 400,
+              lineHeight: 1.02,
+              letterSpacing: "-0.02em",
               maxWidth: 1000,
             }}
           >

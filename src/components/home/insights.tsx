@@ -1,35 +1,31 @@
 import { getPosts } from "@/lib/posts";
 import { PostCard } from "@/components/blog/post-card";
-import { Section, SectionHeading } from "@/components/ui/section";
-import { RevealGroup, RevealItem } from "@/components/motion/reveal";
-import { ArrowRight, ButtonLink } from "@/components/ui/button";
+import { SectionHead } from "@/components/ui/section";
+import { Reveal } from "@/components/motion/reveal";
+import { TextLink } from "@/components/ui/button";
 
 export async function Insights() {
   const posts = (await getPosts()).slice(0, 3);
   if (posts.length === 0) return null;
 
   return (
-    <Section>
-      <SectionHeading
-        align="split"
-        eyebrow="Insights"
-        title="Notes from the research desk."
-        lede="Practical method, written by the analysts doing the work. No thought leadership."
-        action={
-          <ButtonLink href="/blog" variant="outline">
-            All insights
-            <ArrowRight />
-          </ButtonLink>
-        }
-      />
+    <section className="bg-surface border-t border-line py-20 md:py-[120px]">
+      <div className="shell">
+        <SectionHead
+          layout="split"
+          eyebrow="Insights"
+          title="Notes from the research desk."
+          action={<TextLink href="/blog">All insights</TextLink>}
+        />
 
-      <RevealGroup className="mt-14 grid gap-4 md:grid-cols-3" stagger={0.06}>
-        {posts.map((post) => (
-          <RevealItem key={post.slug} className="h-full">
-            <PostCard post={post} />
-          </RevealItem>
-        ))}
-      </RevealGroup>
-    </Section>
+        <div className="mt-12 grid gap-6 md:mt-14 md:grid-cols-3">
+          {posts.map((post, i) => (
+            <Reveal key={post.slug} delay={i * 0.09} className="h-full">
+              <PostCard post={post} />
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

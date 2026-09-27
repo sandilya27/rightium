@@ -1,15 +1,23 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { Post } from "@/lib/post";
-import { PostCard } from "./post-card";
-import { EASE_OUT } from "@/components/motion/reveal";
+import { FeaturedPostCard, PostCard } from "./post-card";
 import { cn } from "@/lib/utils";
 
+/**
+ * The insights index: one featured article, then a filtered grid.
+ *
+ * The filter is a rail of underlined tabs on the section's own hairline
+ * rather than a row of pills — it reads as a table of contents, which is
+ * what it is. Selecting a category pulls the featured article back into
+ * the grid, so nothing is hidden by the filter.
+ *
+ * Cards re-enter on a short stagger keyed to the filter, so a change of
+ * category is visibly a change rather than a silent content swap.
+ */
 export function BlogIndex({ posts }: { posts: Post[] }) {
-  const reduce = useReducedMotion();
-  const [active, setActive] = useState<string>("All");
+  const [active, setActive] = useState("All");
 
   const categories = useMemo(
     () => ["All", ...Array.from(new Set(posts.map((p) => p.category))).sort()],
@@ -22,72 +30,53 @@ export function BlogIndex({ posts }: { posts: Post[] }) {
 
   return (
     <>
-      {active === "All" && (
-        <div className="mb-4">
-          <PostCard post={featured} featured />
-        </div>
-      )}
+      {active === "All" && <FeaturedPostCard post={featured} />}
 
-      <div
-        className="mb-10 flex flex-wrap gap-2"
-        role="tablist"
-        aria-label="Filter insights by category"
-      >
-        {categories.map((c) => {
-          const selected = c === active;
-          return (
-            <button
-              key={c}
-              role="tab"
-              aria-selected={selected}
-              data-cursor="link"
-              onClick={() => setActive(c)}
-              className={cn(
-                "relative rounded-full px-4 py-2 text-[0.8125rem] transition-[color,transform] duration-[160ms] ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97]",
-                selected ? "text-white" : "text-ink-2 hover:text-ink",
-              )}
-            >
-              {selected && (
-                <motion.span
-                  layoutId="filter-pill"
-                  className="absolute inset-0 -z-10 rounded-full bg-ink"
-                  transition={{
-                    type: "spring",
-                    duration: reduce ? 0 : 0.42,
-                    bounce: 0.14,
-                  }}
-                />
-              )}
-              <span className="relative">{c}</span>
-            </button>
-          );
-        })}
+      <div className="mt-14 flex items-center justify-between gap-6 border-b border-line-strong">
+        <div
+          role="tablist"
+          aria-label="Filter insights by category"
+          className="flex gap-1 overflow-x-auto [scrollbar-width:none]"
+        >
+          {categories.map((c) => {
+            const selected = c === active;
+            return (
+              <button
+                key={c}
+                role="tab"
+                aria-selected={selected}
+                onClick={() => setActive(c)}
+                className={cn(
+                  "-mb-px border-b-2 px-4 py-3.5 text-sm font-medium whitespace-nowrap transition-[color,border-color] duration-[250ms]",
+                  selected
+                    ? "border-accent text-ink-heading"
+                    : "border-transparent text-ink-2",
+                )}
+              >
+                {c}
+              </button>
+            );
+          })}
+        </div>
+        <span className="text-[0.8125rem] whitespace-nowrap text-ink-2">
+          {visible.length} {visible.length === 1 ? "article" : "articles"}
+        </span>
       </div>
 
-      <motion.div layout className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <AnimatePresence mode="popLayout" initial={false}>
-          {visible.map((post, i) => (
-            <motion.div
-              key={post.slug}
-              layout
-              initial={{ opacity: 0, transform: "translate3d(0, 14px, 0)" }}
-              animate={{ opacity: 1, transform: "translate3d(0, 0px, 0)" }}
-              exit={{ opacity: 0, transform: "translate3d(0, 6px, 0)" }}
-              transition={{
-                duration: reduce ? 0.15 : 0.42,
-                delay: reduce ? 0 : i * 0.04,
-                ease: EASE_OUT,
-              }}
-              className="h-full"
-            >
-              <PostCard post={post} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </motion.div>
+      <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {visible.map((post, i) => (
+          <PostCard
+            // Keyed on the filter too, so the entrance replays on change.
+            key={`${active}-${post.slug}`}
+            post={post}
+            className="rise"
+            style={{ animationDuration: "0.6s", animationDelay: `${i * 60}ms` }}
+          />
+        ))}
+      </div>
 
       {visible.length === 0 && (
-        <p className="py-16 text-center text-ink-3">
+        <p className="py-16 text-center text-ink-2">
           Nothing published in this category yet.
         </p>
       )}

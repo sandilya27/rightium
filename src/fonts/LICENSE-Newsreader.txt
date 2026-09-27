@@ -1,0 +1,9 @@
+Newsreader is licensed under the SIL Open Font License, Version 1.1.
+Copyright 2019 The Newsreader Project Authors
+(https://github.com/productiontype/Newsreader)
+
+Full licence text: https://openfontlicense.org/open-font-license-official-text/
+
+newsreader-latin-variable.woff2 and newsreader-latin-italic-variable.woff2
+are the Latin subsets served by Google Fonts, vendored here so builds
+never depend on fetching from fonts.gstatic.com.

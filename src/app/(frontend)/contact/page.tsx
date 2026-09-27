@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
-import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { site, telHref, whatsappHref } from "@/lib/site";
 import { PageHero } from "@/components/site/page-hero";
-import { Section } from "@/components/ui/section";
 import { Reveal } from "@/components/motion/reveal";
 import { ContactForm } from "@/components/contact/contact-form";
 
@@ -13,26 +11,29 @@ export const metadata: Metadata = pageMetadata({
   path: "/contact",
 });
 
-const details = [
-  { icon: Phone, label: "Call", value: site.phone, href: telHref },
+const details: {
+  label: string;
+  value: string;
+  href?: string;
+  external?: boolean;
+}[] = [
+  { label: "Call", value: site.phone, href: telHref },
   {
-    icon: MessageCircle,
     label: "WhatsApp",
     value: "Send us the details",
     href: whatsappHref,
     external: true,
   },
-  { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}` },
+  { label: "Email", value: site.email, href: `mailto:${site.email}` },
   {
-    icon: MapPin,
     label: "Office",
-    value: site.address.short,
+    value: `${site.address.short} ${site.address.postalCode}`,
     href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
       `${site.name}, ${site.address.short}`,
     )}`,
     external: true,
   },
-  { icon: Clock, label: "Hours", value: site.hours.label },
+  { label: "Hours", value: site.hours.label },
 ];
 
 export default function ContactPage() {
@@ -40,59 +41,65 @@ export default function ContactPage() {
     <>
       <PageHero
         eyebrow="Contact"
-        image={{ src: "/images/agreement.jpg", alt: "Two professionals shaking hands over an agreement" }}
-        title="Send the question. Get a scope back."
+        title={
+          <>
+            Send the question.{" "}
+            <em className="accent-em-bright">Get a scope back.</em>
+          </>
+        }
         lede="No discovery sequence, no gated PDF. Tell us what you are trying to decide and we will come back with what it takes to answer it — including when it is nothing we should be doing."
       />
 
-      <Section>
-        <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
-          <div className="lg:sticky lg:top-[calc(var(--nav-h)+2.5rem)] lg:self-start">
-            <Reveal>
-              <dl className="space-y-7">
-                {details.map(({ icon: Icon, label, value, href, external }) => (
-                  <div key={label} className="flex gap-4">
-                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg border border-[var(--line)] bg-white text-accent">
-                      <Icon className="size-4" strokeWidth={1.5} aria-hidden />
-                    </span>
-                    <div>
-                      <dt className="eyebrow text-ink-3">{label}</dt>
-                      <dd className="mt-1.5 text-[0.9375rem] text-ink">
-                        {href ? (
-                          <a
-                            href={href}
-                            data-cursor="link"
-                            className="link-underline"
-                            {...(external ? { target: "_blank", rel: "noreferrer noopener" } : {})}
-                          >
-                            {value}
-                          </a>
-                        ) : (
-                          value
-                        )}
-                      </dd>
-                    </div>
-                  </div>
-                ))}
-              </dl>
-            </Reveal>
+      <section className="bg-paper pt-20 pb-20 md:pt-24 md:pb-[120px]">
+        <div className="shell grid items-start gap-12 md:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] md:gap-20">
+          {/* Contact details as a definition list on rules — the same
+              register as the deliverables tables elsewhere, so the page
+              reads as part of the firm's documentation, not a widget. */}
+          <Reveal className="md:sticky md:top-[6.875rem]">
+            <dl className="m-0 flex flex-col border-t border-line-strong">
+              {details.map((d) => (
+                <div
+                  key={d.label}
+                  className="grid grid-cols-[6.875rem_1fr] gap-4 border-b border-line-strong py-4.5"
+                >
+                  <dt className="pt-[3px] text-xs font-semibold tracking-[0.14em] uppercase text-accent">
+                    {d.label}
+                  </dt>
+                  <dd className="m-0 text-[0.96875rem] leading-[1.5] text-ink-heading">
+                    {d.href ? (
+                      <a
+                        href={d.href}
+                        className="border-b border-transparent transition-colors duration-200 [@media(hover:hover)_and_(pointer:fine)]:hover:border-accent"
+                        {...(d.external
+                          ? { target: "_blank", rel: "noopener noreferrer" }
+                          : {})}
+                      >
+                        {d.value}
+                      </a>
+                    ) : (
+                      d.value
+                    )}
+                  </dd>
+                </div>
+              ))}
+            </dl>
 
-            <Reveal delay={0.12}>
-              <div className="mt-10 rounded-card border border-[var(--line)] bg-[var(--accent-soft)] p-6">
-                <p className="text-[0.9375rem] leading-relaxed text-ink-2">
-                  <span className="font-medium text-ink">Under deadline?</span>{" "}
-                  Put the date in the brief. Expedited searches start at 24 hours
-                  and we will tell you immediately if it is not realistic.
-                </p>
-              </div>
-            </Reveal>
-          </div>
+            <div className="mt-8 bg-deep px-8 py-7 text-white">
+              <p className="font-serif m-0 text-[1.375rem] leading-[1.25]">
+                Under deadline?
+              </p>
+              <p className="mt-3 text-[0.90625rem] leading-[1.6] text-deep-ink-2">
+                Put the date in the brief. Expedited searches start at 24 hours and
+                we will tell you immediately if it is not realistic.
+              </p>
+            </div>
+          </Reveal>
 
-          <Reveal delay={0.08}>
+          <Reveal delay={0.1}>
             <ContactForm />
           </Reveal>
         </div>
-      </Section>
+      </section>
     </>
   );
 }

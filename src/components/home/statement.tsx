@@ -1,68 +1,51 @@
-import { site } from "@/lib/site";
-import { ScrollWords } from "@/components/motion/scroll-words";
-import { ClipImage } from "@/components/motion/clip-image";
 import { Reveal } from "@/components/motion/reveal";
-import { Eyebrow } from "@/components/ui/section";
 import { ArrowRight, ButtonLink } from "@/components/ui/button";
+import { Eyebrow } from "@/components/ui/section";
+
+const terms = ["Fixed scope", "Fixed fee", "Agreed before we start"];
 
 /**
- * The manifesto. The paragraph is read out word by word as the page
- * scrolls, and two photos wipe open alongside it.
+ * The manifesto. One long serif sentence at display size, set against a
+ * narrow left column of terms — the asymmetry is what makes it read as
+ * a statement rather than as body copy that happens to be large.
  */
 export function Statement() {
   return (
-    <section className="relative overflow-hidden bg-paper py-24 md:py-36">
-      <div className="shell">
-        <div className="grid gap-14 lg:grid-cols-[0.34fr_1fr] lg:gap-16">
-          <div>
-            <Reveal y={10}>
-              <Eyebrow>Why {site.name}</Eyebrow>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <p className="mt-6 max-w-[30ch] text-[0.9375rem] leading-relaxed text-ink-2">
-                A research partner for corporate IP teams, law firms and R&amp;D
-                leaders across 30 countries.
-              </p>
-            </Reveal>
-          </div>
+    <section className="bg-paper pt-24 pb-20 md:pt-[140px] md:pb-[120px]">
+      <div className="shell grid gap-12 md:grid-cols-[minmax(0,0.9fr)_minmax(0,2fr)] md:gap-16">
+        <Reveal>
+          <Eyebrow>Why Rightium</Eyebrow>
+          <p className="mt-5.5 max-w-[30ch] text-[0.96875rem] leading-[1.65] text-ink-2">
+            A research partner for corporate IP teams, law firms and R&amp;D
+            leaders across 30 countries.
+          </p>
+          <ul className="mt-9 flex list-none flex-col gap-3 p-0">
+            {terms.map((t) => (
+              <li
+                key={t}
+                className="flex items-center gap-3 text-[0.84375rem] text-ink-heading"
+              >
+                <span aria-hidden className="h-px w-[18px] bg-accent" />
+                {t}
+              </li>
+            ))}
+          </ul>
+        </Reveal>
 
-          <div>
-            <ScrollWords
-              className="font-display text-[clamp(1.7rem,3.4vw,3.1rem)] leading-[1.14] tracking-[-0.035em] text-ink"
-              text="Most search reports arrive as a list of references and a shrug. Ours arrive with the *search *log, the *raw *data and an *opinion *you *can *defend — reviewed twice, by analysts who trained in your field."
-            />
-
-            <Reveal delay={0.1}>
-              <div className="mt-12 flex flex-wrap items-center gap-6">
-                <ButtonLink href="/about" variant="primary" size="lg">
-                  How we work
-                  <ArrowRight />
-                </ButtonLink>
-                <p className="text-[0.875rem] text-ink-3">
-                  Fixed scope · fixed fee · agreed before we start
-                </p>
-              </div>
-            </Reveal>
-          </div>
-        </div>
-
-        <div className="mt-20 grid gap-4 md:mt-28 md:grid-cols-12">
-          <ClipImage
-            src="/images/strategy.jpg"
-            alt="A strategist mapping an audience on a whiteboard"
-            className="h-[300px] rounded-block md:col-span-7 md:h-[440px]"
-            sizes="(min-width: 768px) 58vw, 100vw"
-            soft
-          />
-          <ClipImage
-            src="/images/agreement.jpg"
-            alt="Two professionals shaking hands over a signed agreement"
-            className="h-[300px] rounded-block md:col-span-5 md:mt-24 md:h-[440px]"
-            sizes="(min-width: 768px) 42vw, 100vw"
-            delay={0.12}
-            soft
-          />
-        </div>
+        <Reveal delay={0.12}>
+          <p className="font-serif m-0 text-[clamp(1.9rem,3.3vw,3.1rem)] leading-[1.2] tracking-[-0.015em] text-ink-heading text-pretty">
+            Most search reports arrive as a list of references and a shrug. Ours
+            arrive with{" "}
+            <em className="accent-em">
+              the search log, the raw data and an opinion you can defend
+            </em>{" "}
+            — reviewed twice, by analysts who trained in your field.
+          </p>
+          <ButtonLink href="/about" variant="ink" className="mt-10">
+            How we work
+            <ArrowRight className="size-[14px]" />
+          </ButtonLink>
+        </Reveal>
       </div>
     </section>
   );

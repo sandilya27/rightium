@@ -1,33 +1,50 @@
 /**
- * Rightium branding inside the Payload admin: the login-screen logo
- * and the small nav icon. Same mark as the site header.
+ * Rightium branding inside the Payload admin: the login-screen logo and
+ * the small nav icon. Same mark as the site header — the name in a
+ * serif with a teal square where the full stop would go.
  */
 
-function Mark({ size }: { size: number }) {
+const serif = "Georgia, 'Times New Roman', serif";
+
+function Dot({ size }: { size: number }) {
   return (
-    <svg viewBox="0 0 26 26" width={size} height={size} aria-hidden>
-      <defs>
-        <linearGradient id="rightium-mark" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#170b63" />
-          <stop offset="1" stopColor="#3a1fd6" />
-        </linearGradient>
-      </defs>
-      <rect width="26" height="26" rx="8" fill="url(#rightium-mark)" />
-      <circle cx="12" cy="12" r="5.4" fill="none" stroke="#ffffff" strokeWidth="2" />
-      <circle cx="19.5" cy="6.5" r="3.4" fill="#8a7bff" />
-    </svg>
+    <span
+      aria-hidden
+      style={{
+        width: size,
+        height: size,
+        backgroundColor: "#00a8b6",
+        display: "inline-block",
+        transform: "translateY(-1px)",
+      }}
+    />
   );
 }
 
 export function AdminLogo() {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 12 }}>
-      <Mark size={40} />
-      <span style={{ fontSize: 28, fontWeight: 700, letterSpacing: "-0.035em" }}>Rightium</span>
+    <span style={{ display: "inline-flex", alignItems: "baseline", gap: 8 }}>
+      <span
+        style={{
+          fontFamily: serif,
+          fontSize: 34,
+          fontWeight: 500,
+          letterSpacing: "-0.01em",
+          lineHeight: 1,
+        }}
+      >
+        Rightium
+      </span>
+      <Dot size={9} />
     </span>
   );
 }
 
 export function AdminIcon() {
-  return <Mark size={26} />;
+  return (
+    <span style={{ display: "inline-flex", alignItems: "baseline", gap: 4 }}>
+      <span style={{ fontFamily: serif, fontSize: 24, lineHeight: 1 }}>R</span>
+      <Dot size={6} />
+    </span>
+  );
 }

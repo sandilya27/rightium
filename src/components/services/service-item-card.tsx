@@ -1,15 +1,15 @@
+import Link from "next/link";
 import type { ServiceItem } from "@/lib/services";
 import { serviceCtaHref, serviceCtaLabel } from "@/lib/services";
-import { ArrowRight, ButtonLink } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 /**
  * One orderable sub-service.
  *
- * The card carries the item's slug as its id, so the mega-menu's
- * /services/[category]#[item] links land on it. `:target` gives the
- * landed-on card an accent ring, which tells the visitor which of the
- * cards they clicked through for.
+ * The card's footer carries both halves of the offer: the action, and a
+ * label saying which kind of engagement it is. "Fixed scope" versus
+ * "Scoped together" is the distinction clients actually ask about, so it
+ * is set on the card rather than buried in the FAQ.
  */
 export function ServiceItemCard({
   item,
@@ -18,34 +18,40 @@ export function ServiceItemCard({
   item: ServiceItem;
   className?: string;
 }) {
+  const ordered = item.cta === "order";
+
   return (
     <article
       id={item.slug}
       className={cn(
-        "flex h-full scroll-mt-[calc(var(--nav-h)+2rem)] flex-col rounded-card border border-[var(--line)] bg-white p-6 md:p-7",
-        "shadow-[0_1px_2px_rgba(10,6,40,0.04)]",
-        "transition-[border-color,box-shadow] duration-[320ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
-        "[@media(hover:hover)_and_(pointer:fine)]:hover:border-[var(--accent-line)]",
-        "[@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_24px_50px_-34px_rgba(10,6,40,0.45)]",
-        "target:border-accent target:shadow-[0_0_0_4px_var(--accent-glow)]",
+        "lift flex scroll-mt-[calc(var(--nav-h)+5rem)] flex-col border border-line-strong bg-white p-7",
+        "[@media(hover:hover)_and_(pointer:fine)]:hover:border-[rgba(0,168,182,0.5)]",
         className,
       )}
     >
-      <h3 className="font-display text-[1.1875rem] leading-snug tracking-[-0.015em]">
+      <h3 className="font-serif m-0 text-[1.375rem] leading-[1.2] text-ink-heading">
         {item.title}
       </h3>
-      <p className="mt-2.5 text-[0.9375rem] leading-relaxed text-ink-2">
+      <p className="mt-3 text-[0.90625rem] leading-[1.6] text-ink-2">
         {item.description}
       </p>
-      <div className="mt-auto pt-6">
-        <ButtonLink
+
+      <div className="mt-auto flex items-center justify-between gap-3 pt-6">
+        <Link
           href={serviceCtaHref(item)}
-          size="sm"
-          variant={item.cta === "order" ? "accent" : "outline"}
+          className={cn(
+            "inline-flex h-10 items-center border border-deep px-[18px] text-[0.84375rem] font-medium transition-colors duration-[250ms]",
+            ordered ? "bg-deep text-white" : "bg-transparent text-deep",
+            "[@media(hover:hover)_and_(pointer:fine)]:hover:border-accent",
+            "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-accent",
+            "[@media(hover:hover)_and_(pointer:fine)]:hover:text-white",
+          )}
         >
           {serviceCtaLabel[item.cta]}
-          <ArrowRight />
-        </ButtonLink>
+        </Link>
+        <span className="text-xs tracking-[0.08em] uppercase text-ink-2">
+          {ordered ? "Fixed scope" : "Scoped together"}
+        </span>
       </div>
     </article>
   );

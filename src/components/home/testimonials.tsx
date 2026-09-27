@@ -1,145 +1,113 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
-import { ClipImage } from "@/components/motion/clip-image";
-import { EASE_OUT, Reveal } from "@/components/motion/reveal";
-import { Eyebrow } from "@/components/ui/section";
+import { useEffect, useState } from "react";
+import { useReducedMotion } from "motion/react";
+import { quotes } from "@/lib/content";
+import { Reveal } from "@/components/motion/reveal";
 import { cn } from "@/lib/utils";
 
-const quotes = [
-  {
-    body: "They found a 1998 Japanese utility model two prior searches had missed, and laid out exactly how they got there. Our outside counsel could verify it in an afternoon.",
-    name: "Head of IP",
-    role: "Semiconductor manufacturer, California",
-  },
-  {
-    body: "Drafts come back in our template with tracked changes on, and the docket is always current. Our associates review instead of rewrite — that is the whole value.",
-    name: "Partner",
-    role: "IP law firm, London",
-  },
-  {
-    body: "The first firm that has ever told us a project wasn't worth running. They were right, and it is why they get the work that is.",
-    name: "Director of Innovation",
-    role: "Energy storage, Munich",
-  },
-];
-
-const DURATION = 7000;
+const ROTATE_MS = 7000;
 
 /**
- * One quote at a time, auto-advancing. Each tab carries its own
- * progress bar so the rotation is visible rather than surprising, and
- * it pauses while the pointer is over the section or it is off screen.
+ * Client voices, rotating.
+ *
+ * The tab rail doubles as the timer: the teal bar fills over exactly
+ * the rotation interval, so the reader can see when the quote is about
+ * to change and stop it. Pointer-in pauses — a quote swapping out
+ * mid-sentence while someone is reading it is the whole failure mode of
+ * an auto-rotating carousel.
+ *
+ * Reduced motion drops the rotation entirely and shows the first quote,
+ * with the rail still usable as a picker.
  */
 export function Testimonials() {
+  const reduce = useReducedMotion();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { margin: "-20% 0px" });
-  const reduce = useReducedMotion();
-  const running = inView && !paused && !reduce;
 
   useEffect(() => {
-    if (!running) return;
-    const t = window.setTimeout(() => setIndex((i) => (i + 1) % quotes.length), DURATION);
-    return () => window.clearTimeout(t);
-  }, [index, running]);
+    if (paused || reduce) return;
+    const timer = setInterval(
+      () => setIndex((i) => (i + 1) % quotes.length),
+      ROTATE_MS,
+    );
+    return () => clearInterval(timer);
+  }, [paused, reduce]);
 
-  const q = quotes[index];
+  const quote = quotes[index];
 
   return (
     <section
-      ref={ref}
-      className="relative overflow-hidden bg-paper py-24 md:py-36"
-      onPointerEnter={() => setPaused(true)}
-      onPointerLeave={() => setPaused(false)}
+      className="relative isolate overflow-hidden bg-deep-well py-24 text-white md:py-[130px]"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
     >
-      <div className="shell grid items-center gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-        <ClipImage
-          src="/images/portrait.jpg"
-          alt="A client in profile"
-          className="aspect-[4/5] rounded-block"
-          sizes="(min-width: 1024px) 34vw, 100vw"
-        >
-          <div className="absolute inset-x-5 bottom-5 z-[3] rounded-2xl border border-white/20 bg-[rgba(12,8,40,0.5)] p-4 text-white backdrop-blur-xl">
-            <p className="text-[0.8125rem] leading-snug text-white/80">
-              Names withheld under engagement terms. Sectors and roles are
-              accurate.
-            </p>
-          </div>
-        </ClipImage>
-
-        <div>
-          <Reveal y={10}>
-            <Eyebrow>Client voices</Eyebrow>
-          </Reveal>
-
-          <svg viewBox="0 0 24 24" aria-hidden className="mt-10 size-12 text-accent" fill="currentColor">
-            <path d="M9.6 5.4 7.9 8.9c2 .4 3.3 2 3.3 4 0 2.3-1.7 4-4 4s-4-1.8-4-4.2c0-1.3.4-2.6 1.1-4L7.2 3.4l2.4 2ZM20 5.4l-1.7 3.5c2 .4 3.3 2 3.3 4 0 2.3-1.7 4-4 4s-4-1.8-4-4.2c0-1.3.4-2.6 1.1-4l2.9-5.3 2.4 2Z" />
-          </svg>
-
-          <div className="relative mt-6 min-h-[15rem] md:min-h-[13rem]" aria-live="polite">
-            <AnimatePresence mode="wait">
-              <motion.figure
-                key={index}
-                initial={{ opacity: 0, y: reduce ? 0 : 16, filter: reduce ? "none" : "blur(6px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: reduce ? 0 : -10, filter: reduce ? "none" : "blur(4px)" }}
-                transition={{ duration: 0.55, ease: EASE_OUT }}
-              >
-                <blockquote className="font-display text-[clamp(1.5rem,2.6vw,2.25rem)] leading-[1.25] tracking-[-0.03em] text-ink text-balance">
-                  {q.body}
-                </blockquote>
-                <figcaption className="mt-8">
-                  <span className="block text-[0.9375rem] font-semibold">{q.name}</span>
-                  <span className="block text-[0.875rem] text-ink-3">{q.role}</span>
-                </figcaption>
-              </motion.figure>
-            </AnimatePresence>
-          </div>
-
-          <div className="mt-12 grid grid-cols-3 gap-3" role="tablist" aria-label="Testimonials">
-            {quotes.map((item, i) => (
-              <button
-                key={item.role}
-                type="button"
-                role="tab"
-                aria-selected={i === index}
-                data-cursor="link"
-                onClick={() => setIndex(i)}
-                className="group/tab text-left"
-              >
-                <span className="block h-[3px] overflow-hidden rounded-full bg-[var(--line-strong)]">
-                  <span
-                    key={`${index}-${running}`}
-                    className={cn("block h-full origin-left rounded-full bg-gradient-accent")}
-                    style={{
-                      transform: i < index ? "scaleX(1)" : "scaleX(0)",
-                      animation:
-                        i === index
-                          ? running
-                            ? `tab-fill ${DURATION}ms linear forwards`
-                            : "none"
-                          : "none",
-                      ...(i === index && !running ? { transform: "scaleX(1)" } : {}),
-                    }}
-                  />
-                </span>
-                <span
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(50% 60% at 100% 0%, rgba(0,168,182,0.14), transparent 70%)",
+        }}
+      />
+      <div className="shell relative grid gap-12 md:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] md:gap-16">
+        <Reveal>
+          <p className="eyebrow m-0 text-accent-bright">Client voices</p>
+          <p className="mt-5.5 max-w-[28ch] text-[0.90625rem] leading-[1.65] text-deep-ink-3">
+            Names withheld under engagement terms. Sectors and roles are accurate.
+          </p>
+          <div className="mt-10 flex flex-col gap-3.5">
+            {quotes.map((q, i) => {
+              const on = i === index;
+              return (
+                <button
+                  key={q.name + q.role}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => setIndex(i)}
                   className={cn(
-                    "mt-3 block text-[0.8125rem] transition-colors duration-300",
-                    i === index ? "text-ink" : "text-ink-3 group-hover/tab:text-ink-2",
+                    "relative block border-l-2 border-white/15 py-3 pl-5 text-left text-sm transition-colors duration-300",
+                    on ? "text-white" : "text-white/55",
                   )}
                 >
-                  {item.role.split(",")[0]}
-                </span>
-              </button>
-            ))}
+                  <span
+                    aria-hidden
+                    className="absolute -left-[2px] top-0 bottom-0 w-[2px] origin-top bg-accent-bright"
+                    style={{
+                      transform: `scaleY(${on ? 1 : 0})`,
+                      transitionProperty: "transform",
+                      transitionTimingFunction: "linear",
+                      transitionDuration:
+                        on && !paused && !reduce ? `${ROTATE_MS}ms` : "300ms",
+                    }}
+                  />
+                  {q.role.split(",")[0]} · {q.name}
+                </button>
+              );
+            })}
           </div>
-        </div>
-      </div>
+        </Reveal>
 
+        <Reveal delay={0.12} className="min-h-[18.75rem]">
+          <span
+            aria-hidden
+            className="font-serif mb-6 block text-[6rem] leading-[0.6] text-accent-bright"
+          >
+            &ldquo;
+          </span>
+          <blockquote
+            key={index}
+            className="rise m-0 text-[clamp(1.5rem,2.8vw,2.5rem)] leading-[1.25] tracking-[-0.01em] balance font-serif"
+            style={{ animationDuration: "0.7s" }}
+          >
+            {quote.body}
+          </blockquote>
+          <p className="mt-8 text-[0.9375rem]">
+            <span className="font-medium">{quote.name}</span>
+            <span className="text-deep-ink-3"> — {quote.role}</span>
+          </p>
+        </Reveal>
+      </div>
     </section>
   );
 }

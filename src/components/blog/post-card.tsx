@@ -1,64 +1,100 @@
+import Image from "next/image";
 import Link from "next/link";
 import { formatDate, type Post } from "@/lib/post";
-import { ArrowRight } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+/**
+ * Article card. No thumbnail: the insights are about method, and a
+ * stock image over a piece on search strings adds nothing the headline
+ * does not already say. The meta row carries category and reading time,
+ * the footer carries the byline — so the card is scannable from either
+ * end.
+ */
 export function PostCard({
   post,
-  featured = false,
   className,
+  style,
 }: {
   post: Post;
-  featured?: boolean;
   className?: string;
+  style?: React.CSSProperties;
 }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      data-cursor="link"
+      style={style}
       className={cn(
-        "group/post flex h-full flex-col rounded-card border border-[var(--line)] bg-white p-7",
-        "transition-[transform,border-color,box-shadow] duration-[320ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
-        "[@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-[3px]",
-        "[@media(hover:hover)_and_(pointer:fine)]:hover:border-[var(--line-strong)]",
-        "[@media(hover:hover)_and_(pointer:fine)]:hover:shadow-[0_18px_40px_-26px_rgba(20,22,26,0.3)]",
-        featured && "md:p-10",
+        "lift flex h-full flex-col border border-line bg-white p-8",
         className,
       )}
     >
-      <div className="flex items-center gap-3 text-[0.75rem] text-ink-3">
-        <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-1 font-medium text-accent">
+      <div className="flex items-center gap-3 text-[0.78125rem] text-ink-2">
+        <span className="font-semibold tracking-[0.1em] uppercase text-accent">
           {post.category}
         </span>
-        <span>{formatDate(post.date)}</span>
         <span aria-hidden>·</span>
-        <span>{post.readingMinutes} min</span>
+        <span>{post.readingMinutes} min read</span>
       </div>
 
-      <h3
-        className={cn(
-          "font-display mt-5 leading-[1.14] tracking-[-0.02em] text-balance",
-          featured ? "text-[1.75rem] md:text-[2.25rem]" : "text-[1.3rem]",
-        )}
-      >
-        <span className="link-underline">{post.title}</span>
+      <h3 className="font-serif mt-5 text-2xl leading-[1.2] text-ink-heading balance">
+        {post.title}
       </h3>
 
-      <p
-        className={cn(
-          "mt-3 leading-relaxed text-ink-2",
-          featured ? "text-[1.0625rem] md:max-w-[55ch]" : "text-[0.9375rem]",
-        )}
-      >
+      <p className="mt-3.5 text-[0.90625rem] leading-[1.6] text-ink-2">
         {post.excerpt}
       </p>
 
-      <div className="mt-auto flex items-center justify-between gap-4 pt-7">
-        <span className="text-[0.8125rem] text-ink-3">{post.author.name}</span>
-        <span className="group/btn inline-flex items-center gap-2 text-[0.875rem] font-medium text-ink">
-          Read
-          <ArrowRight />
+      <div className="mt-auto flex items-center justify-between gap-4 pt-7 text-[0.8125rem] text-ink-2">
+        <span>
+          {post.author.name} · {formatDate(post.date)}
         </span>
+        <span className="font-medium text-ink-heading">Read →</span>
+      </div>
+    </Link>
+  );
+}
+
+/** The wide navy card that opens the insights index. */
+export function FeaturedPostCard({ post }: { post: Post }) {
+  return (
+    <Link
+      href={`/blog/${post.slug}`}
+      className="group/post grid overflow-hidden bg-deep text-white md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]"
+    >
+      <div className="flex flex-col p-10 pb-12 md:p-14 md:pb-12">
+        <div className="flex flex-wrap items-center gap-3 text-[0.78125rem] text-deep-ink-3">
+          <span className="font-semibold tracking-[0.1em] uppercase text-accent-bright">
+            {post.category}
+          </span>
+          <span aria-hidden>·</span>
+          <span>{formatDate(post.date)}</span>
+          <span aria-hidden>·</span>
+          <span>{post.readingMinutes} min read</span>
+        </div>
+        <h2 className="font-serif mt-6 text-[clamp(2rem,3.4vw,3rem)] leading-[1.1] tracking-[-0.015em] balance">
+          {post.title}
+        </h2>
+        <p className="mt-5 max-w-[56ch] text-base leading-[1.6] text-deep-ink-2">
+          {post.excerpt}
+        </p>
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-4 pt-10 text-sm">
+          <span className="text-deep-ink-2">
+            {post.author.name}
+            {post.author.role ? `, ${post.author.role}` : ""}
+          </span>
+          <span className="inline-flex items-center gap-2.5 border-b-[1.5px] border-accent-bright pb-0.5 font-medium">
+            Read the article →
+          </span>
+        </div>
+      </div>
+      <div className="plate min-h-[15rem] md:min-h-[23.75rem]">
+        <Image
+          src={post.coverImage?.url ?? "/images/analysts.jpg"}
+          alt=""
+          fill
+          sizes="(min-width: 768px) 45vw, 100vw"
+          className="object-cover"
+        />
       </div>
     </Link>
   );

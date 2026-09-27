@@ -22,6 +22,7 @@ export function ContactForm() {
   const [errors, setErrors] = useState<Errors>({});
   const [serverError, setServerError] = useState<string | null>(null);
   const [service, setService] = useState("");
+  const [email, setEmail] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
   // Bumping the key remounts Turnstile for a fresh single-use token.
   const [turnstileKey, setTurnstileKey] = useState(0);
@@ -30,10 +31,13 @@ export function ContactForm() {
   // Service cards link here as /contact?service=<item-slug>. Read it
   // after mount rather than via useSearchParams, which would force the
   // whole static contact page to render client-side.
+  // The insights subscribe band arrives as /contact?email=, so a reader
+  // who typed their address there does not type it twice.
   useEffect(() => {
-    const slug = new URLSearchParams(window.location.search).get("service");
-    const match = serviceItems.find((i) => i.slug === slug);
+    const params = new URLSearchParams(window.location.search);
+    const match = serviceItems.find((i) => i.slug === params.get("service"));
     if (match) setService(`${match.category.title} — ${match.title}`);
+    setEmail(params.get("email") ?? "");
   }, []);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -84,6 +88,7 @@ export function ContactForm() {
       });
       form.reset();
       setService("");
+      setEmail("");
       setTurnstileToken("");
       setTurnstileKey((k) => k + 1);
     } catch (err) {
@@ -100,7 +105,7 @@ export function ContactForm() {
   }
 
   return (
-    <div className="relative rounded-card border border-[var(--line)] bg-white p-7 md:p-10">
+    <div className="relative border border-line-strong bg-white p-7 md:p-12">
       <AnimatePresence mode="wait" initial={false}>
         {status === "success" ? (
           <motion.div
@@ -108,20 +113,20 @@ export function ContactForm() {
             initial={{ opacity: 0, transform: reduce ? "none" : "scale(0.97)" }}
             animate={{ opacity: 1, transform: "scale(1)" }}
             transition={{ duration: 0.45, ease: EASE_OUT }}
-            className="flex min-h-[420px] flex-col items-start justify-center"
+            className="flex min-h-[28.75rem] flex-col items-start justify-center"
           >
             <motion.span
-              className="grid size-12 place-items-center rounded-full bg-[var(--accent-soft)] text-accent"
+              className="grid size-13 place-items-center rounded-full bg-accent-soft text-accent"
               initial={{ transform: reduce ? "none" : "scale(0.8)" }}
               animate={{ transform: "scale(1)" }}
               transition={{ type: "spring", duration: 0.5, bounce: 0.22, delay: 0.08 }}
             >
               <Check className="size-6" strokeWidth={2} aria-hidden />
             </motion.span>
-            <h3 className="font-display mt-6 text-[1.75rem] leading-tight tracking-[-0.02em]">
+            <h3 className="font-serif mt-7 text-[2.125rem] leading-[1.1] text-ink-heading">
               Brief received.
             </h3>
-            <p className="prose-lede mt-3 max-w-[46ch]">
+            <p className="mt-4 max-w-[46ch] text-base leading-[1.65] text-ink-2">
               A practice lead will reply within one working day with a scope, a
               price and a date — or a question, if we need one answered first.
             </p>
@@ -141,7 +146,7 @@ export function ContactForm() {
             initial={false}
             exit={{ opacity: 0, transform: "translate3d(0, -6px, 0)" }}
             transition={{ duration: 0.22, ease: EASE_OUT }}
-            className="space-y-5"
+            className="flex flex-col gap-6"
           >
             {/* Honeypot — real people never fill this. */}
             <div aria-hidden className="absolute -left-[9999px]">
@@ -149,7 +154,7 @@ export function ContactForm() {
               <input id="company_website" name="company_website" tabIndex={-1} autoComplete="off" />
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2">
               <Field label="Name" htmlFor="name" required error={errors.name}>
                 <input
                   id="name"
@@ -171,12 +176,14 @@ export function ContactForm() {
                   aria-invalid={Boolean(errors.email)}
                   aria-describedby={errors.email ? "email-error" : undefined}
                   className={inputClass}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="alex@company.com"
                 />
               </Field>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2">
               <Field label="Company" htmlFor="company" hint="Optional">
                 <input
                   id="company"
@@ -209,7 +216,7 @@ export function ContactForm() {
               </Field>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2">
               <Field label="Phone / WhatsApp" htmlFor="phone" hint="Optional">
                 <input
                   id="phone"
@@ -246,7 +253,7 @@ export function ContactForm() {
                 rows={6}
                 aria-invalid={Boolean(errors.message)}
                 aria-describedby={errors.message ? "message-error" : undefined}
-                className={`${inputClass} resize-y`}
+                className={inputClass}
                 placeholder="We're clearing a formulation for launch in the EU and US in Q1 and need to know what stands in the way…"
               />
             </Field>
@@ -261,14 +268,14 @@ export function ContactForm() {
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.24, ease: EASE_OUT }}
-                  className="overflow-hidden rounded-xl bg-[var(--accent-soft)] px-4 py-3 text-[0.875rem] text-accent"
+                  className="overflow-hidden border-l-2 border-[var(--danger)] bg-[rgba(192,57,43,0.06)] px-4 py-3 text-[0.875rem] text-[var(--danger)]"
                 >
                   {serverError}
                 </motion.p>
               )}
             </AnimatePresence>
 
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            <div className="flex flex-wrap items-center gap-6 pt-2">
               <Button
                 type="submit"
                 size="lg"
@@ -301,7 +308,7 @@ export function ContactForm() {
                 </span>
               </Button>
 
-              <p className="text-[0.8125rem] text-ink-3">
+              <p className="m-0 max-w-[40ch] text-[0.8125rem] leading-[1.5] text-ink-2">
                 We reply within one working day. Everything you send is treated
                 as confidential.
               </p>

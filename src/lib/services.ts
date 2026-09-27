@@ -28,6 +28,10 @@ export type Service = {
   short: string;
   summary: string;
   icon: IconKey;
+
+  /** Duotone plate used on the practice page and the home reel. */
+
+  image: string;
   turnaround: string;
   audience: string;
   items: ServiceItem[];
@@ -52,6 +56,8 @@ export const services: Service[] = [
     summary:
       "Examiner-grade searching across patent and non-patent literature in 90+ jurisdictions. Every report ships with the search strings, the databases queried and the reasoning behind each exclusion — so your attorney can defend it, not just read it.",
     icon: "search",
+
+    image: "/images/analysts.jpg",
     turnaround: "2–5 business days",
     audience: "In-house counsel, prosecution firms, founders",
     items: [
@@ -113,6 +119,8 @@ export const services: Service[] = [
     summary:
       "Landscapes, competitor tracking and technology scouting rendered as decisions rather than charts. We normalise assignee data, cluster by real technical problems instead of raw CPC codes, and tell you where the room to move actually is.",
     icon: "bulb",
+
+    image: "/images/strategy.jpg",
     turnaround: "1–4 weeks",
     audience: "CTOs, strategy teams, IP portfolio managers",
     items: [
@@ -160,6 +168,8 @@ export const services: Service[] = [
     summary:
       "Every team's database needs are different — coverage, workflow, integrations, budget. We evaluate the options against how your team actually searches, then plan and run the migration so nothing falls through between systems.",
     icon: "database",
+
+    image: "/images/data.jpg",
     turnaround: "2–6 weeks",
     audience: "IP operations, search teams, knowledge managers",
     items: [
@@ -193,6 +203,8 @@ export const services: Service[] = [
     summary:
       "Technically trained drafters, paralegals and docketing specialists who work inside your templates and your deadlines. We take the volume off your associates without handing back work that needs rebuilding.",
     icon: "library",
+
+    image: "/images/executive.jpg",
     turnaround: "3–7 business days",
     audience: "Law firms, corporate prosecution teams",
     items: [
@@ -240,6 +252,8 @@ export const services: Service[] = [
     summary:
       "Evidence of use built to the standard a licensing negotiation actually demands. We find the assets worth asserting, map claims to real products, cite the public proof, and shape prosecution so future claims read on the market.",
     icon: "license",
+
+    image: "/images/agreement.jpg",
     turnaround: "5–10 business days",
     audience: "Licensing teams, universities, IP funds, litigation funders",
     items: [
@@ -280,6 +294,8 @@ export const services: Service[] = [
     summary:
       "Chemical search that combines automation with toxicologists' judgement. We screen public and regulatory databases, synthesise endpoints and hazard data, and deliver safety assessments your regulatory team can file against.",
     icon: "atom",
+
+    image: "/images/portrait.jpg",
     turnaround: "3–10 business days",
     audience: "Regulatory affairs, product stewardship, EHS teams",
     items: [
@@ -320,6 +336,8 @@ export const services: Service[] = [
     summary:
       "Structured audits of strategy, process and assets. We look at how IP decisions get made, how inventions move from disclosure to grant to enforcement, and which assets carry the value — then tell you plainly what to change.",
     icon: "shield",
+
+    image: "/images/analysts.jpg",
     turnaround: "Scoped per engagement",
     audience: "General counsel, CIPOs, boards and investors",
     items: [
@@ -359,6 +377,9 @@ export function getService(slug: string) {
 }
 
 /** Every sub-service, flattened, with its parent category attached. */
+/** Total number of orderable sub-services across every practice. */
+export const serviceCount = services.reduce((n, s) => n + s.items.length, 0);
+
 export const serviceItems = services.flatMap((s) =>
   s.items.map((item) => ({ ...item, category: s })),
 );
@@ -381,16 +402,19 @@ export const process = [
     step: "01",
     title: "Scope the question",
     body: "A 20-minute call, or a written brief. We agree the exact question, the scope, the sources and the deadline before anything starts. No open-ended retainers.",
+    outcomes: ["Written scope", "Fixed fee", "Agreed deadline"],
   },
   {
     step: "02",
     title: "Research and review",
     body: "A domain-matched analyst runs the work; a second reviewer challenges it. You get a mid-point checkpoint on anything over a week, so direction changes cost hours, not weeks.",
+    outcomes: ["Domain-matched analyst", "Adversarial second review", "Mid-point checkpoint"],
   },
   {
     step: "03",
     title: "Deliver with the evidence",
     body: "The report, the raw data, and the full search log — so your team can verify every conclusion or extend the work themselves. Revisions inside scope are free.",
+    outcomes: ["Report + raw data", "Full search log", "Free in-scope revisions"],
   },
 ];
 

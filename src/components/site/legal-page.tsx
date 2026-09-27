@@ -1,5 +1,4 @@
 import { PageHero } from "@/components/site/page-hero";
-import { Section } from "@/components/ui/section";
 import { Reveal } from "@/components/motion/reveal";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo";
 
@@ -8,9 +7,9 @@ export type LegalBlock = string | string[];
 export type LegalSection = { id: string; heading: string; body: LegalBlock[] };
 
 /**
- * Long-form legal layout: hero, a jump list of sections, then the
- * numbered sections themselves. Anchored headings let support staff
- * link someone straight to the clause they are asking about.
+ * Long-form legal layout: hero, a sticky contents rail, then the
+ * numbered sections. Anchored headings let support staff link someone
+ * straight to the clause they are asking about.
  */
 export function LegalPage({
   title,
@@ -34,48 +33,62 @@ export function LegalPage({
         ])}
       />
       <PageHero
+        flowCount={18}
+        crumbs={[{ label: "Home", href: "/" }, { label: title }]}
         eyebrow={`Last updated ${updated}`}
         title={title}
         lede={intro}
-        breadcrumb={[{ label: "Home", href: "/" }]}
       />
-      <Section>
-        <div className="mx-auto max-w-[68ch]">
-          <Reveal>
-            <nav
-              aria-label="On this page"
-              className="rounded-card border border-[var(--line)] bg-[var(--accent-soft)] p-6"
-            >
-              <p className="eyebrow text-ink-3">On this page</p>
-              <ol className="mt-4 grid gap-2 text-[0.9375rem] sm:grid-cols-2">
-                {sections.map((s, i) => (
-                  <li key={s.id}>
-                    <a href={`#${s.id}`} data-cursor="link" className="link-underline text-ink-2 hover:text-ink">
-                      {i + 1}. {s.heading}
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </nav>
-          </Reveal>
 
-          <div className="mt-14 space-y-12">
+      <section className="bg-paper pt-20 pb-20 md:pt-24 md:pb-[120px]">
+        <div className="shell grid gap-12 lg:grid-cols-[15rem_minmax(0,45rem)] lg:gap-20">
+          <nav
+            aria-label="On this page"
+            className="self-start text-[0.84375rem] lg:sticky lg:top-[6.875rem]"
+          >
+            <p className="eyebrow m-0 text-xs">On this page</p>
+            <ol className="mt-4 flex list-none flex-col gap-2.5 border-l border-line-strong p-0">
+              {sections.map((s, i) => (
+                <li key={s.id}>
+                  <a
+                    href={`#${s.id}`}
+                    className="-ml-px block border-l-2 border-transparent py-0.5 pl-3.5 text-ink-2 transition-[color,border-color] duration-200 [@media(hover:hover)_and_(pointer:fine)]:hover:border-accent [@media(hover:hover)_and_(pointer:fine)]:hover:text-ink-heading"
+                  >
+                    {i + 1}. {s.heading}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+
+          <div className="flex flex-col gap-12">
             {sections.map((s, i) => (
               <Reveal key={s.id}>
-                <section id={s.id} className="scroll-mt-[calc(var(--nav-h)+2rem)]">
-                  <h2 className="font-display text-[1.5rem] leading-tight tracking-[-0.02em]">
-                    <span className="text-ink-3">{i + 1}.</span> {s.heading}
+                <section
+                  id={s.id}
+                  className="scroll-mt-[calc(var(--nav-h)+2rem)] border-t border-line-strong pt-7"
+                >
+                  <h2 className="font-serif m-0 text-[1.625rem] leading-[1.2] text-ink-heading">
+                    <span className="text-accent">{i + 1}.</span> {s.heading}
                   </h2>
-                  <div className="mt-4 space-y-4 text-[1.0625rem] leading-[1.72] text-ink-2">
+                  <div className="mt-4 flex flex-col gap-4 text-[1.03125rem] leading-[1.75] text-ink-body">
                     {s.body.map((block, j) =>
                       Array.isArray(block) ? (
-                        <ul key={j} className="list-disc space-y-2 pl-5 marker:text-accent">
+                        <ul key={j} className="m-0 flex list-none flex-col gap-2.5 p-0">
                           {block.map((item) => (
-                            <li key={item}>{item}</li>
+                            <li key={item} className="flex gap-3.5">
+                              <span
+                                aria-hidden
+                                className="mt-[15px] h-px w-3.5 shrink-0 bg-accent"
+                              />
+                              <span>{item}</span>
+                            </li>
                           ))}
                         </ul>
                       ) : (
-                        <p key={j}>{block}</p>
+                        <p key={j} className="m-0">
+                          {block}
+                        </p>
                       ),
                     )}
                   </div>
@@ -84,7 +97,7 @@ export function LegalPage({
             ))}
           </div>
         </div>
-      </Section>
+      </section>
     </>
   );
 }

@@ -1,111 +1,108 @@
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/motion/reveal";
-import { SplitText } from "@/components/motion/split-text";
 import { cn } from "@/lib/utils";
+
+/**
+ * Section furniture.
+ *
+ * Every section in the design opens the same way: a teal eyebrow, a
+ * serif display line, optionally a lede, and optionally an action
+ * pushed to the far right on the same baseline. Keeping that in one
+ * place is what stops eleven sections drifting apart.
+ */
 
 export function Eyebrow({
   children,
-  invert = false,
   className,
 }: {
   children: ReactNode;
-  invert?: boolean;
   className?: string;
 }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-2.5 rounded-pill border py-1.5 pr-4 pl-3.5",
-        invert
-          ? "border-[var(--deep-line)] bg-white/5 text-[var(--deep-ink-2)]"
-          : "border-[var(--line)] bg-white/70 text-ink-2 backdrop-blur-sm",
-        className,
-      )}
-    >
-      <span className={cn("size-1.5 rounded-full", invert ? "bg-accent-bright" : "bg-accent")} />
-      <span className="eyebrow">{children}</span>
-    </span>
-  );
+  return <p className={cn("eyebrow m-0", className)}>{children}</p>;
 }
 
-export function SectionHeading({
+export function SectionHead({
   eyebrow,
   title,
   lede,
   action,
-  align = "center",
-  invert = false,
+  /** `split` puts the action on the heading's baseline, far right. */
+  layout = "stack",
+  size = "lg",
   className,
+  maxWidth = "max-w-[40rem]",
 }: {
   eyebrow?: string;
-  title: string;
-  lede?: string;
+  title: ReactNode;
+  lede?: ReactNode;
   action?: ReactNode;
-  align?: "start" | "center" | "split";
-  invert?: boolean;
+  layout?: "stack" | "split";
+  size?: "lg" | "md";
   className?: string;
+  maxWidth?: string;
 }) {
-  const centered = align === "center";
+  const head = (
+    <div className={maxWidth}>
+      {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+      <h2
+        className={cn(
+          eyebrow ? "mt-5" : "mt-0",
+          size === "lg" ? "display-lg" : "display-md",
+          "text-ink-heading balance",
+        )}
+      >
+        {title}
+      </h2>
+      {lede && <p className="lede mt-5">{lede}</p>}
+    </div>
+  );
+
+  if (layout === "split") {
+    return (
+      <Reveal
+        className={cn(
+          "flex flex-wrap items-end justify-between gap-8",
+          className,
+        )}
+      >
+        {head}
+        {action}
+      </Reveal>
+    );
+  }
 
   return (
-    <div
-      className={cn(
-        align === "split"
-          ? "flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
-          : centered
-            ? "flex flex-col items-center text-center"
-            : "flex flex-col",
-        className,
-      )}
-    >
-      <div className={cn("max-w-2xl", centered && "mx-auto")}>
-        {eyebrow && (
-          <Reveal y={10}>
-            <Eyebrow invert={invert}>{eyebrow}</Eyebrow>
-          </Reveal>
-        )}
-        <h2
-          className={cn(
-            "font-display display-md mt-5 text-balance",
-            invert && "text-white",
-          )}
-        >
-          <SplitText text={title} />
-        </h2>
-        {lede && (
-          <Reveal delay={0.12}>
-            <p
-              className={cn(
-                "prose-lede mt-5",
-                centered && "mx-auto",
-                invert && "text-[var(--deep-ink-2)]",
-              )}
-            >
-              {lede}
-            </p>
-          </Reveal>
-        )}
-      </div>
-      {action && (
-        <Reveal delay={0.16} className={cn("shrink-0", centered && "mt-8")}>
-          {action}
-        </Reveal>
-      )}
-    </div>
+    <Reveal className={className}>
+      {head}
+      {action && <div className="mt-8">{action}</div>}
+    </Reveal>
   );
 }
 
+/** Light section. Vertical rhythm is the one thing sections share. */
 export function Section({
   children,
   className,
   id,
+  tone = "paper",
+  size = "md",
 }: {
   children: ReactNode;
   className?: string;
   id?: string;
+  tone?: "paper" | "surface" | "deep";
+  size?: "md" | "lg";
 }) {
   return (
-    <section id={id} className={cn("py-20 md:py-28", className)}>
+    <section
+      id={id}
+      className={cn(
+        size === "lg" ? "py-24 md:py-[130px]" : "py-20 md:py-[120px]",
+        tone === "surface" && "bg-surface border-t border-line",
+        tone === "deep" && "deep-field on-deep",
+        className,
+      )}
+    >
       <div className="shell">{children}</div>
     </section>
   );

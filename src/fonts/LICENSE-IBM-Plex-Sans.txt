@@ -1,0 +1,8 @@
+IBM Plex Sans is licensed under the SIL Open Font License, Version 1.1.
+Copyright 2017 IBM Corp. (https://github.com/IBM/plex)
+
+Full licence text: https://openfontlicense.org/open-font-license-official-text/
+
+ibm-plex-sans-latin-variable.woff2 is the Latin subset served by Google
+Fonts, vendored here so builds never depend on fetching from
+fonts.gstatic.com.

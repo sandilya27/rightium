@@ -5,7 +5,6 @@ import { Hero } from "@/components/home/hero";
 import { Statement } from "@/components/home/statement";
 import { ServicesSection } from "@/components/home/services-section";
 import { Why } from "@/components/home/why";
-import { Stats } from "@/components/home/stats";
 import { Process } from "@/components/home/process";
 import { Proof } from "@/components/home/proof";
 import { Testimonials } from "@/components/home/testimonials";
@@ -24,9 +23,9 @@ export const metadata: Metadata = pageMetadata({
 });
 
 /**
- * Home. Dark and light sections alternate so the brand gradient frames
- * the reading: hero → manifesto → services reel → reasons → numbers →
- * process deck → case studies → voices → FAQ → insights → ask.
+ * Home. Navy and paper sections alternate so the brand frames the
+ * reading: hero → manifesto → practice index → reasons → process →
+ * case studies → voices → FAQ → insights → ask.
  */
 export default function HomePage() {
   return (
@@ -35,7 +34,6 @@ export default function HomePage() {
       <Statement />
       <ServicesSection />
       <Why />
-      <Stats />
       <Process />
       <Proof />
       <Testimonials />

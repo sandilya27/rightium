@@ -16,6 +16,8 @@ type Props = {
   duration?: number;
   className?: string;
   as?: "div" | "span" | "li" | "section" | "article" | "p";
+  /** `scale` settles a full-bleed plate in from 96% instead of rising. */
+  variant?: "rise" | "scale";
 };
 
 /**
@@ -30,16 +32,24 @@ export function Reveal({
   duration = 0.62,
   className,
   as = "div",
+  variant = "rise",
 }: Props) {
   const reduce = useReducedMotion();
   const Comp = motion[as];
   const distance = reduce ? 0 : y;
+  const from =
+    variant === "scale"
+      ? reduce
+        ? "scale(1)"
+        : "scale(0.96)"
+      : `translate3d(0, ${distance}px, 0)`;
+  const to = variant === "scale" ? "scale(1)" : "translate3d(0, 0px, 0)";
 
   return (
     <Comp
       className={className}
-      initial={{ opacity: 0, transform: `translate3d(0, ${distance}px, 0)` }}
-      whileInView={{ opacity: 1, transform: "translate3d(0, 0px, 0)" }}
+      initial={{ opacity: 0, transform: from }}
+      whileInView={{ opacity: 1, transform: to }}
       viewport={{ once: true, margin: "-10% 0px -8% 0px" }}
       transition={{
         opacity: { duration: reduce ? 0.3 : duration, delay, ease: EASE_OUT },
