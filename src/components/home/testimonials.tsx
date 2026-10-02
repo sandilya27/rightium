@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useReducedMotion } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { quotes } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
 import { cn } from "@/lib/utils";
@@ -9,16 +9,7 @@ import { cn } from "@/lib/utils";
 const ROTATE_MS = 7000;
 
 /**
- * Client voices, rotating.
- *
- * The tab rail doubles as the timer: the teal bar fills over exactly
- * the rotation interval, so the reader can see when the quote is about
- * to change and stop it. Pointer-in pauses — a quote swapping out
- * mid-sentence while someone is reading it is the whole failure mode of
- * an auto-rotating carousel.
- *
- * Reduced motion drops the rotation entirely and shows the first quote,
- * with the rail still usable as a picker.
+ * Client voices with kinetic blur cross-fades and interactive progress timer rail.
  */
 export function Testimonials() {
   const reduce = useReducedMotion();
@@ -67,7 +58,7 @@ export function Testimonials() {
                   onClick={() => setIndex(i)}
                   className={cn(
                     "relative block border-l-2 border-white/15 py-3 pl-5 text-left text-sm transition-colors duration-300",
-                    on ? "text-white" : "text-white/55",
+                    on ? "text-white font-medium" : "text-white/55 hover:text-white/80",
                   )}
                 >
                   <span
@@ -95,17 +86,23 @@ export function Testimonials() {
           >
             &ldquo;
           </span>
-          <blockquote
-            key={index}
-            className="rise m-0 text-[clamp(1.5rem,2.8vw,2.5rem)] leading-[1.25] tracking-[-0.01em] balance font-serif"
-            style={{ animationDuration: "0.7s" }}
-          >
-            {quote.body}
-          </blockquote>
-          <p className="mt-8 text-[0.9375rem]">
-            <span className="font-medium">{quote.name}</span>
-            <span className="text-deep-ink-3"> — {quote.role}</span>
-          </p>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, filter: "blur(6px)", y: 10 }}
+              animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+              exit={{ opacity: 0, filter: "blur(6px)", y: -10 }}
+              transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <blockquote className="m-0 text-[clamp(1.5rem,2.8vw,2.5rem)] leading-[1.25] tracking-[-0.01em] balance font-serif">
+                {quote.body}
+              </blockquote>
+              <p className="mt-8 text-[0.9375rem]">
+                <span className="font-medium text-white">{quote.name}</span>
+                <span className="text-deep-ink-3"> — {quote.role}</span>
+              </p>
+            </motion.div>
+          </AnimatePresence>
         </Reveal>
       </div>
     </section>

@@ -1,13 +1,11 @@
 import Image from "next/image";
 import { proofs } from "@/lib/services";
 import { Reveal } from "@/components/motion/reveal";
+import { Spotlight } from "@/components/motion/spotlight";
 import { SectionHead } from "@/components/ui/section";
 
 /**
- * Case studies with the number set at display size in the corner.
- * Client names are confidential, so the metric has to carry the claim —
- * it is the first thing the eye lands on after the sector label, and
- * the only thing most readers will take away.
+ * Case studies with animated spotlight cards and interactive image zooms.
  */
 export function Proof() {
   return (
@@ -26,32 +24,33 @@ export function Proof() {
               key={p.title}
               delay={(i % 2) * 0.1}
               as="article"
-              className="lift grid grid-cols-1 border border-line bg-white sm:grid-cols-[minmax(0,1fr)_12.5rem]"
             >
-              <div className="flex flex-col p-8 pb-7">
-                <p className="m-0 text-xs font-semibold tracking-[0.14em] uppercase text-accent">
-                  {p.sector}
-                </p>
-                <h3 className="font-serif mt-4 text-2xl leading-[1.2] text-ink-heading balance">
-                  {p.title}
-                </h3>
-                <p className="mt-3.5 text-sm leading-[1.6] text-ink-2">{p.body}</p>
-                <div className="mt-auto flex items-baseline gap-3 pt-6">
-                  <span className="font-serif text-[2.5rem] leading-none tracking-[-0.02em] text-ink-heading">
-                    {p.metric}
-                  </span>
-                  <span className="text-[0.8125rem] text-ink-2">{p.metricLabel}</span>
+              <Spotlight className="group lift grid grid-cols-1 border border-line bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:border-accent/40 sm:grid-cols-[minmax(0,1fr)_12.5rem]">
+                <div className="flex flex-col p-8 pb-7">
+                  <p className="m-0 text-xs font-semibold tracking-[0.14em] uppercase text-accent">
+                    {p.sector}
+                  </p>
+                  <h3 className="font-serif mt-4 text-2xl leading-[1.2] text-ink-heading balance group-hover:text-accent transition-colors duration-300">
+                    {p.title}
+                  </h3>
+                  <p className="mt-3.5 text-sm leading-[1.6] text-ink-2">{p.body}</p>
+                  <div className="mt-auto flex items-baseline gap-3 pt-6">
+                    <span className="font-serif text-[2.5rem] leading-none tracking-[-0.02em] text-ink-heading">
+                      {p.metric}
+                    </span>
+                    <span className="text-[0.8125rem] text-ink-2">{p.metricLabel}</span>
+                  </div>
                 </div>
-              </div>
-              <div className="plate order-first min-h-[10rem] sm:order-none sm:min-h-0">
-                <Image
-                  src={p.image}
-                  alt=""
-                  fill
-                  sizes="(min-width: 768px) 200px, 100vw"
-                  className="object-cover"
-                />
-              </div>
+                <div className="plate order-first min-h-[10rem] overflow-hidden sm:order-none sm:min-h-0">
+                  <Image
+                    src={p.image}
+                    alt=""
+                    fill
+                    sizes="(min-width: 768px) 200px, 100vw"
+                    className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-105"
+                  />
+                </div>
+              </Spotlight>
             </Reveal>
           ))}
         </div>

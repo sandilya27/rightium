@@ -1,13 +1,14 @@
 import { Reveal } from "@/components/motion/reveal";
+import { ScrollWords } from "@/components/motion/scroll-words";
 import { ArrowRight, ButtonLink } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/section";
+import { Magnetic } from "@/components/motion/magnetic";
 
 const terms = ["Fixed scope", "Fixed fee", "Agreed before we start"];
 
 /**
- * The manifesto. One long serif sentence at display size, set against a
- * narrow left column of terms — the asymmetry is what makes it read as
- * a statement rather than as body copy that happens to be large.
+ * The manifesto. One long serif sentence at display size, illuminated
+ * progressively as the reader scrolls.
  */
 export function Statement() {
   return (
@@ -33,18 +34,19 @@ export function Statement() {
         </Reveal>
 
         <Reveal delay={0.12}>
-          <p className="font-serif m-0 text-[clamp(1.9rem,3.3vw,3.1rem)] leading-[1.2] tracking-[-0.015em] text-ink-heading text-pretty">
-            Most search reports arrive as a list of references and a shrug. Ours
-            arrive with{" "}
-            <em className="accent-em">
-              the search log, the raw data and an opinion you can defend
-            </em>{" "}
-            — reviewed twice, by analysts who trained in your field.
-          </p>
-          <ButtonLink href="/about" variant="ink" className="mt-10">
-            How we work
-            <ArrowRight className="size-[14px]" />
-          </ButtonLink>
+          <ScrollWords
+            className="font-serif m-0 text-[clamp(1.9rem,3.3vw,3.1rem)] leading-[1.25] tracking-[-0.015em] text-ink-heading text-pretty"
+            text="Most search reports arrive as a list of references and a shrug. Ours arrive with *the* *search* *log,* *the* *raw* *data* *and* *an* *opinion* *you* *can* *defend* — reviewed twice, by analysts who trained in your field."
+          />
+
+          <div className="mt-10">
+            <Magnetic strength={0.2}>
+              <ButtonLink href="/about" variant="ink">
+                How we work
+                <ArrowRight className="size-[14px]" />
+              </ButtonLink>
+            </Magnetic>
+          </div>
         </Reveal>
       </div>
     </section>

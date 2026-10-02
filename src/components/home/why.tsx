@@ -1,11 +1,9 @@
 import { reasons } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
+import { Spotlight } from "@/components/motion/spotlight";
 
 /**
- * Four reasons on navy, each hung under a hairline with a short teal
- * tick at its left end. The rules do the work a card border would, at a
- * quarter of the visual weight — which is what lets four columns sit
- * together without the section turning into a grid of boxes.
+ * Four reasons on navy with interactive spotlight glow and tactile elevation.
  */
 export function Why() {
   return (
@@ -27,29 +25,30 @@ export function Why() {
           </h2>
         </Reveal>
 
-        <div className="mt-14 grid gap-10 sm:grid-cols-2 md:mt-[72px] md:grid-cols-4">
+        <div className="mt-14 grid gap-8 sm:grid-cols-2 md:mt-[72px] md:grid-cols-4">
           {reasons.map((r, i) => (
             <Reveal
               key={r.title}
               delay={i * 0.09}
-              className="relative border-t border-deep-line pt-6"
             >
-              <span
-                aria-hidden
-                className="absolute top-[-1px] left-0 h-px w-12 bg-accent-bright"
-              />
-              <span className="font-serif text-[0.9375rem] text-accent-bright">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <h3 className="font-serif mt-5.5 text-[1.625rem] leading-[1.15] tracking-[-0.01em] balance">
-                {r.title}
-              </h3>
-              <p className="mt-4 text-[0.90625rem] leading-[1.65] text-deep-ink-2">
-                {r.body}
-              </p>
-              <p className="mt-5.5 text-[0.78125rem] tracking-[0.06em] uppercase text-deep-ink-3">
-                {r.tag}
-              </p>
+              <Spotlight className="group relative border-t border-deep-line bg-deep-well/40 p-6 pt-7 transition-all duration-300 hover:border-accent-bright hover:bg-deep-lift/30">
+                <span
+                  aria-hidden
+                  className="absolute top-[-1px] left-0 h-[2px] w-12 bg-accent-bright transition-all duration-500 group-hover:w-full"
+                />
+                <span className="font-serif text-[0.9375rem] text-accent-bright font-bold">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="font-serif mt-5 text-[1.5rem] leading-[1.18] tracking-[-0.01em] balance text-white group-hover:text-accent-bright transition-colors duration-300">
+                  {r.title}
+                </h3>
+                <p className="mt-4 text-[0.90625rem] leading-[1.65] text-deep-ink-2">
+                  {r.body}
+                </p>
+                <p className="mt-6 font-mono text-[0.72rem] tracking-[0.08em] uppercase text-deep-ink-3">
+                  {r.tag}
+                </p>
+              </Spotlight>
             </Reveal>
           ))}
         </div>
