@@ -148,9 +148,15 @@ html.lenis body {
 .display-page {
   font-family: var(--font-newsreader), Georgia, serif;
   font-weight: 400;
-  font-size: clamp(2.35rem, 5.2vw, 4.75rem);
+  font-size: clamp(2.1rem, 9vw, 3.25rem);
   line-height: 1.02;
   letter-spacing: -0.02em;
+}
+
+@media (min-width: 768px) {
+  .display-page {
+    font-size: clamp(2.35rem, 5.2vw, 4.75rem);
+  }
 }
 
 .display-lg {
@@ -342,6 +348,18 @@ html.lenis body {
 
 .rise {
   animation: rise 0.95s var(--ease-out) both;
+}
+
+.nav-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 480ms var(--ease-out);
+}
+
+.nav-draw-active,
+.group\/nav:hover .nav-draw,
+.group\/nav:focus-visible .nav-draw {
+  stroke-dashoffset: 0;
 }
 
 /* ── Focus ────────────────────────────────────────────────── */

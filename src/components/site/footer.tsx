@@ -66,7 +66,7 @@ export function Footer() {
         <div className="grid gap-12 pt-14 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div className="max-w-[21.25rem]">
             <Link href="/" aria-label={`${site.name} home`}>
-              <Logo />
+              <Logo size={40} />
             </Link>
             <p className="mt-4.5 text-sm leading-[1.65] text-deep-ink-2">
               A Bengaluru-based IP research firm. Patent search, IP intelligence,
@@ -118,6 +118,12 @@ export function Footer() {
           </p>
           <p className="font-serif m-0 text-[0.9375rem] italic text-deep-ink-2">
             Evidence you can defend.
+          </p>
+        </div>
+
+        <div aria-hidden="true" className="pointer-events-none select-none overflow-hidden pt-12 md:pt-16">
+          <p className="m-0 whitespace-nowrap text-center font-sans text-[clamp(5rem,21vw,24rem)] leading-[0.78] font-bold tracking-[-0.075em] text-white/[0.055]">
+            {site.name}
           </p>
         </div>
       </div>

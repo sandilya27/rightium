@@ -3,6 +3,7 @@ import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
+import { SharedLayout } from "@/components/motion/shared-layout";
 
 // Self-hosted (SIL OFL, see src/fonts/LICENSE-*), so builds never depend
 // on fetching from Google Fonts. Variable fonts, Latin subset.
@@ -36,7 +37,9 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         <JsonLd data={websiteJsonLd()} />
         <SmoothScroll />
         <Header />
-        <main id="main">{children}</main>
+        <main id="main">
+          <SharedLayout>{children}</SharedLayout>
+        </main>
         <Footer />
       </body>
     </html>

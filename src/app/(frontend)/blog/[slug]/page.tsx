@@ -10,6 +10,8 @@ import { PostCard } from "@/components/blog/post-card";
 import { TextLink } from "@/components/ui/button";
 import { initialsOf } from "@/lib/content";
 import { JsonLd, articleJsonLd, breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
+import { SharedArticleTitle } from "@/components/blog/shared-title";
+import { CloseArticle } from "@/components/blog/close-article";
 
 // Articles are prerendered at build and cached. Publishing in the admin
 // purges the cached copy; the timer is only a safety net.
@@ -75,13 +77,12 @@ export default async function PostPage({
       />
 
       <PageHero
-        flowCount={22}
         crumbs={[
           { label: "Home", href: "/" },
           { label: "Insights", href: "/blog" },
           { label: post.category },
         ]}
-        title={post.title}
+        title={<SharedArticleTitle slug={post.slug}>{post.title}</SharedArticleTitle>}
         lede={
           <span className="font-serif text-xl leading-[1.45] italic">
             {post.excerpt}
@@ -92,13 +93,16 @@ export default async function PostPage({
       {/* The meta row lives outside PageHero's lede so the byline can sit
           on its own baseline under the standfirst. */}
       <div className="bg-deep pb-16 text-white md:pb-20">
-        <div className="shell flex flex-wrap gap-x-8 gap-y-3 text-[0.84375rem] text-deep-ink-3">
+        <div className="shell flex flex-wrap items-center justify-between gap-x-8 gap-y-4 text-[0.84375rem] text-deep-ink-3">
+          <CloseArticle />
+          <div className="flex flex-wrap gap-x-8 gap-y-3">
           <span>
             <span className="font-medium text-white">{post.author.name}</span>
             {post.author.role ? ` · ${post.author.role}` : ""}
           </span>
           <time dateTime={post.date}>{formatDate(post.date)}</time>
           <span>{post.readingMinutes} min read</span>
+          </div>
         </div>
       </div>
 

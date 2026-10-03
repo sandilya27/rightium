@@ -17,7 +17,7 @@ export function StatsBand() {
             "radial-gradient(60% 80% at 100% 50%, rgba(0,168,182,0.16), transparent 70%)",
         }}
       />
-      <div className="shell grid gap-10 sm:grid-cols-2 md:grid-cols-4">
+      <div className="shell grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s, i) => (
           <Reveal
             key={s.label}

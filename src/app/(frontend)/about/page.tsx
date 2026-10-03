@@ -124,7 +124,7 @@ export default function AboutPage() {
             lede="You will know who is running your matter, and you will be able to reach them."
             maxWidth="max-w-[42.5rem]"
           />
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 md:mt-16 md:grid-cols-4">
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 md:mt-16 lg:grid-cols-4">
             {team.map((member, i) => (
               <Reveal
                 key={member.name}

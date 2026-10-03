@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatDate, type Post } from "@/lib/post";
 import { cn } from "@/lib/utils";
+import { SharedPostTitle } from "@/components/blog/shared-title";
 
 /**
  * Article card. No thumbnail: the insights are about method, and a
@@ -14,41 +15,59 @@ export function PostCard({
   post,
   className,
   style,
+  sharedTitle = false,
 }: {
   post: Post;
   className?: string;
   style?: React.CSSProperties;
+  sharedTitle?: boolean;
 }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
       style={style}
       className={cn(
-        "lift flex h-full flex-col border border-line bg-white p-8",
+        "lift flex h-full flex-col border p-8",
+        sharedTitle
+          ? "group/post relative isolate overflow-hidden border-deep bg-deep text-white [@media(hover:hover)_and_(pointer:fine)]:hover:border-accent"
+          : "border-line bg-white",
         className,
       )}
     >
-      <div className="flex items-center gap-3 text-[0.78125rem] text-ink-2">
-        <span className="font-semibold tracking-[0.1em] uppercase text-accent">
+      {sharedTitle && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -top-16 -right-16 -z-10 size-48 rounded-full bg-accent/15 blur-3xl transition-transform duration-700 group-hover/post:scale-150"
+        />
+      )}
+      <div className={cn("flex items-center gap-3 text-[0.78125rem]", sharedTitle ? "text-deep-ink-3" : "text-ink-2")}>
+        <span className={cn("font-semibold tracking-[0.1em] uppercase", sharedTitle ? "text-accent-bright" : "text-accent")}>
           {post.category}
         </span>
         <span aria-hidden>·</span>
         <span>{post.readingMinutes} min read</span>
       </div>
 
-      <h3 className="font-serif mt-5 text-2xl leading-[1.2] text-ink-heading balance">
+      <SharedPostTitle
+        slug={post.slug}
+        enabled={sharedTitle}
+        className={cn(
+          "font-serif mt-5 text-2xl leading-[1.2] balance transition-transform duration-300",
+          sharedTitle ? "text-white group-hover/post:-translate-y-1" : "text-ink-heading",
+        )}
+      >
         {post.title}
-      </h3>
+      </SharedPostTitle>
 
-      <p className="mt-3.5 text-[0.90625rem] leading-[1.6] text-ink-2">
+      <p className={cn("mt-3.5 text-[0.90625rem] leading-[1.6]", sharedTitle ? "text-deep-ink-2" : "text-ink-2")}>
         {post.excerpt}
       </p>
 
-      <div className="mt-auto flex items-center justify-between gap-4 pt-7 text-[0.8125rem] text-ink-2">
+      <div className={cn("mt-auto flex items-center justify-between gap-4 pt-7 text-[0.8125rem]", sharedTitle ? "text-deep-ink-3" : "text-ink-2")}>
         <span>
           {post.author.name} · {formatDate(post.date)}
         </span>
-        <span className="font-medium text-ink-heading">Read →</span>
+        <span className={cn("font-medium", sharedTitle ? "text-accent-bright" : "text-ink-heading")}>Read →</span>
       </div>
     </Link>
   );

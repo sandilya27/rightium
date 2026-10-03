@@ -91,7 +91,7 @@ export function Header() {
             <Logo />
           </Link>
 
-          <nav className="ml-auto hidden items-center gap-1.5 md:flex">
+          <nav className="ml-auto hidden items-center gap-1.5 lg:flex">
             {nav.map((item) => {
               const active = isActive(item.href);
               return (
@@ -100,18 +100,31 @@ export function Header() {
                   href={item.href}
                   onMouseEnter={() => setMenuOpen(item.href === "/services")}
                   className={cn(
-                    "relative px-3.5 py-2.5 text-[0.90625rem] font-medium transition-opacity duration-200",
+                    "group/nav relative px-3.5 py-2.5 text-[0.90625rem] font-medium transition-opacity duration-200",
                     active
                       ? "opacity-100"
                       : "opacity-[0.78] [@media(hover:hover)_and_(pointer:fine)]:hover:opacity-100",
                   )}
                 >
                   {item.label}
-                  <span
+                  <svg
                     aria-hidden
-                    className="absolute inset-x-3.5 bottom-1 h-[2px] origin-left bg-accent transition-transform duration-[300ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
-                    style={{ transform: `scaleX(${active ? 1 : 0})` }}
-                  />
+                    viewBox="0 0 100 10"
+                    preserveAspectRatio="none"
+                    className="pointer-events-none absolute inset-x-3.5 bottom-1 h-2 w-[calc(100%-1.75rem)] overflow-visible text-accent"
+                  >
+                    <path
+                      d="M1 7 C 16 7, 18 2, 31 3 S 53 9, 66 6 S 84 2, 99 3"
+                      pathLength="1"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      className={cn(
+                        "nav-draw",
+                        active && "nav-draw-active",
+                      )}
+                    />
+                  </svg>
                 </Link>
               );
             })}
@@ -121,7 +134,7 @@ export function Header() {
             href="/contact"
             size="sm"
             variant={solid ? "ink" : "outline-invert"}
-            className="hidden sm:inline-flex"
+            className="hidden lg:inline-flex"
           >
             Request a quote
             <ArrowRight className="size-[14px]" />
@@ -133,7 +146,7 @@ export function Header() {
             aria-expanded={drawerOpen}
             onClick={() => setDrawerOpen((v) => !v)}
             className={cn(
-              "grid size-10 place-items-center border transition-colors duration-200 md:hidden",
+              "grid size-10 place-items-center border transition-colors duration-200 lg:hidden",
               solid ? "border-line-strong" : "border-white/40",
             )}
           >
@@ -164,7 +177,7 @@ export function Header() {
               animate={{ opacity: 1, transform: "translate3d(0,0,0)" }}
               exit={{ opacity: 0, transform: "translate3d(0,-6px,0)" }}
               transition={{ duration: reduce ? 0 : 0.26, ease: EASE_OUT }}
-              className="absolute inset-x-0 top-[var(--nav-h)] hidden border-t border-line bg-white text-ink shadow-[0_30px_60px_-30px_rgba(6,21,36,0.35)] md:block"
+              className="absolute inset-x-0 top-[var(--nav-h)] hidden border-t border-line bg-white text-ink shadow-[0_30px_60px_-30px_rgba(6,21,36,0.35)] lg:block"
             >
               <div className="shell grid grid-cols-[280px_1fr] gap-12 pt-9 pb-10">
                 <div>
@@ -208,7 +221,7 @@ export function Header() {
         {drawerOpen && (
           <motion.div
             key="drawer"
-            className="deep-field fixed inset-0 z-50 overflow-y-auto overscroll-contain pt-[var(--nav-h)] text-white md:hidden"
+            className="deep-field fixed inset-0 z-50 overflow-y-auto overscroll-contain pt-[var(--nav-h)] text-white lg:hidden"
             initial={{ opacity: 0, transform: "translate3d(0,-8px,0)" }}
             animate={{ opacity: 1, transform: "translate3d(0,0,0)" }}
             exit={{ opacity: 0, transform: "translate3d(0,-8px,0)" }}

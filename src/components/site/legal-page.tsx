@@ -33,7 +33,6 @@ export function LegalPage({
         ])}
       />
       <PageHero
-        flowCount={18}
         crumbs={[{ label: "Home", href: "/" }, { label: title }]}
         eyebrow={`Last updated ${updated}`}
         title={title}

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { FlowLines, flowMask } from "@/components/motion/flow-lines";
+import { PixelBlast } from "@/components/ui/pixel-blast";
 import { cn } from "@/lib/utils";
 
 export type Crumb = { label: string; href?: string };
@@ -20,7 +20,6 @@ export function PageHero({
   title,
   lede,
   aside,
-  flowCount = 26,
 }: {
   eyebrow?: string;
   crumbs?: Crumb[];
@@ -28,33 +27,42 @@ export function PageHero({
   lede?: ReactNode;
   /** Optional right-hand fact panel (used by the practice pages). */
   aside?: ReactNode;
-  flowCount?: number;
 }) {
   return (
     <section className="relative isolate overflow-hidden bg-deep text-white">
+      <div aria-hidden className="pointer-events-none absolute inset-0 opacity-65">
+        <PixelBlast
+          color="#00a8b6"
+          variant="square"
+          pixelSize={3}
+          patternScale={2.6}
+          patternDensity={1.05}
+          enableRipples={false}
+          speed={0.28}
+          edgeFade={0.3}
+          transparent
+        />
+      </div>
       <div
         aria-hidden
-        className="absolute inset-0"
+        className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(80% 80% at 90% 40%, var(--deep-lift) 0%, var(--deep) 55%, var(--deep-well) 100%)",
+            "radial-gradient(ellipse 72% 68% at 50% 38%, rgba(6,21,36,0.48) 0%, rgba(4,14,23,0.82) 72%, rgba(2,11,20,0.96) 100%)",
         }}
       />
-      <div className="absolute inset-0 opacity-80" style={flowMask.page}>
-        <FlowLines count={flowCount} />
-      </div>
 
       <div
         className={cn(
-          "shell relative pt-[8.5rem] pb-16 md:pt-[10.625rem] md:pb-24",
-          aside && "grid items-end gap-12 md:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] md:gap-16",
+          "shell relative pt-[calc(var(--nav-h)+3.5rem)] pb-14 sm:pt-[calc(var(--nav-h)+4.25rem)] md:pt-[10.625rem] md:pb-24",
+          aside && "grid items-end gap-9 sm:gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-16",
         )}
       >
         <div>
           {crumbs && (
             <nav
               aria-label="Breadcrumb"
-              className="rise flex flex-wrap gap-2.5 text-[0.8125rem] text-deep-ink-3"
+              className="rise flex flex-wrap gap-2 text-[0.75rem] text-deep-ink-3 sm:gap-2.5 sm:text-[0.8125rem]"
               style={{ animationDuration: "0.8s" }}
             >
               {crumbs.map((c, i) => (
@@ -86,8 +94,8 @@ export function PageHero({
 
           <h1
             className={cn(
-              "display-page rise max-w-[16ch] balance",
-              crumbs || eyebrow ? "mt-6" : "mt-0",
+              "display-page rise max-w-[16ch] balance text-[clamp(2.25rem,8.5vw,4.75rem)] md:text-[clamp(2.35rem,5.2vw,4.75rem)]",
+              crumbs || eyebrow ? "mt-5 sm:mt-6" : "mt-0",
             )}
             style={{ animationDuration: "0.9s", animationDelay: "0.1s" }}
           >
@@ -96,7 +104,7 @@ export function PageHero({
 
           {lede && (
             <p
-              className="rise mt-7 max-w-[60ch] text-[1.0625rem] leading-[1.6] text-deep-ink-2"
+              className="rise mt-5 max-w-[60ch] text-[0.98rem] leading-[1.65] text-deep-ink-2 sm:mt-7 sm:text-[1.0625rem]"
               style={{ animationDuration: "0.9s", animationDelay: "0.22s" }}
             >
               {lede}

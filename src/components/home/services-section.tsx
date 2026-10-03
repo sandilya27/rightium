@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { serviceCount, services } from "@/lib/services";
 import { Reveal } from "@/components/motion/reveal";
@@ -16,10 +16,49 @@ import { cn } from "@/lib/utils";
  */
 export function ServicesSection() {
   const [active, setActive] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
   const current = services[active];
 
+  useEffect(() => {
+    let frame = 0;
+    const updateFromScroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const section = sectionRef.current;
+        if (!section) return;
+        const bounds = section.getBoundingClientRect();
+        if (bounds.bottom < 0 || bounds.top > window.innerHeight) return;
+
+        const focusLine = window.innerHeight * 0.48;
+        let nearest = active;
+        let nearestDistance = Number.POSITIVE_INFINITY;
+        itemRefs.current.forEach((item, index) => {
+          if (!item) return;
+          const rect = item.getBoundingClientRect();
+          if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+          const distance = Math.abs((rect.top + rect.bottom) / 2 - focusLine);
+          if (distance < nearestDistance) {
+            nearest = index;
+            nearestDistance = distance;
+          }
+        });
+        setActive((value) => (value === nearest ? value : nearest));
+      });
+    };
+
+    updateFromScroll();
+    window.addEventListener("scroll", updateFromScroll, { passive: true });
+    window.addEventListener("resize", updateFromScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updateFromScroll);
+      window.removeEventListener("resize", updateFromScroll);
+    };
+  }, [active]);
+
   return (
-    <section id="services" className="bg-surface border-t border-line py-20 md:py-[120px]">
+    <section ref={sectionRef} id="services" className="bg-surface border-t border-line py-20 md:py-[120px]">
       <div className="shell">
         <SectionHead
           layout="split"
@@ -40,16 +79,23 @@ export function ServicesSection() {
               {services.map((s, i) => {
                 const on = i === active;
                 return (
-                  <li key={s.slug} className="border-b border-line-strong">
+                  <li key={s.slug} ref={(node) => { itemRefs.current[i] = node; }} className="relative border-b border-line-strong">
                     <Link
                       href={`/services/${s.slug}`}
-                      onMouseEnter={() => setActive(i)}
+                      onPointerEnter={() => setActive(i)}
                       onFocus={() => setActive(i)}
                       className={cn(
-                        "group grid grid-cols-[2.25rem_1fr_2.5rem] items-baseline gap-4 py-6 pr-2 transition-all duration-300 md:grid-cols-[3.5rem_1fr_2.5rem] md:gap-5",
-                        on ? "bg-white/60 pl-4 shadow-sm" : "hover:pl-2",
+                        "group relative grid grid-cols-[2.25rem_1fr_2.5rem] items-baseline gap-4 py-6 pr-2 transition-[background-color,padding] duration-300 md:grid-cols-[3.5rem_1fr_2.5rem] md:gap-5",
+                        on ? "bg-white/70 pl-4 shadow-sm" : "hover:pl-2",
                       )}
                     >
+                      <span
+                        aria-hidden
+                        className={cn(
+                          "absolute inset-y-0 left-0 w-[2px] origin-center bg-accent transition-transform duration-300",
+                          on ? "scale-y-100" : "scale-y-0",
+                        )}
+                      />
                       <span className="font-serif text-[0.9375rem] text-accent">
                         {s.index}
                       </span>

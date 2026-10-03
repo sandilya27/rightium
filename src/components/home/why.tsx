@@ -25,7 +25,7 @@ export function Why() {
           </h2>
         </Reveal>
 
-        <div className="mt-14 grid gap-8 sm:grid-cols-2 md:mt-[72px] md:grid-cols-4">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 md:mt-14 md:gap-8 lg:mt-[72px] lg:grid-cols-4">
           {reasons.map((r, i) => (
             <Reveal
               key={r.title}
