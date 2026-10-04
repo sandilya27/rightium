@@ -231,6 +231,111 @@ html.lenis body {
   padding-inline: var(--gutter);
 }
 
+/* Auto-advancing case-file card in the homepage hero. */
+.hero-case-files {
+  width: 100%;
+  max-width: 42rem;
+  margin-inline: auto;
+}
+
+.hero-case-stage {
+  perspective: 1200px;
+}
+
+.hero-case-card {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: 21rem;
+  overflow: hidden;
+  background: var(--deep-ink-well);
+  box-shadow: 0 18px 48px -28px rgba(0, 0, 0, 0.85);
+  animation: hero-case-enter 500ms var(--ease-out) both;
+  transform-origin: center;
+  transition: transform 450ms var(--ease-out), box-shadow 450ms var(--ease-out), filter 450ms var(--ease-out);
+}
+
+.hero-case-card > img {
+  z-index: -2;
+  opacity: 0.62;
+  transition: transform 700ms var(--ease-out), opacity 450ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero-case-card:hover {
+    z-index: 1;
+    transform: rotateY(-5deg) rotateX(2deg) translateY(-0.25rem) scale(1.015);
+    box-shadow: 0 28px 60px -30px rgba(0, 0, 0, 0.9);
+    filter: saturate(1.08);
+  }
+
+  .hero-case-card:hover > img {
+    transform: scale(1.045);
+    opacity: 0.78;
+  }
+}
+
+.hero-case-indicator {
+  display: block;
+  width: 2.5rem;
+  height: 1rem;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+}
+
+.hero-case-indicator > span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.hero-case-indicator[aria-current="true"] > span {
+  background: var(--accent-bright);
+}
+
+.hero-case-indicator > .is-playing {
+  animation: hero-case-progress 4800ms linear both;
+}
+
+.hero-case-indicator:focus-visible {
+  outline: 1px solid var(--accent-bright);
+  outline-offset: 3px;
+}
+
+@keyframes hero-case-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes hero-case-enter {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+
+@media (min-width: 768px) {
+  .hero-case-files {
+    max-width: none;
+    margin-inline: 0;
+  }
+
+  .hero-case-card {
+    min-height: 25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-case-card,
+  .hero-case-card > img,
+  .hero-case-indicator > .is-playing {
+    transition: none;
+    animation: none;
+  }
+}
+
 /* ── Photography ──────────────────────────────────────────────
    Stock from different shoots never reads as one brand. Flattening
    every image to luminance and multiplying the teal-to-navy ramp

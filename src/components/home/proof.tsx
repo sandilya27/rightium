@@ -33,7 +33,7 @@ export function Proof() {
   }, [selectedProof]);
 
   return (
-    <section className="bg-surface border-t border-line py-20 md:py-[120px]">
+    <section id="case-studies" className="scroll-mt-20 bg-surface border-t border-line py-20 md:scroll-mt-24 md:py-[120px]">
       <div className="shell">
         <SectionHead
           eyebrow="Selected work"

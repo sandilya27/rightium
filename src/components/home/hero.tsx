@@ -6,6 +6,7 @@ import { BlurReveal } from "@/components/motion/blur-reveal";
 import { Magnetic } from "@/components/motion/magnetic";
 import { PixelBlast } from "@/components/ui/pixel-blast";
 import { ShinyText } from "@/components/ui/shiny-text";
+import { HeroCaseFiles } from "@/components/home/hero-case-files";
 import { Shield, Sparkles, CheckCircle2 } from "lucide-react";
 
 /**
@@ -43,9 +44,9 @@ export function Hero() {
         }}
       />
 
-      <div className="shell relative z-10 flex flex-1 flex-col justify-center pt-[calc(var(--nav-h)+3.5rem)] pb-10 pointer-events-none sm:pt-[calc(var(--nav-h)+4rem)] sm:pb-12 md:pt-[11rem] md:pb-20">
+      <div className="shell relative z-10 grid flex-1 grid-cols-1 content-center gap-10 pt-[calc(var(--nav-h)+3.5rem)] pb-10 pointer-events-none sm:pt-[calc(var(--nav-h)+4rem)] sm:pb-12 md:grid-cols-[minmax(0,1fr)_minmax(20rem,0.92fr)] md:items-center md:gap-12 md:pt-[calc(var(--nav-h)+2.5rem)] md:pb-16 lg:gap-16">
         {/* Center-aligned hero content */}
-        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+        <div className="mx-auto flex w-full max-w-3xl flex-col items-center text-center md:mx-0 md:items-start md:text-left">
           {/* Eyebrow badge */}
           <div
             className="rise m-0 inline-flex max-w-full items-center justify-center gap-1.5 border border-accent-bright/25 bg-[rgba(6,21,36,0.7)] px-2 py-2 text-center text-[0.58rem] leading-none font-semibold tracking-[0.04em] uppercase backdrop-blur-md max-[360px]:gap-1 max-[360px]:px-1.5 max-[360px]:text-[0.5rem] max-[360px]:tracking-[0.02em] md:gap-3 md:px-4 md:py-1.5 md:text-[0.78125rem] md:tracking-[0.16em]"
@@ -79,7 +80,7 @@ export function Hero() {
 
           {/* Centered Display Headline */}
           <h1
-            className="display-hero rise mt-6 max-w-[18ch] text-balance text-center sm:mt-7"
+            className="display-hero rise mt-6 max-w-[18ch] text-balance text-center sm:mt-7 md:text-left"
             style={{ animationDuration: "0.95s", animationDelay: "0.12s" }}
           >
             The evidence behind every{" "}
@@ -94,7 +95,7 @@ export function Hero() {
 
           {/* Centered Lede Copy */}
           <p
-            className="rise mx-auto mt-5 max-w-[56ch] text-center text-[0.98rem] leading-[1.65] text-deep-ink-2 sm:mt-7 sm:text-[1.0625rem] md:text-[1.1875rem]"
+            className="rise mx-auto mt-5 max-w-[56ch] text-center text-[0.98rem] leading-[1.65] text-deep-ink-2 sm:mt-7 sm:text-[1.0625rem] md:mx-0 md:text-left md:text-[1.0625rem] lg:text-[1.1875rem]"
             style={{ animationDuration: "0.95s", animationDelay: "0.24s" }}
           >
             Examiner-grade search, landscapes, prosecution and licensing support for
@@ -104,7 +105,7 @@ export function Hero() {
 
           {/* Centered CTA Buttons */}
           <div
-            className="rise mt-7 flex flex-wrap items-center justify-center gap-3 pointer-events-auto min-[420px]:gap-4 sm:mt-9"
+            className="rise mt-7 flex flex-wrap items-center justify-center gap-3 pointer-events-auto min-[420px]:gap-4 sm:mt-9 md:justify-start"
             style={{ animationDuration: "0.95s", animationDelay: "0.36s" }}
           >
             <Magnetic strength={0.25}>
@@ -123,7 +124,7 @@ export function Hero() {
 
           {/* Centered Quality and Compliance Strip */}
           <div
-            className="rise mt-8 grid w-full max-w-3xl grid-cols-3 gap-0 border-y border-white/10 py-3 sm:mt-12 sm:gap-4 sm:py-4"
+            className="rise mt-8 grid w-full max-w-3xl grid-cols-3 gap-0 border-y border-white/10 py-3 sm:mt-12 sm:gap-4 sm:py-4 md:mt-8"
             style={{ animationDuration: "0.95s", animationDelay: "0.48s" }}
           >
             <div className="flex min-w-0 flex-col items-center gap-1 px-1 text-center sm:px-0">
@@ -160,6 +161,8 @@ export function Hero() {
             </div>
           </div>
         </div>
+
+        <HeroCaseFiles />
       </div>
 
       {/* Numbers Strip at Bottom Edge */}
