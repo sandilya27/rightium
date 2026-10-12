@@ -52,7 +52,8 @@ const converters: JSXConvertersFunction = ({ defaultConverters }) => ({
   ...LinkJSXConverter({
     internalDocToHref: ({ linkNode }) => {
       const doc = linkNode.fields.doc?.value;
-      return typeof doc === "object" && doc && "slug" in doc ? `/blog/${doc.slug}` : "/";
+      const base = linkNode.fields.doc?.relationTo === "selected-work" ? "/work" : "/blog";
+      return typeof doc === "object" && doc && "slug" in doc ? `${base}/${doc.slug}` : "/";
     },
   }),
   heading: ({ node, nodesToJSX }) => {
@@ -104,7 +105,7 @@ const converters: JSXConvertersFunction = ({ defaultConverters }) => ({
     };
     return (
       <figure className="my-10">
-        {/* Served from R2 through Payload; next/image would re-proxy it. */}
+        {/* Served directly from Cloudinary; next/image would re-proxy it. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={url}

@@ -4,5 +4,5 @@ import { redirect } from "next/navigation";
 export async function GET(request: Request) {
   const path = new URL(request.url).searchParams.get("path") ?? "/";
   (await draftMode()).disable();
-  redirect(/^\/blog\/[a-z0-9-]+$/.test(path) ? path : "/blog");
+  redirect(/^\/(?:blog|work)\/[a-z0-9-]+$/.test(path) ? path : "/blog");
 }

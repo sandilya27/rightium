@@ -1,4 +1,4 @@
-import type { CollectionConfig } from "payload";
+import { APIError, type CollectionConfig } from "payload";
 import { authenticated } from "@/payload/access";
 
 export const Users: CollectionConfig = {
@@ -19,6 +19,16 @@ export const Users: CollectionConfig = {
     create: authenticated,
     update: authenticated,
     delete: authenticated,
+  },
+  hooks: {
+    beforeValidate: [({ data, operation, req }) => {
+      const adminEmail = process.env.CMS_ADMIN_EMAIL?.trim().toLowerCase();
+      if (operation === "create" && !req.user && adminEmail &&
+          data?.email?.trim().toLowerCase() !== adminEmail) {
+        throw new APIError("Use the configured administrator email to finish CMS setup.", 403);
+      }
+      return data;
+    }],
   },
   fields: [{ name: "name", type: "text" }],
 };

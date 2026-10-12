@@ -3,9 +3,9 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "motion/react";
-import { proofs } from "@/lib/services";
+import type { Work } from "@/lib/work";
 
-export function HeroCaseFiles() {
+export function HeroCaseFiles({ proofs }: { proofs: Work[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const reduceMotion = useReducedMotion();
@@ -17,8 +17,9 @@ export function HeroCaseFiles() {
       setActiveIndex((current) => (current + 1) % proofs.length);
     }, 4800);
     return () => window.clearTimeout(timeout);
-  }, [activeIndex, paused, reduceMotion]);
+  }, [activeIndex, paused, reduceMotion, proofs.length]);
 
+  if (!activeProof) return null;
   return (
     <div
       className="hero-case-files pointer-events-auto min-w-0"

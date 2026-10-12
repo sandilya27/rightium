@@ -3,7 +3,7 @@ import "./globals.css";
 import { SiteShell } from "@/components/site/site-shell";
 import { allowIndexing, site } from "@/lib/site";
 
-const defaultTitle = `${site.name} — Patent Search & IP Intelligence Firm in Bengaluru`;
+const defaultTitle = `Patent Search & IP Intelligence in Bengaluru | ${site.name}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),

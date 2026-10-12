@@ -1,3 +1,4 @@
+import { getWorks } from "@/lib/works";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
@@ -17,7 +18,7 @@ import { CTA } from "@/components/site/cta";
 export const revalidate = 3600;
 
 export const metadata: Metadata = pageMetadata({
-  title: `${site.name} — Patent Search & IP Intelligence Firm in Bengaluru`,
+  title: `Patent Search & IP Intelligence in Bengaluru | ${site.name}`,
   description: site.description,
   path: "/",
 });
@@ -27,15 +28,16 @@ export const metadata: Metadata = pageMetadata({
  * reading: hero → manifesto → practice index → reasons → process →
  * case studies → voices → FAQ → insights → ask.
  */
-export default function HomePage() {
+export default async function HomePage() {
+  const proofs = await getWorks();
   return (
     <>
-      <Hero />
+      <Hero proofs={proofs} />
       <Statement />
       <ServicesSection />
       <Why />
       <Process />
-      <Proof />
+      {proofs.length > 0 && <Proof proofs={proofs} />}
       <Testimonials />
       <FAQ />
       <Insights />

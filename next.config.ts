@@ -5,22 +5,39 @@ import { withPayload } from "@payloadcms/next/withPayload";
 const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com";
 const posthogAssets = posthogHost.replace(".i.posthog.com", "-assets.i.posthog.com");
 
+const cloudName = process.env.CLOUDINARY_URL
+  ? new URL(process.env.CLOUDINARY_URL).hostname
+  : undefined;
+
 const nextConfig: NextConfig = {
   experimental: {
     // Two root layouts (site + Payload admin) need a routing-level 404.
     globalNotFound: true,
   },
   images: {
+    remotePatterns: cloudName
+      ? [new URL(`https://res.cloudinary.com/${cloudName}/image/upload/**`)]
+      : [],
     localPatterns: [{ pathname: "/images/**" }, { pathname: "/api/media/file/**" }],
   },
   // Analytics are proxied through our own domain so ad blockers don't
   // silently drop them.
   skipTrailingSlashRedirect: true,
 
+  // Preserve matching URLs from the WordPress site when the replacement launches.
+  async redirects() {
+    return [
+      ...["/insights", "/insights/"].map(source => ({ source, destination: "/blog", permanent: true })),
+      ...["/practice-area/intellectual-property-rights-ipr", "/practice-area/intellectual-property-rights-ipr/"].map(source => ({ source, destination: "/services", permanent: true })),
+    ];
+  },
+
   // Pre-launch: every response carries noindex, including images and
   // files that meta tags can't cover. Set ALLOW_INDEXING=true to lift it.
   async headers() {
-    if (process.env.ALLOW_INDEXING === "true") return [];
+    if (process.env.ALLOW_INDEXING === "true") return ["/admin/:path*", "/next/:path*", "/ingest/:path*"].map(source => ({
+      source, headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+    }));
     return [
       {
         source: "/:path*",

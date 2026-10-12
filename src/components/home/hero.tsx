@@ -1,3 +1,4 @@
+import type { Work } from "@/lib/work";
 import { stats } from "@/lib/site";
 import { serviceCount } from "@/lib/services";
 import { ArrowRight, ButtonLink } from "@/components/ui/button";
@@ -12,7 +13,7 @@ import { Shield, Sparkles, CheckCircle2 } from "lucide-react";
 /**
  * High-tech executive hero with centered typography and interactive PixelBlast background.
  */
-export function Hero() {
+export function Hero({ proofs }: { proofs: Work[] }) {
   return (
     <section className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-deep text-white">
       {/* Interactive PixelBlast Canvas Background matching Rightium teal theme */}
@@ -162,7 +163,7 @@ export function Hero() {
           </div>
         </div>
 
-        <HeroCaseFiles />
+        <HeroCaseFiles proofs={proofs} />
       </div>
 
       {/* Numbers Strip at Bottom Edge */}

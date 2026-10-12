@@ -62,6 +62,7 @@ function toPost(doc: PayloadPost): Post {
     excerpt: doc.excerpt,
     category: category?.title ?? "Insights",
     date: doc.publishedAt,
+    updatedAt: doc.updatedAt,
     readingMinutes: doc.readingMinutes ?? 1,
     author: { name: author?.name ?? "Rightium", role: author?.role ?? "" },
     coverImage: cover?.url
@@ -99,6 +100,7 @@ export async function getPosts(): Promise<Post[]> {
       author: true,
       coverImage: true,
       publishedAt: true,
+      updatedAt: true,
       readingMinutes: true,
       seo: true,
     },

@@ -8,6 +8,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { ArrowRight, ButtonLink, Tick, TextLink } from "@/components/ui/button";
 import { JsonLd, breadcrumbJsonLd, pageMetadata, serviceJsonLd } from "@/lib/seo";
 import { cn } from "@/lib/utils";
+import { serviceSeo } from "@/lib/service-seo";
 
 export function generateStaticParams() {
   return services.map((s) => ({ slug: s.slug }));
@@ -22,8 +23,8 @@ export async function generateMetadata({
   const service = getService(slug);
   if (!service) return {};
   return pageMetadata({
-    title: service.title,
-    description: service.short,
+    title: serviceSeo[service.slug]?.title ?? service.title,
+    description: serviceSeo[service.slug]?.description ?? service.summary,
     path: `/services/${service.slug}`,
   });
 }

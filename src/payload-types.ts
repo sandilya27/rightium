@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     enquiries: Enquiry;
+    'selected-work': SelectedWork;
     posts: Post;
     categories: Category;
     authors: Author;
@@ -81,6 +82,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
+    'selected-work': SelectedWorkSelect<false> | SelectedWorkSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
@@ -159,6 +161,80 @@ export interface Enquiry {
   createdAt: string;
 }
 /**
+ * Homepage cards and full case studies at /work.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "selected-work".
+ */
+export interface SelectedWork {
+  id: number;
+  title: string;
+  /**
+   * Used in the URL. Leave blank to generate it from the title.
+   */
+  slug: string;
+  sector: string;
+  /**
+   * Short description shown in the card preview.
+   */
+  excerpt: string;
+  coverImage?: (number | null) | Media;
+  /**
+   * Used until a cover image is uploaded.
+   */
+  fallbackImage?:
+    ('/images/analysts.jpg' | '/images/data.jpg' | '/images/strategy.jpg' | '/images/agreement.jpg') | null;
+  metric: string;
+  metricLabel: string;
+  /**
+   * Full case study: add headings, paragraphs, lists and images, just like an Insight.
+   */
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Lower numbers appear first on the homepage.
+   */
+  sortOrder: number;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * Describe the image for screen readers and search engines.
+   */
+  alt: string;
+  prefix?: string | null;
+  _objectKey?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+}
+/**
  * Articles published at /blog.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -208,26 +284,6 @@ export interface Post {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  /**
-   * Describe the image for screen readers and search engines.
-   */
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
 }
 /**
  * Filters shown on the Insights page.
@@ -319,6 +375,10 @@ export interface PayloadLockedDocument {
         value: number | Enquiry;
       } | null)
     | ({
+        relationTo: 'selected-work';
+        value: number | SelectedWork;
+      } | null)
+    | ({
         relationTo: 'posts';
         value: number | Post;
       } | null)
@@ -408,6 +468,25 @@ export interface EnquiriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "selected-work_select".
+ */
+export interface SelectedWorkSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  sector?: T;
+  excerpt?: T;
+  coverImage?: T;
+  fallbackImage?: T;
+  metric?: T;
+  metricLabel?: T;
+  content?: T;
+  sortOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
@@ -458,6 +537,8 @@ export interface AuthorsSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  prefix?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

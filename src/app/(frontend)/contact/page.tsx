@@ -6,7 +6,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { ContactForm } from "@/components/contact/contact-form";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Contact Us",
+  title: "Contact Our Patent Research Team",
   description: `Contact ${site.name} in Bengaluru — call ${site.phone}, WhatsApp us or email ${site.email}. Send a brief and get a scope, a price and a date, usually the same working day.`,
   path: "/contact",
 });

@@ -8,7 +8,7 @@ export const site = {
   legalName: "Rightium",
   tagline: "IP intelligence, delivered with evidence.",
   description:
-    "Rightium is a Bengaluru-based IP research firm offering patent search, IP intelligence, patent database strategy, prosecution support, licensing, chemical safety intelligence and IP audits for corporate IP teams, law firms and R&D leaders.",
+    "Patent search, IP intelligence, licensing research and chemical safety services from Rightium in Bengaluru. Evidence-led support for legal and R&D teams.",
   url: "https://rightium.in",
   locale: "en_IN",
   email: "contact@rightium.in",

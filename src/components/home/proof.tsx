@@ -1,32 +1,45 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { createPortal } from "react-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowRight, X } from "lucide-react";
-import { proofs } from "@/lib/services";
+import type { Work } from "@/lib/work";
 import { Reveal } from "@/components/motion/reveal";
 import { Spotlight } from "@/components/motion/spotlight";
 import { SectionHead } from "@/components/ui/section";
 
-export function Proof() {
+export function Proof({ proofs }: { proofs: Work[] }) {
+  const dialogRef = useRef<HTMLElement>(null);
   const [selected, setSelected] = useState<number | null>(null);
   const reduce = useReducedMotion();
   const selectedProof = selected === null ? null : proofs[selected];
 
   useEffect(() => {
-    if (selectedProof === null) return;
+    if (!selectedProof) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const frame = requestAnimationFrame(() => dialogRef.current?.querySelector<HTMLButtonElement>("button")?.focus());
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const lenis = (window as unknown as { __lenis?: { stop: () => void; start: () => void } }).__lenis;
     lenis?.stop();
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setSelected(null);
+      if (event.key === "Tab") {
+        const elements = dialogRef.current?.querySelectorAll<HTMLElement>('button, a[href]');
+        if (!elements?.length) return;
+        const first = elements[0], last = elements[elements.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => {
+      cancelAnimationFrame(frame);
       document.body.style.overflow = previousOverflow;
+      requestAnimationFrame(() => previousFocus?.isConnected && previousFocus.focus());
       lenis?.start();
       window.removeEventListener("keydown", onKeyDown);
     };
@@ -45,9 +58,9 @@ export function Proof() {
         <motion.div layout className="mt-12 grid gap-5 md:mt-16 md:grid-cols-12">
           <AnimatePresence initial={false} mode="popLayout">
             {proofs.map((proof, index) =>
-              selected === index ? null : (
+              (
                 <Reveal
-                  key={proof.title}
+                  key={proof.slug}
                   delay={(index % 2) * 0.08}
                   className={index % 2 === 0 ? "md:col-span-7" : "md:col-span-5"}
                 >
@@ -59,7 +72,7 @@ export function Proof() {
                     <Spotlight className="group relative isolate flex min-h-[24rem] h-full overflow-hidden bg-deep text-white shadow-sm md:min-h-[28rem]">
                       <Image
                         src={proof.image}
-                        alt=""
+                        alt={proof.imageAlt}
                         fill
                         sizes="(min-width: 768px) 55vw, 100vw"
                         className="-z-10 object-cover opacity-55 transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-105"
@@ -89,7 +102,8 @@ export function Proof() {
                           <button
                             type="button"
                             onClick={() => setSelected(index)}
-                            className="inline-flex items-center gap-2 border-b border-accent-bright pb-1 text-sm font-medium text-white transition-[color,gap] duration-200 [@media(hover:hover)_and_(pointer:fine)]:hover:gap-3 [@media(hover:hover)_and_(pointer:fine)]:hover:text-accent-bright"
+                            aria-label={`Open case file: ${proof.title}`}
+                            className="after:absolute after:inset-0 focus-visible:outline-2 focus-visible:outline-accent-bright inline-flex items-center gap-2 border-b border-accent-bright pb-1 text-sm font-medium text-white transition-[color,gap] duration-200 [@media(hover:hover)_and_(pointer:fine)]:hover:gap-3 [@media(hover:hover)_and_(pointer:fine)]:hover:text-accent-bright"
                           >
                             Open case file <ArrowRight className="size-4" />
                           </button>
@@ -119,14 +133,16 @@ export function Proof() {
           >
             <motion.article
               layoutId={`proof-card-${selected}`}
+              ref={dialogRef}
               role="dialog"
               aria-modal="true"
               aria-labelledby="case-file-title"
-              className="relative w-full max-w-[54rem] overflow-hidden bg-deep text-white shadow-2xl"
+              data-lenis-prevent
+              className="relative max-h-[90svh] w-full max-w-[54rem] overflow-y-auto bg-deep text-white shadow-2xl"
               transition={{ duration: reduce ? 0 : 0.48, ease: [0.23, 1, 0.32, 1] }}
             >
               <div className="plate relative aspect-[16/8] min-h-[15rem]">
-                <Image src={selectedProof.image} alt="" fill sizes="(min-width: 900px) 864px, 100vw" className="object-cover opacity-65" />
+                <Image src={selectedProof.image} alt={selectedProof.imageAlt} fill sizes="(min-width: 900px) 864px, 100vw" className="object-cover opacity-65" />
                 <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#061524] via-[#061524]/35 to-transparent" />
                 <button
                   type="button"
@@ -142,7 +158,12 @@ export function Proof() {
                 </div>
               </div>
               <div className="grid gap-8 p-6 sm:grid-cols-[1fr_auto] sm:items-end sm:p-10">
-                <p className="m-0 max-w-[62ch] text-[0.98rem] leading-[1.75] text-deep-ink-2">{selectedProof.body}</p>
+                <div>
+                  <p className="m-0 max-w-[62ch] text-[0.98rem] leading-[1.75] text-deep-ink-2">{selectedProof.body}</p>
+                  <Link href={`/work/${selectedProof.slug}`} onClick={() => setSelected(null)} className="mt-6 inline-flex items-center gap-2 border-b border-accent-bright pb-1 text-sm font-medium text-white hover:text-accent-bright">
+                    See complete details <ArrowRight className="size-4" />
+                  </Link>
+                </div>
                 <div className="border-l border-accent-bright pl-5">
                   <p className="font-serif m-0 text-4xl leading-none text-accent-bright">{selectedProof.metric}</p>
                   <p className="mt-2 max-w-[12rem] text-sm text-deep-ink-2">{selectedProof.metricLabel}</p>

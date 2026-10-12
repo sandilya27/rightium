@@ -1,7 +1,7 @@
 # Rightium — website + CMS
 
 Next.js 16 (App Router) · Payload CMS 3 · Tailwind v4 · Motion. Hosted on **Vercel**,
-with the database on **Neon** (Postgres) and uploaded images on **Cloudflare R2**.
+with the database on **Neon** (Postgres) and uploaded images on **Cloudinary**.
 
 ## Current status: preview mode
 
@@ -10,7 +10,7 @@ The site deploys and runs with **no configuration at all**. Until `DATABASE_URI`
 - Insights show the built-in launch articles (`src/seed/insights.ts`).
 - `/admin`, the Payload API and draft preview return 404 (`src/proxy.ts`).
 - The contact form validates and responds; enquiries are emailed if `RESEND_API_KEY`
-  is set, otherwise only logged. **Nothing is stored yet.**
+  is set, otherwise reports a delivery error. **Nothing is stored in preview mode.**
 - Search engines are blocked: `robots.txt` disallows everything, every page has
   `noindex, nofollow`, and every response (images too) carries `X-Robots-Tag: noindex`.
   Set `ALLOW_INDEXING=true` and redeploy only at launch.
@@ -36,12 +36,44 @@ npm run typecheck
 npm run lint
 ```
 
-## Backend (next step)
+## Backend (Payload + Neon)
 
-Payload is already configured for Neon + R2 (`src/payload.config.ts`); switching it on is:
-creating the Neon database and R2 bucket, setting the variables in `.env.example`,
-generating the first Postgres migration (and re-adding the launch-articles seed from
-`src/seed/seed-insights.ts`), and running migrations as part of the Vercel build.
+The schema and launch-article seed are versioned in `src/migrations/`.
+Automatic schema pushing is disabled so development cannot silently modify the shared Neon database.
+
+For local setup, put `DATABASE_URI`, a random `PAYLOAD_SECRET`, and
+`CMS_ADMIN_EMAIL` in the ignored `.env.local` file, then run:
+
+```bash
+npm run migrate
+npm run dev
+```
+
+Open `http://localhost:3000/admin`, enter the configured administrator email,
+and choose a password on the first-user setup screen. Create this account locally
+before making the admin public. Passwords and database credentials must never be committed.
+
+For Vercel, configure the same `DATABASE_URI` and `PAYLOAD_SECRET` used locally,
+plus `CMS_ADMIN_EMAIL`. `npm run build` automatically applies pending migrations
+before building. If no database is configured, it keeps the preview behavior.
+Keep this secret stable across deployments and use a separate Neon branch for preview deployments
+if editors will modify real content there.
+
+`npm run migrate:status` lists applied migrations. The initial seed runs once,
+inside a transaction; it leaves existing articles alone. Its rollback intentionally
+requires manual content review so edited articles are never deleted automatically.
+
+Set `CLOUDINARY_URL` from the Cloudinary dashboard in `.env.local` and Vercel.
+Uploaded CMS images are stored in Cloudinary and delivered directly from its CDN.
+`CLOUDINARY_FOLDER` defaults to `rightium-media`. Existing records retain their folder.
+Without Cloudinary credentials, local development uses disk storage. Production media uploads
+must have Cloudinary configured. Uploads pass through Payload, so keep image files under 4 MB
+for Vercel's request-size limit. The storage adapter deletes replaced and removed media from Cloudinary.
+Run `npm run storage:verify` to test upload, delivery, replacement, and deletion with temporary media.
+
+Email notifications and password-reset delivery require `RESEND_API_KEY`.
+With Neon configured, enquiries are stored even when email is disabled.
+Run `npm run cms:verify` to check persistence and draft/enquiry privacy using temporary records.
 
 After changing a collection in `src/collections/`:
 
@@ -134,3 +166,13 @@ gated behind `@media (hover: hover) and (pointer: fine)` so touch taps do not st
 - Social links in `site.ts` still point at the LinkedIn / X home pages.
 - `react-hooks/set-state-in-effect` (new in Next 16's lint rules) warns on six existing
   "reset on route change" effects. They work; refactor when convenient.
+
+### Selected Work
+In Payload admin, open **Content → Selected Work** to edit the homepage case studies.
+Each entry controls the title, sector, cover image, preview description, outcome metric
+and label, display order, and full rich-text case study. Lower display-order numbers appear first.
+Save drafts while editing and use Preview to review the full page; publish to show the
+entry in Selected Work and the hero carousel. Clicking a homepage card opens its image
+and summary; **See complete details** opens its article at /work/[slug].
+The database migration preserves the four original cases as starter content. Expand
+their full details in the editor as needed.

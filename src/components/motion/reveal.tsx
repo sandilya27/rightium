@@ -47,6 +47,7 @@ export function Reveal({
 
   return (
     <Comp
+      data-reveal=""
       className={className}
       initial={{ opacity: 0, transform: from }}
       whileInView={{ opacity: 1, transform: to }}
@@ -78,6 +79,7 @@ export function RevealGroup({
 }) {
   return (
     <motion.div
+      data-reveal=""
       className={className}
       initial="hidden"
       whileInView="shown"
@@ -103,6 +105,7 @@ export function RevealItem({
 
   return (
     <motion.div
+      data-reveal=""
       className={className}
       variants={{
         hidden: { opacity: 0, transform: `translate3d(0, ${distance}px, 0)` },

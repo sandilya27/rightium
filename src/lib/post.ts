@@ -12,6 +12,7 @@ export type Post = {
   excerpt: string;
   category: string;
   date: string; // ISO
+  updatedAt?: string;
   readingMinutes: number;
   author: { name: string; role: string };
   coverImage: { url: string; alt: string; width?: number; height?: number } | null;

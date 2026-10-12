@@ -10,7 +10,7 @@ import { initialsOf, practiceAreas, principles, team } from "@/lib/content";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
-  title: "About Us",
+  title: "About Our IP Research Team in Bengaluru",
   description: `${site.name} is a Bengaluru-based IP research firm built around one rule: every patent search, landscape and IP opinion ships with the evidence that produced it.`,
   path: "/about",
 });

@@ -6,7 +6,7 @@
  * notification on top, sent through Resend when configured.
  *
  * Preview mode (no DATABASE_URI yet): nothing is stored; the enquiry is
- * emailed if Resend is configured, otherwise only logged.
+ * emailed if Resend is configured, otherwise reports a delivery error.
  *
  * Secrets (optional locally, set in production):
  *   TURNSTILE_SECRET_KEY  → verifies the Cloudflare Turnstile token.
@@ -49,7 +49,11 @@ function bad(error: string, status = 400) {
 export async function POST(request: Request) {
   let body: Payload;
   try {
-    body = (await request.json()) as Payload;
+    const parsed: unknown = await request.json();
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return bad("Malformed request.");
+    }
+    body = parsed as Payload;
   } catch {
     return bad("Malformed request.");
   }
@@ -111,21 +115,21 @@ export async function POST(request: Request) {
     return Response.json({ ok: true });
   }
 
-  const payload = await getPayload({ config });
   let savedId: number | string | null = null;
   try {
+    const payload = await getPayload({ config });
     // The collection blocks public creates; this server route is the only way in.
     const saved = await payload.create({ collection: "enquiries", data: enquiry, overrideAccess: true });
     savedId = saved.id;
   } catch (err) {
     // Don't lose the lead: fall through and still email it, flagged as unsaved.
-    payload.logger.error({ err, msg: "Failed to save enquiry; emailing it instead" });
+    console.error("[contact] Failed to save enquiry; emailing it instead", err);
   }
 
   try {
     await notify(savedId, enquiry);
   } catch (err) {
-    payload.logger.error({ err, msg: "Enquiry notification email failed", id: savedId });
+    console.error("[contact] Enquiry notification email failed", { err, id: savedId });
     // Neither stored nor emailed: tell the visitor so they can use another channel.
     if (savedId === null) {
       return bad(`We couldn't send that just now. Please email ${site.email} directly.`, 500);
@@ -150,12 +154,8 @@ async function notify(
 ) {
   const key = process.env.RESEND_API_KEY;
   if (!key) {
-    console.info(
-      id === null
-        ? "[contact] enquiry received (not stored, no RESEND_API_KEY):"
-        : `[contact] enquiry ${id} saved (no RESEND_API_KEY, email skipped)`,
-      id === null ? { name: e.name, email: e.email, service: e.service } : "",
-    );
+    if (id === null) throw new Error("No storage or email delivery is available.");
+    console.info(`[contact] enquiry ${id} saved (no RESEND_API_KEY, email skipped)`);
     return;
   }
 

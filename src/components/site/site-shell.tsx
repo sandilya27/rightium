@@ -33,6 +33,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-IN" className={`${newsreader.variable} ${plex.variable}`}>
       <body className="antialiased">
+        <noscript><style>{`[data-reveal] { opacity: 1 !important; transform: none !important; }`}</style></noscript>
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={websiteJsonLd()} />
         <SmoothScroll />

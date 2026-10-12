@@ -3,7 +3,8 @@ import { fileURLToPath } from "url";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { resendAdapter } from "@payloadcms/email-resend";
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from "@payloadcms/richtext-lexical";
-import { s3Storage } from "@payloadcms/storage-s3";
+import { cloudStoragePlugin } from "@payloadcms/plugin-cloud-storage";
+import { cloudinarySettings, createCloudinaryAdapter } from "./payload/cloudinary";
 import { buildConfig } from "payload";
 
 import { Authors } from "./collections/Authors";
@@ -11,6 +12,7 @@ import { Categories } from "./collections/Categories";
 import { Enquiries } from "./collections/Enquiries";
 import { Media } from "./collections/Media";
 import { Posts } from "./collections/Posts";
+import { SelectedWork } from "./collections/SelectedWork";
 import { Users } from "./collections/Users";
 import { site } from "./lib/site";
 
@@ -21,17 +23,11 @@ const dirname = path.dirname(filename);
  * Environment:
  *   DATABASE_URI    Neon Postgres connection string (use the *pooled* one on Vercel)
  *   PAYLOAD_SECRET  random 32+ byte string
- *   R2_*            Cloudflare R2 bucket for uploaded images (S3-compatible API)
+ *   CLOUDINARY_URL  Cloudinary cloud name and server-side API credentials
  *   RESEND_API_KEY  admin emails (password resets); optional
  */
-const r2 = {
-  bucket: process.env.R2_BUCKET,
-  endpoint: process.env.R2_ENDPOINT, // https://<account-id>.r2.cloudflarestorage.com
-  accessKeyId: process.env.R2_ACCESS_KEY_ID,
-  secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
-  publicUrl: process.env.R2_PUBLIC_URL?.replace(/\/$/, ""), // e.g. https://media.rightium.in
-};
-const r2Configured = Boolean(r2.bucket && r2.endpoint && r2.accessKeyId && r2.secretAccessKey);
+const cloudinary = cloudinarySettings();
+const mediaFolder = process.env.CLOUDINARY_FOLDER || "rightium-media";
 
 export default buildConfig({
   admin: {
@@ -49,7 +45,7 @@ export default buildConfig({
       },
     },
   },
-  collections: [Enquiries, Posts, Categories, Authors, Media, Users],
+  collections: [Enquiries, SelectedWork, Posts, Categories, Authors, Media, Users],
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [
       ...defaultFeatures.filter((feature) => feature.key !== "heading"),
@@ -69,33 +65,32 @@ export default buildConfig({
   typescript: { outputFile: path.resolve(dirname, "payload-types.ts") },
   graphQL: { disable: true },
   telemetry: false,
+  // Leave room for multipart headers below Vercel's 4.5 MB request limit.
+  upload: { limits: { fileSize: 4 * 1024 * 1024 }, abortOnLimit: true },
   db: postgresAdapter({
-    pool: { connectionString: process.env.DATABASE_URI },
+    // This Neon database is shared by development and deployment.
+    // Only reviewed migrations may change its schema.
+    push: false,
+    migrationDir: path.resolve(dirname, "migrations"),
+    pool: {
+      connectionString: process.env.DATABASE_URI,
+      max: 5,
+      connectionTimeoutMillis: 60000,
+      idleTimeoutMillis: 30000,
+    },
   }),
   plugins: [
-    s3Storage({
-      enabled: r2Configured,
-      bucket: r2.bucket ?? "",
-      config: {
-        endpoint: r2.endpoint,
-        region: "auto",
-        credentials: {
-          accessKeyId: r2.accessKeyId ?? "",
-          secretAccessKey: r2.secretAccessKey ?? "",
-        },
-      },
-      // Browser uploads straight to R2, so large images don't hit Vercel's
-      // 4.5 MB request limit. Needs a CORS rule on the bucket (see README).
-      clientUploads: true,
+    cloudStoragePlugin({
+      enabled: Boolean(cloudinary),
+      // Keep the media schema consistent in configured and preview builds.
+      alwaysInsertFields: true,
       collections: {
-        media: r2.publicUrl
-          ? {
-              // Images are served from R2's public domain, not through Vercel.
-              disablePayloadAccessControl: true,
-              generateFileURL: ({ filename, prefix }) =>
-                `${r2.publicUrl}/${prefix ? `${prefix}/` : ""}${filename}`,
-            }
-          : true,
+        media: {
+          adapter: createCloudinaryAdapter(cloudinary),
+          prefix: mediaFolder,
+          disableLocalStorage: Boolean(cloudinary),
+          disablePayloadAccessControl: true,
+        },
       },
     }),
   ],

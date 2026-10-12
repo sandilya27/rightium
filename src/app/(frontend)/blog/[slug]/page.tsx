@@ -36,8 +36,11 @@ export async function generateMetadata({
     path: `/blog/${post.slug}`,
     type: "article",
     publishedTime: post.date,
+    modifiedTime: post.updatedAt,
     authors: [post.author.name],
     section: post.category,
+    image: post.coverImage ?? undefined,
+    noIndex: draft,
   });
 }
 
@@ -101,6 +104,9 @@ export default async function PostPage({
             {post.author.role ? ` · ${post.author.role}` : ""}
           </span>
           <time dateTime={post.date}>{formatDate(post.date)}</time>
+          {post.updatedAt && formatDate(post.updatedAt) !== formatDate(post.date) && (
+            <span>Updated <time dateTime={post.updatedAt}>{formatDate(post.updatedAt)}</time></span>
+          )}
           <span>{post.readingMinutes} min read</span>
           </div>
         </div>
@@ -137,7 +143,7 @@ export default async function PostPage({
 
           <Reveal delay={0.1} as="article">
             {post.coverImage && (
-              /* Served from R2 through Payload; next/image would re-proxy it. */
+              /* Served directly from Cloudinary; next/image would re-proxy it. */
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src={post.coverImage.url}
@@ -156,7 +162,7 @@ export default async function PostPage({
               </span>
               <div>
                 <p className="m-0 text-[0.9375rem] font-medium text-ink-heading">
-                  {post.author.name}
+                  {post.author.name === "Rightium Team" ? <Link href="/about" className="underline underline-offset-4">{post.author.name}</Link> : post.author.name}
                 </p>
                 <p className="mt-1 text-sm text-ink-2">
                   {post.author.role ? `${post.author.role}, ` : ""}Rightium

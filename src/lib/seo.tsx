@@ -10,6 +10,15 @@ import { site } from "@/lib/site";
 
 export const absoluteUrl = (path = "/") => new URL(path, site.url).toString();
 
+/** Keep search snippets concise without cutting a word in half. */
+export function searchDescription(value: string): string {
+  const clean = value.replace(/\s+/g, " ").trim();
+  if (clean.length <= 160) return clean;
+  const cut = clean.slice(0, 157);
+  const boundary = cut.lastIndexOf(" ");
+  return `${boundary > 0 ? cut.slice(0, boundary) : cut}…`;
+}
+
 /**
  * Per-page metadata with a canonical URL and matching Open Graph /
  * Twitter tags. Next.js does not copy a page's `title` into og:title,
@@ -21,32 +30,44 @@ export function pageMetadata({
   path,
   type = "website",
   publishedTime,
+  modifiedTime,
   authors,
   section,
+  image,
+  noIndex = false,
 }: {
   title: string;
   description: string;
   path: string;
   type?: "website" | "article";
   publishedTime?: string;
+  modifiedTime?: string;
   authors?: string[];
   section?: string;
+  image?: { url: string; alt?: string; width?: number; height?: number };
+  noIndex?: boolean;
 }): Metadata {
   const fullTitle = path === "/" ? title : `${title} | ${site.name}`;
+  const snippet = searchDescription(description);
+  const shareImage = image ?? { url: "/opengraph-image", alt: `${site.name} — IP research and intelligence`, width: 1200, height: 630 };
+  const images = [{ ...shareImage, url: absoluteUrl(shareImage.url) }];
   return {
     title: path === "/" ? { absolute: title } : title,
-    description,
-    alternates: { canonical: path },
+    description: snippet,
+    alternates: { canonical: absoluteUrl(path) },
+    ...(noIndex && { robots: { index: false, follow: false, googleBot: { index: false, follow: false } } }),
+    ...(authors && { authors: authors.map(name => ({ name })) }),
     openGraph: {
       type,
-      url: path,
+      url: absoluteUrl(path),
       siteName: site.name,
       locale: site.locale,
       title: fullTitle,
-      description,
-      ...(type === "article" && { publishedTime, authors, section }),
+      description: snippet,
+      images,
+      ...(type === "article" && { publishedTime, modifiedTime, authors, section }),
     },
-    twitter: { card: "summary_large_image", title: fullTitle, description },
+    twitter: { card: "summary_large_image", title: fullTitle, description: snippet, images },
   };
 }
 
@@ -157,6 +178,7 @@ export function articleJsonLd(post: {
   title: string;
   excerpt: string;
   date: string;
+  updatedAt?: string;
   category: string;
   author: { name: string; role: string };
   coverImage?: { url: string } | null;
@@ -171,11 +193,24 @@ export function articleJsonLd(post: {
     mainEntityOfPage: url,
     image: absoluteUrl(post.coverImage?.url ?? "/opengraph-image"),
     datePublished: post.date,
-    dateModified: post.date,
+    dateModified: post.updatedAt ?? post.date,
     articleSection: post.category,
     inLanguage: "en-IN",
-    author: { "@type": "Person", name: post.author.name, jobTitle: post.author.role },
+    author: post.author.name === "Rightium Team" || post.author.name === site.name
+      ? { "@type": "Organization", name: post.author.name, url: absoluteUrl("/about"), parentOrganization: { "@id": ORG_ID } }
+      : { "@type": "Person", name: post.author.name, jobTitle: post.author.role, worksFor: { "@id": ORG_ID } },
     publisher: { "@id": ORG_ID },
+  };
+}
+
+export function workJsonLd(work: { slug: string; title: string; body: string; sector: string; image: string; updatedAt?: string }) {
+  const url = absoluteUrl(`/work/${work.slug}`);
+  return {
+    "@context": "https://schema.org", "@type": "Article", "@id": `${url}#article`,
+    headline: work.title, description: work.body, url, mainEntityOfPage: url,
+    image: absoluteUrl(work.image), articleSection: work.sector, inLanguage: "en-IN",
+    ...(work.updatedAt && { dateModified: work.updatedAt }),
+    author: { "@id": ORG_ID }, publisher: { "@id": ORG_ID },
   };
 }
 

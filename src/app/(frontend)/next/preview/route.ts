@@ -10,7 +10,7 @@ import config from "@payload-config";
 export async function GET(request: Request) {
   const path = new URL(request.url).searchParams.get("path") ?? "";
   // Only our own article URLs — never an open redirect.
-  if (!/^\/blog\/[a-z0-9-]+$/.test(path)) {
+  if (!/^\/(?:blog|work)\/[a-z0-9-]+$/.test(path)) {
     return new Response("Invalid preview path.", { status: 400 });
   }
 
