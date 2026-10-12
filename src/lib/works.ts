@@ -14,6 +14,7 @@ function toWork(doc: SelectedWork): Work {
     slug: doc.slug, title: doc.title, sector: doc.sector,
     body: doc.excerpt, metric: doc.metric, metricLabel: doc.metricLabel,
     image: image?.url || doc.fallbackImage || "/images/analysts.jpg",
+    fallbackImage: doc.fallbackImage || "/images/analysts.jpg",
     imageAlt: image?.alt || "",
     content: doc.content, updatedAt: doc.updatedAt,
   };
@@ -23,7 +24,7 @@ function fallback(): Work[] {
   return seedWork.map(doc => ({
     slug: doc.slug, title: doc.title, sector: doc.sector,
     body: doc.excerpt, metric: doc.metric, metricLabel: doc.metricLabel,
-    image: doc.fallbackImage, imageAlt: "", content: doc.content as Work["content"],
+    image: doc.fallbackImage, fallbackImage: doc.fallbackImage, imageAlt: "", content: doc.content as Work["content"],
   }));
 }
 

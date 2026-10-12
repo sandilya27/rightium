@@ -14,6 +14,7 @@ import { SectionHead } from "@/components/ui/section";
 export function Proof({ proofs }: { proofs: Work[] }) {
   const dialogRef = useRef<HTMLElement>(null);
   const [selected, setSelected] = useState<number | null>(null);
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
   const reduce = useReducedMotion();
   const selectedProof = selected === null ? null : proofs[selected];
 
@@ -71,11 +72,12 @@ export function Proof({ proofs }: { proofs: Work[] }) {
                   >
                     <Spotlight className="group relative isolate flex min-h-[24rem] h-full overflow-hidden bg-deep text-white shadow-sm md:min-h-[28rem]">
                       <Image
-                        src={proof.image}
+                        src={failedImages[proof.slug] ? (proof.fallbackImage || "/images/analysts.jpg") : proof.image}
                         alt={proof.imageAlt}
                         fill
                         sizes="(min-width: 768px) 55vw, 100vw"
                         className="-z-10 object-cover opacity-55 transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-105"
+                        onError={() => setFailedImages((prev) => ({ ...prev, [proof.slug]: true }))}
                       />
                       <div aria-hidden className="absolute inset-0 -z-[1] bg-gradient-to-t from-[#061524] via-[#061524]/55 to-[#061524]/10" />
                       <div className="relative z-[1] flex min-h-[24rem] w-full flex-col p-6 sm:p-8 md:min-h-[28rem] md:p-10">
@@ -142,7 +144,14 @@ export function Proof({ proofs }: { proofs: Work[] }) {
               transition={{ duration: reduce ? 0 : 0.48, ease: [0.23, 1, 0.32, 1] }}
             >
               <div className="plate relative aspect-[16/8] min-h-[15rem]">
-                <Image src={selectedProof.image} alt={selectedProof.imageAlt} fill sizes="(min-width: 900px) 864px, 100vw" className="object-cover opacity-65" />
+                <Image
+                  src={failedImages[selectedProof.slug] ? (selectedProof.fallbackImage || "/images/analysts.jpg") : selectedProof.image}
+                  alt={selectedProof.imageAlt}
+                  fill
+                  sizes="(min-width: 900px) 864px, 100vw"
+                  className="object-cover opacity-65"
+                  onError={() => setFailedImages((prev) => ({ ...prev, [selectedProof.slug]: true }))}
+                />
                 <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#061524] via-[#061524]/35 to-transparent" />
                 <button
                   type="button"

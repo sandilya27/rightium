@@ -5,6 +5,7 @@ export type Work = {
   title: string;
   sector: string;
   image: string;
+  fallbackImage?: string;
   imageAlt: string;
   body: string;
   metric: string;

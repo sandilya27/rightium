@@ -5,20 +5,19 @@ import { withPayload } from "@payloadcms/next/withPayload";
 const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com";
 const posthogAssets = posthogHost.replace(".i.posthog.com", "-assets.i.posthog.com");
 
-const cloudName = process.env.CLOUDINARY_URL
-  ? new URL(process.env.CLOUDINARY_URL).hostname
-  : undefined;
-
 const nextConfig: NextConfig = {
   experimental: {
     // Two root layouts (site + Payload admin) need a routing-level 404.
     globalNotFound: true,
   },
   images: {
-    remotePatterns: cloudName
-      ? [new URL(`https://res.cloudinary.com/${cloudName}/image/upload/**`)]
-      : [],
-    localPatterns: [{ pathname: "/images/**" }, { pathname: "/api/media/file/**" }],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
+    ],
   },
   // Analytics are proxied through our own domain so ad blockers don't
   // silently drop them.

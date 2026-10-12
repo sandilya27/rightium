@@ -10,6 +10,11 @@ export function HeroCaseFiles({ proofs }: { proofs: Work[] }) {
   const [paused, setPaused] = useState(false);
   const reduceMotion = useReducedMotion();
   const activeProof = proofs[activeIndex];
+  const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [activeIndex]);
 
   useEffect(() => {
     if (paused || reduceMotion || proofs.length < 2) return;
@@ -20,6 +25,11 @@ export function HeroCaseFiles({ proofs }: { proofs: Work[] }) {
   }, [activeIndex, paused, reduceMotion, proofs.length]);
 
   if (!activeProof) return null;
+
+  const currentImage = imgError
+    ? activeProof.fallbackImage || "/images/analysts.jpg"
+    : activeProof.image;
+
   return (
     <div
       className="hero-case-files pointer-events-auto min-w-0"
@@ -44,7 +54,14 @@ export function HeroCaseFiles({ proofs }: { proofs: Work[] }) {
           key={activeProof.title}
         >
           <article className="hero-case-card">
-            <Image src={activeProof.image} alt="" fill sizes="(min-width: 768px) 42vw, 90vw" className="object-cover" />
+            <Image
+              src={currentImage}
+              alt=""
+              fill
+              sizes="(min-width: 768px) 42vw, 90vw"
+              className="object-cover"
+              onError={() => setImgError(true)}
+            />
             <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#061524] via-[#061524]/55 to-[#061524]/10" />
             <div className="relative z-10 flex min-h-[21rem] flex-col p-5 sm:min-h-[24rem] sm:p-7">
               <div className="flex items-start justify-between gap-3">
