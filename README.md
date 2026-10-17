@@ -3,7 +3,7 @@
 Next.js 16 (App Router) · Payload CMS 3 · Tailwind v4 · Motion. Hosted on **Vercel**,
 with the database on **Neon** (Postgres) and uploaded images on **Cloudinary**.
 
-## Current status: preview mode
+## Current status: preview 
 
 The site deploys and runs with **no configuration at all**. Until `DATABASE_URI` is set:
 
