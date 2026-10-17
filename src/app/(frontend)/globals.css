@@ -4,9 +4,7 @@
    Design tokens — Rightium, editorial evidence.
 
    Deep navy carries the brand, paper carries the reading, and a
-   single teal accent marks every place a decision gets made. Type
-   is Newsreader (a serif with real italics, for display and pull
-   quotes) over IBM Plex Sans (for running text and UI).
+   single teal accent marks every place a decision gets made. IBM Plex Sans provides a consistent professional voice for headings and UI.
 
    Nothing is rounded. Rules, not cards with soft corners: the
    layout reads as a document, which is what the firm sells.
@@ -81,7 +79,7 @@
   --color-deep-ink-3: var(--deep-ink-3);
 
   --font-sans: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-serif: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
@@ -127,18 +125,16 @@ html.lenis body {
 }
 
 /* ── Type ─────────────────────────────────────────────────────
-   Newsreader is set at weight 400 throughout — the design leans on
-   size and italic, never on bold, which is what keeps a serif from
-   looking like a brochure.
+   IBM Plex Sans keeps headings precise and consistent with the interface.
    ───────────────────────────────────────────────────────────── */
 
 .font-serif {
-  font-family: var(--font-newsreader), Georgia, serif;
+  font-family: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
   font-weight: 400;
 }
 
 .display-hero {
-  font-family: var(--font-newsreader), Georgia, serif;
+  font-family: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
   font-weight: 400;
   font-size: clamp(2.6rem, 6.4vw, 6.25rem);
   line-height: 0.98;
@@ -146,7 +142,7 @@ html.lenis body {
 }
 
 .display-page {
-  font-family: var(--font-newsreader), Georgia, serif;
+  font-family: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
   font-weight: 400;
   font-size: clamp(2.1rem, 9vw, 3.25rem);
   line-height: 1.02;
@@ -160,7 +156,7 @@ html.lenis body {
 }
 
 .display-lg {
-  font-family: var(--font-newsreader), Georgia, serif;
+  font-family: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
   font-weight: 400;
   font-size: clamp(2rem, 4.2vw, 3.75rem);
   line-height: 1.05;
@@ -168,7 +164,7 @@ html.lenis body {
 }
 
 .display-md {
-  font-family: var(--font-newsreader), Georgia, serif;
+  font-family: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
   font-weight: 400;
   font-size: clamp(1.8rem, 3.4vw, 3rem);
   line-height: 1.08;
@@ -176,7 +172,7 @@ html.lenis body {
 }
 
 .display-sm {
-  font-family: var(--font-newsreader), Georgia, serif;
+  font-family: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
   font-weight: 400;
   font-size: clamp(1.5rem, 2.3vw, 2.1rem);
   line-height: 1.2;
@@ -185,13 +181,13 @@ html.lenis body {
 
 /* The italic accent clause inside a display line. */
 .accent-em {
-  font-style: italic;
+  font-style: normal;
   color: var(--accent);
 }
 
 .on-deep .accent-em,
 .accent-em-bright {
-  font-style: italic;
+  font-style: normal;
   color: var(--accent-bright);
 }
 
@@ -552,3 +548,63 @@ textarea.field {
     scroll-behavior: auto !important;
   }
 }
+
+/* Cinematic invention: one sculptural object, the existing navy / teal world. */
+.evidence-hero { background: var(--deep); }
+.evidence-hero::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 78% 43%, #15445b 0%, #0f2f4c55 29%, transparent 65%); }
+.evidence-hero-grid { position: relative; display: grid; grid-template-columns: 1fr 1.13fr; align-items: center; gap: 0; min-height: min(850px, 94svh); padding-top: calc(var(--nav-h) + 2rem); padding-bottom: 3rem; }
+.evidence-hero-copy { position: relative; z-index: 2; padding-bottom: 1rem; }
+.hero-title { font-family: var(--font-plex), sans-serif; font-size: clamp(3rem, 5.1vw, 5rem); font-weight: 500; line-height: 1.045; letter-spacing: -.04em; }
+.hero-title > span { color: var(--accent-bright); }
+.hero-description { max-width: 40ch; margin-top: 1.75rem; font-size: 1rem; line-height: 1.75; color: var(--deep-ink-2); }
+.hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-top: 2rem; }
+.hero-actions > a:first-child { background: var(--accent-bright); color: var(--deep-ink-well); border-color: var(--accent-bright); }
+.hero-actions > a:first-child:hover { background: #8de1e8; border-color: #8de1e8; }
+.hero-services { display: inline-flex; align-items: center; gap: .5rem; font-size: .8rem; padding-block: .7rem; border-bottom: 1px solid #ffffff40; transition: color .2s; }
+.hero-services:hover { color: var(--accent-bright); }
+.hero-location { margin-top: 2rem; font-size: .68rem; line-height: 1.8; color: #a4b9c8; }
+.hero-location span { margin-inline: .5rem; }
+.invention { position: relative; height: 620px; min-width: 0; margin-left: -1rem; margin-right: -4rem; }
+.invention-stage { position: absolute; inset: -1rem -2rem 2rem -2rem; }
+.invention-stage canvas { display: block; position: relative; width: 100%; height: 100%; opacity: 0; transition: opacity .8s; }
+.invention[data-ready="true"] canvas { opacity: 1; }
+.invention-fallback { position: absolute; inset: 0; display: grid; place-items: center; transition: opacity .5s; }
+.invention[data-ready="true"] .invention-fallback { opacity: 0; }
+.fallback-assembly { position: relative; width: 320px; height: 420px; transform: rotate(-24deg); }
+.fallback-ring { position: absolute; left: 5%; width: 90%; height: 95px; border: 16px solid #b7cbd2; border-bottom-color: #567786; border-right-color: #7696a4; border-radius: 50%; background: #0a1f33; box-shadow: 0 13px 0 #496777, 0 16px 0 #112d3e, 12px 30px 35px #06152466; transition: top 1.2s cubic-bezier(.16,1,.3,1); }
+.fallback-ring-top { top: 0; }
+.fallback-ring-iris { top: 90px; width: 80%; left: 10%; border-width: 23px; border-color: #507786; border-top-color: #a4bac4; }
+.fallback-ring-lens { top: 185px; width: 73%; left: 13.5%; border-width: 4px; border-color: #3cc4cf; background: radial-gradient(ellipse at 30% 20%, #81e4ec, #137c8d 25%, #0d3c52 65%); box-shadow: 0 5px 0 #00a8b6, 5px 25px 30px #06152466; }
+.fallback-ring-fins { top: 275px; border-width: 20px; border-color: #6c8c9b; box-shadow: 0 8px 0 #324f61, 0 12px 0 #99b2be, 0 18px 0 #324f61; }
+.fallback-ring-base { top: 360px; border-top-color: #3cc4cf; }
+.evidence-hero :focus-visible { outline: 2px solid var(--accent-bright); outline-offset: 5px; }
+@media (min-width: 1500px) { .invention { margin-right: -6rem; } }
+@media (min-width: 768px) and (max-width: 1023px) { .evidence-hero-grid { min-height: 760px; grid-template-columns: 1fr 1fr; } .hero-title { font-size: clamp(2.5rem, 5vw, 3.1rem); } .invention { height: 560px; margin-right: -1rem; } .invention-stage { inset: 0 0 2rem; } .fallback-assembly { transform: rotate(-24deg) scale(.8); } .hero-description { font-size: .95rem; } }
+@media (max-width: 767px) {
+  .evidence-hero-grid { grid-template-columns: 1fr; min-height: auto; gap: 0; padding-top: calc(var(--nav-h) + 2.7rem); padding-bottom: 1.8rem; }
+  .hero-title { font-size: clamp(2.7rem, 8.7vw, 4.4rem); }
+  .hero-description { font-size: .94rem; max-width: 43ch; margin-top: 1.4rem; }
+  .hero-actions { gap: 1.3rem; margin-top: 1.5rem; }
+  .hero-location { margin-top: 1.5rem; }
+  .invention { height: 520px; margin: 1.5rem -.6rem 0; }
+  .invention-stage { inset: 0 0 3rem; }
+  .fallback-assembly { width: min(68vw, 320px); height: 400px; transform: rotate(-24deg) scale(.9); }
+  .fallback-ring { height: 85px; }
+}
+@media (max-width: 420px) { .hero-services { font-size: .75rem; } }
+
+.hero-counter-band { position: relative; border-top: 1px solid var(--deep-line); background: #06152466; }
+.hero-counters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem; padding-block: 1.8rem; }
+.hero-counter { display: flex; flex-direction: column; gap: .6rem; border-left: 1px solid var(--deep-line); padding-left: 1.25rem; }
+.hero-counter-value { font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 500; line-height: 1; letter-spacing: -.03em; }
+.hero-counter > span:last-child { font-size: .75rem; line-height: 1.5; color: #a4b9c8; }
+@media (max-width: 767px) { .hero-counters { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem 1rem; } .hero-counter { padding-left: .8rem; } }
+
+.optical-field { position: absolute; inset: 0; overflow: hidden; pointer-events: none; background: radial-gradient(ellipse at 85% 25%, #0e4557 0%, transparent 60%), var(--deep); }
+.optical-field canvas { display: block; width: 100%; height: 100%; }
+.optical-field-veil { position: absolute; inset: 0; background: linear-gradient(90deg, #0a1f33f5 0%, #0a1f33c9 30%, #0a1f3340 55%, transparent 75%), linear-gradient(0deg, #0a1f33 0%, transparent 20%); }
+@media (max-width: 767px) { .optical-field-veil { background: linear-gradient(180deg, #0a1f33e6 0%, #0a1f33c9 32%, transparent 62%, #0a1f3380 100%); } }
+
+/* Let the optical surface reach the transparent navigation, then shade the copy. */
+.optical-field-veil { mask-image: linear-gradient(to bottom, transparent, #000 190px); }
+@media (max-width: 767px) { .optical-field-veil { mask-image: linear-gradient(to bottom, transparent, #000 105px); } }

@@ -32,7 +32,7 @@ export default async function HomePage() {
   const proofs = await getWorks();
   return (
     <>
-      <Hero proofs={proofs} />
+      <Hero />
       <Statement />
       <ServicesSection />
       <Why />

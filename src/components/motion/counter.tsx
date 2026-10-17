@@ -14,24 +14,22 @@ export function Counter({
   value,
   suffix = "",
   duration = 1600,
+  margin = "-15% 0px",
   className,
 }: {
   value: number;
   suffix?: string;
   duration?: number;
+  margin?: "0px" | "-15% 0px";
   className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-15% 0px" });
+  const inView = useInView(ref, { once: true, margin });
   const reduce = useReducedMotion();
   const [display, setDisplay] = useState(0);
 
   useEffect(() => {
-    if (!inView) return;
-    if (reduce) {
-      setDisplay(value);
-      return;
-    }
+    if (!inView || reduce) return;
 
     let frame = 0;
     const start = performance.now();
@@ -50,7 +48,7 @@ export function Counter({
 
   return (
     <span ref={ref} className={className} style={{ fontVariantNumeric: "tabular-nums" }}>
-      {display.toLocaleString("en-US")}
+      {(reduce ? value : display).toLocaleString("en-US")}
       {suffix}
     </span>
   );
