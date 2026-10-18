@@ -5,7 +5,7 @@ with the database on **Neon** (Postgres) and uploaded images on **Cloudinary**.
 
 ## Current status: preview 
 
-The site deploys and runs with **no configuration at all**. Until `DATABASE_URI` is set:
+The site deploys and runs with **no configuration at all**. Until `DATABASE_URI` is set:-
 
 - Insights show the built-in launch articles (`src/seed/insights.ts`).
 - `/admin`, the Payload API and draft preview return 404 (`src/proxy.ts`).
