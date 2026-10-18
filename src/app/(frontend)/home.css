@@ -1,0 +1,130 @@
+/* Slate & Glacier is scoped to the home route, including its shared chrome.
+   :has also restores the incumbent theme immediately on client navigation. */
+body:has(.home-slate) {
+  --paper: #f1f5f5;
+  --surface: #e7eeee;
+  --surface-2: #d9e5e5;
+  --ink: #202f3d;
+  --ink-heading: #202f3d;
+  --ink-body: #374f60;
+  --ink-2: #49667c;
+  --line: #202f3d1f;
+  --line-strong: #202f3d33;
+  --accent: #49667c;
+  --accent-hover: #354f63;
+  --accent-bright: #a5d6ca;
+  --accent-soft: #dceee9;
+  --deep: #202f3d;
+  --deep-lift: #304858;
+  --deep-ink-well: #192733;
+  --deep-ink: #f1f5f5;
+  --deep-ink-2: #d2dfe4;
+  --deep-ink-3: #adc2cb;
+  --deep-line: #a5d6ca40;
+  background: var(--paper);
+  scrollbar-color: #49667c #f1f5f5;
+  caret-color: var(--accent);
+}
+
+body:has(.home-slate) ::selection { background: #a5d6ca; color: #202f3d; }
+body:has(.home-slate) :focus-visible { outline: 2px solid #49667c; outline-offset: 5px; }
+body:has(.home-slate) .on-deep :focus-visible,
+body:has(.home-slate) footer :focus-visible { outline-color: #a5d6ca; }
+body:has(.home-slate) .font-serif,
+.home-slate :is(.display-lg, .display-md, .display-sm) {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-weight: 450;
+  letter-spacing: -.025em;
+}
+body:has(.home-slate) header { background: #f1f5f5; backdrop-filter: none; }
+body:has(.home-slate) footer { background: #202f3d; }
+body:has(.home-slate) footer > [aria-hidden="true"] { display: none; }
+
+.home-slate .evidence-hero { background: #f1f5f5; color: #202f3d; }
+.home-slate .evidence-hero::before { display: none; }
+.home-slate .evidence-hero-grid {
+  grid-template-columns: 1.2fr 1fr;
+  align-items: stretch;
+  gap: 4rem;
+  min-height: 760px;
+  padding-top: calc(var(--nav-h) + 3rem);
+  padding-bottom: 3rem;
+}
+.home-slate .evidence-hero-copy { padding-block: 1.5rem; align-self: center; }
+.home-slate .hero-title {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-weight: 450;
+  font-size: clamp(3.5rem, 5.3vw, 5.5rem);
+  letter-spacing: -.035em;
+  line-height: .99;
+}
+.home-slate .hero-title > span { color: #49667c; }
+.home-slate .hero-description { color: #49667c; max-width: 45ch; line-height: 1.7; }
+.home-slate .hero-actions { gap: 1.4rem; }
+.home-slate .hero-actions > a:first-child { background: #49667c; border-color: #49667c; color: #fff; }
+.home-slate .hero-actions > a:first-child:hover { background: #354f63; border-color: #354f63; }
+.home-slate .hero-services { color: #202f3d; border-color: #49667c66; }
+.home-slate .hero-services:hover { color: #49667c; }
+.home-slate .hero-location { color: #49667c; font-size: .75rem; }
+
+.glacier-panel {
+  background: #a5d6ca;
+  color: #202f3d;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 0;
+}
+.home-slate .invention {
+  width: 100%;
+  height: 600px;
+  margin: 0;
+}
+.home-slate .invention-stage { inset: 0 0 3.5rem; }
+.home-slate .invention-callouts { color: #202f3d; }
+.home-slate .invention > button {
+  color: #202f3d;
+  border-color: #202f3d66;
+  background: #a5d6ca;
+}
+.home-slate .invention > button:hover { background: #dceee9; border-color: #202f3d; }
+.home-slate .hero-counter-band { background: #202f3d; color: #f1f5f5; border: 0; }
+.home-slate .hero-counters { padding-block: 1.75rem; }
+.home-slate .hero-counter-value { font-family: var(--font-newsreader), Georgia, serif; font-weight: 450; }
+.home-slate .hero-counter > span:last-child { color: #d2dfe4; }
+
+/* Flat slate fields and generous editorial type carry the selected sheet
+   through the existing sections without changing their content or behavior. */
+.home-slate .deep-field { background: #202f3d; }
+.home-slate .deep-field::before,
+.home-slate .deep-field > [aria-hidden="true"] { display: none; }
+.home-slate .eyebrow { letter-spacing: .08em; }
+.home-slate .plate-banner { background: #202f3d; box-shadow: none; }
+.home-slate .plate-banner > img,
+.home-slate .plate-banner > [aria-hidden="true"] { display: none; }
+.home-slate .plate-banner::after { background: none; }
+.home-slate .plate-banner .eyebrow,
+body:has(.home-slate) footer .eyebrow { color: #a5d6ca; }
+.home-slate .plate:not(.plate-banner)::after { background: #202f3d80; }
+.home-slate a { text-underline-offset: .25em; }
+
+@media (min-width: 768px) and (max-width: 1100px) {
+  .home-slate .evidence-hero-grid { gap: 2rem; min-height: 700px; }
+  .home-slate .hero-title { font-size: clamp(3rem, 5.5vw, 4rem); }
+  .home-slate .invention { height: 550px; }
+}
+@media (max-width: 767px) {
+  .home-slate .evidence-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    min-height: auto;
+    padding-top: calc(var(--nav-h) + 2rem);
+    padding-bottom: 1.5rem;
+  }
+  .home-slate .evidence-hero-copy { padding: 0; }
+  .home-slate .hero-title { font-size: clamp(2.7rem, 9.4vw, 4.5rem); }
+  .home-slate .hero-description { max-width: 44ch; }
+  .home-slate .hero-actions { gap: .75rem 1.25rem; }
+  .home-slate .invention { height: 500px; }
+}

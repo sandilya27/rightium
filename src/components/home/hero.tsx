@@ -2,13 +2,11 @@ import Link from "next/link";
 import { stats } from "@/lib/site";
 import { ArrowRight, ButtonLink } from "@/components/ui/button";
 import { Counter } from "@/components/motion/counter";
-import { OpticalField } from "@/components/home/optical-field";
 import { InventionScene } from "@/components/home/invention-scene";
 
 export function Hero() {
   return (
     <section className="evidence-hero relative isolate overflow-hidden bg-deep text-white">
-      <OpticalField />
       <div className="shell evidence-hero-grid">
         <div className="evidence-hero-copy">
           <h1 className="hero-title">Ideas move<br />the world.<br /><span>Evidence moves<br />them forward.</span></h1>
@@ -19,7 +17,9 @@ export function Hero() {
           </div>
           <p className="hero-location">Bengaluru, India <span aria-hidden>—</span> Research across 90+ jurisdictions</p>
         </div>
-        <InventionScene />
+        <div className="glacier-panel">
+          <InventionScene />
+        </div>
       </div>
       <div className="hero-counter-band">
         <div className="shell hero-counters">

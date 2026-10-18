@@ -12,6 +12,7 @@ import { Testimonials } from "@/components/home/testimonials";
 import { FAQ } from "@/components/home/faq";
 import { Insights } from "@/components/home/insights";
 import { CTA } from "@/components/site/cta";
+import "./home.css";
 
 // The Insights section reads the CMS. Publishing purges this page; the
 // timer is a safety net.
@@ -24,14 +25,14 @@ export const metadata: Metadata = pageMetadata({
 });
 
 /**
- * Home. Navy and paper sections alternate so the brand frames the
+ * Home. Slate and cool-white sections alternate so the brand frames the
  * reading: hero → manifesto → practice index → reasons → process →
  * case studies → voices → FAQ → insights → ask.
  */
 export default async function HomePage() {
   const proofs = await getWorks();
   return (
-    <>
+    <div className="home-slate">
       <Hero />
       <Statement />
       <ServicesSection />
@@ -42,6 +43,6 @@ export default async function HomePage() {
       <FAQ />
       <Insights />
       <CTA />
-    </>
+    </div>
   );
 }

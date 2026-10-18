@@ -58,7 +58,7 @@ export function Header() {
 
   // Solid whenever the page has moved, a panel is open, or the mobile
   // drawer is up — in all three cases the bar is no longer over hero art.
-  const solid = scrolled || menuOpen || drawerOpen;
+  const solid = pathname === "/" || scrolled || menuOpen || drawerOpen;
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);

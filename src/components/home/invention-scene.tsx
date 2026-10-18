@@ -7,6 +7,9 @@ import type { BufferGeometry, NormalBufferAttributes } from "three";
 export function InventionScene() {
   const host = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
+  const callouts = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     const element = host.current;
@@ -45,9 +48,9 @@ export function InventionScene() {
 
       const silver = new THREE.MeshStandardMaterial({ color: 0xa6bac3, metalness: 0.96, roughness: 0.23 });
       const dark = new THREE.MeshStandardMaterial({ color: 0x142d3d, metalness: 0.87, roughness: 0.29 });
-      const teal = new THREE.MeshStandardMaterial({ color: 0x00a8b6, metalness: 0.72, roughness: 0.19 });
-      const light = new THREE.MeshStandardMaterial({ color: 0x3cc4cf, emissive: 0x00a8b6, emissiveIntensity: 2, metalness: 0.3, roughness: 0.2 });
-      const glass = new THREE.MeshPhysicalMaterial({ color: 0x158b9c, metalness: 0.35, roughness: 0.08, clearcoat: 1, transparent: true, opacity: 0.7, side: THREE.DoubleSide });
+      const teal = new THREE.MeshStandardMaterial({ color: 0x49667c, metalness: 0.72, roughness: 0.19 });
+      const light = new THREE.MeshStandardMaterial({ color: 0xa5d6ca, emissive: 0x49667c, emissiveIntensity: 2, metalness: 0.3, roughness: 0.2 });
+      const glass = new THREE.MeshPhysicalMaterial({ color: 0xa5d6ca, metalness: 0.35, roughness: 0.08, clearcoat: 1, transparent: true, opacity: 0.7, side: THREE.DoubleSide });
       const materials = [silver, dark, teal, light, glass];
       const assembly = new THREE.Group();
       assembly.rotation.set(0.12, -0.22, -0.34);
@@ -118,15 +121,23 @@ export function InventionScene() {
       const key = new THREE.DirectionalLight(0xffffff, 4);
       key.position.set(3, 6, 5);
       scene.add(key);
-      const rim = new THREE.PointLight(0x00a8b6, 24, 12);
+      const rim = new THREE.PointLight(0xa5d6ca, 24, 12);
       rim.position.set(0, 0, -3);
       scene.add(rim);
 
+      let labelLeft = 40;
+      let labelRight = 900;
+      let needsRender = true;
       const resize = () => {
-        const { width, height } = element.getBoundingClientRect();
+        const { width, height, left, right } = element.getBoundingClientRect();
+        // The oversized stage extends past the hero. Keep annotations inside
+        // its intersection with the viewport, rather than the canvas bounds.
+        labelLeft = Math.max(32, (24 - left) / Math.max(width, 1) * 1000);
+        labelRight = Math.min(968, (Math.min(right, document.documentElement.clientWidth) - 24 - left) / Math.max(width, 1) * 1000);
         renderer.setSize(width, height);
         camera.aspect = width / Math.max(height, 1);
         camera.updateProjectionMatrix();
+        needsRender = true;
       };
       const resizeObserver = new ResizeObserver(resize);
       resizeObserver.observe(element);
@@ -135,45 +146,68 @@ export function InventionScene() {
       let reducedMotion = motionPreference.matches;
       const preferenceChanged = () => { reducedMotion = motionPreference.matches; };
       motionPreference.addEventListener("change", preferenceChanged);
-      const pointer = { x: 0, y: 0 };
-      const move = (event: PointerEvent) => {
-        const box = element.getBoundingClientRect();
-        pointer.x = Math.max(-0.5, Math.min(0.5, (event.clientX - box.left) / box.width - 0.5));
-        pointer.y = Math.max(-0.5, Math.min(0.5, (event.clientY - box.top) / box.height - 0.5));
-      };
-      const leave = () => { pointer.x = 0; pointer.y = 0; };
-      const interactionSurface = element.closest("section") ?? element;
-      interactionSurface.addEventListener("pointermove", move as EventListener);
-      interactionSurface.addEventListener("pointerleave", leave);
+      const anchor = new THREE.Vector3();
+      const calloutNodes = callouts.current?.querySelectorAll<SVGGElement>("g[data-layer]");
       let visible = true;
       const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; });
       observer.observe(element);
       let frame = 0;
       let elapsed = 0;
       let last = performance.now();
-      let spread = reducedMotion ? 1 : 0;
       let firstFrame = true;
+      const ease = (value: number) => {
+        const t = Math.max(0, Math.min(1, value));
+        return t * t * t * (t * (t * 6 - 15) + 10);
+      };
       function render(now: number) {
         if (disposed) return;
         frame = requestAnimationFrame(render);
         const dt = Math.min((now - last) / 1000, 0.05);
         last = now;
         if (!visible || document.hidden) return;
-        const animate = !reducedMotion;
+        const animate = !reducedMotion && !pausedRef.current;
         if (animate) elapsed += dt;
-        const target = 1;
-        spread = reducedMotion ? target : spread + (target - spread) * (1 - Math.exp(-dt * 2.4));
+        if (pausedRef.current && !reducedMotion && !firstFrame && !needsRender) return;
+        // Exploded spin → horizontal assembly → upright separation → annotation hold.
+        // Whole turns reset to the same pose, so the clock wraps without a jump.
+        const phase = elapsed % 16;
+        const spin = ease((phase - 0.4) / 1.7) * Math.PI * 2;
+        const horizontal = ease((phase - 2.3) / 2) * (1 - ease((phase - 6) / 2));
         layers.forEach((layer, index) => {
+          const delay = Math.abs(index - 2) * 0.14;
+          const spread = reducedMotion ? 1
+            : 1 - ease((phase - 2.4 - delay) / 1.6)
+              * (1 - ease((phase - 7 - delay) / 1.8));
           layer.position.y = (index - 2) * (0.34 + spread * 0.9);
+          layer.rotation.y = (index - 2) * spread * 0.12;
         });
-        const targetY = -0.22 + elapsed * 0.12 + (animate ? pointer.x * 1.4 : 0);
-        const targetX = 0.12 + (animate ? pointer.y * 0.65 : 0);
-        assembly.rotation.y += (targetY - assembly.rotation.y) * (1 - Math.exp(-dt * 4));
-        assembly.rotation.x += (targetX - assembly.rotation.x) * (1 - Math.exp(-dt * 4));
-        const targetZ = -0.34 + (animate ? pointer.x * 0.18 : 0);
-        assembly.rotation.z += (targetZ - assembly.rotation.z) * (1 - Math.exp(-dt * 4));
-        assembly.position.y = animate ? Math.sin(elapsed * 0.65) * 0.055 : 0;
+        assembly.rotation.set(0.12, -0.22 + (reducedMotion ? 0 : spin), reducedMotion ? -0.12 : -0.12 - horizontal * Math.PI / 2);
+        assembly.position.y = 0;
+        assembly.updateMatrixWorld(true);
+        calloutNodes?.forEach((node) => {
+          const index = Number(node.dataset.layer);
+          const opacity = reducedMotion ? 1
+            : ease((phase - 9.2 - (4 - index) * 0.14) / 0.5) * (1 - ease((phase - 15) / 0.6));
+          node.style.opacity = String(opacity);
+          // Project the actual layer rim so leaders remain attached on resize.
+          anchor.set(index % 2 ? -1.25 : 1.25, 0, 0);
+          layers[index].localToWorld(anchor);
+          anchor.project(camera);
+          const x = (anchor.x + 1) * 500;
+          const y = (1 - anchor.y) * 500;
+          const left = index % 2 === 1;
+          const endX = left ? labelLeft : labelRight;
+          const elbowX = left ? endX + 70 : endX - 70;
+          node.querySelector("polyline")?.setAttribute("points", `${x},${y} ${elbowX},${y} ${endX},${y}`);
+          node.querySelector("circle")?.setAttribute("cx", String(x));
+          node.querySelector("circle")?.setAttribute("cy", String(y));
+          const text = node.querySelector("text");
+          text?.setAttribute("x", String(endX));
+          text?.setAttribute("y", String(y - 14));
+          text?.setAttribute("text-anchor", left ? "start" : "end");
+        });
         renderer.render(scene, camera);
+        needsRender = false;
         if (firstFrame) { firstFrame = false; setReady(true); }
       }
       frame = requestAnimationFrame(render);
@@ -184,8 +218,6 @@ export function InventionScene() {
         observer.disconnect();
         resizeObserver.disconnect();
         motionPreference.removeEventListener("change", preferenceChanged);
-        interactionSurface.removeEventListener("pointermove", move as EventListener);
-        interactionSurface.removeEventListener("pointerleave", leave);
         renderer.domElement.removeEventListener("webglcontextlost", lost);
         geometries.forEach((geometry) => geometry.dispose());
         materials.forEach((material) => material.dispose());
@@ -200,7 +232,16 @@ export function InventionScene() {
 
   return (
     <div className="invention" data-ready={ready}>
-      <div className="invention-stage" ref={host} role="img" aria-label="Conceptual optical invention: five precision-engineered layers suspended in an exploded assembly">
+      <div className="invention-stage" ref={host} role="img" aria-label="Conceptual assembly representing Rightium's patent search, IP intelligence, prosecution, licensing and IP consulting services">
+        <svg ref={callouts} className="invention-callouts" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">
+          {["IP Consulting", "Licensing", "Patent Prosecution", "IP Intelligence", "Patent Search"].map((label, index) => (
+            <g key={label} data-layer={index} opacity="0">
+              <polyline fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+              <circle r="4" fill="currentColor" />
+              <text fill="currentColor">{label}</text>
+            </g>
+          ))}
+        </svg>
         <div className="invention-fallback" aria-hidden="true">
           <div className="fallback-assembly">
             <div className="fallback-ring fallback-ring-top" />
@@ -211,6 +252,19 @@ export function InventionScene() {
           </div>
         </div>
       </div>
+      {ready && (
+        <button
+          type="button"
+          className="absolute bottom-3 right-6 z-10 rounded-full border border-white/30 px-4 py-2 text-xs text-white/80 transition-colors hover:border-white/60 hover:text-white motion-reduce:hidden"
+          aria-pressed={paused}
+          onClick={() => {
+            pausedRef.current = !pausedRef.current;
+            setPaused(pausedRef.current);
+          }}
+        >
+          {paused ? "Resume animation" : "Pause animation"}
+        </button>
+      )}
     </div>
   );
 }
