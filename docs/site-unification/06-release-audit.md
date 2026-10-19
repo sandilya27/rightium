@@ -1,6 +1,6 @@
 # Phase 6 — Whole-site hardening and release review
 
-Dependency: phases 1–5. Status: pending.
+Dependency: phases 1–5. Status: hardening implemented 20 October 2026; release gate open for documented validation limits.
 
 ## Implementation prompt
 
@@ -16,3 +16,9 @@ Use $impeccable, read all phase evidence and the route matrix, and implement pha
 ## Completion gate
 
 Write `docs/site-unification/validation-report.md` with route coverage, screenshots, accessibility checks, actual performance results, commands/results, residual limitations and homepage comparison. Update each phase status only when its gate passed. No unverified claim of all-page success. If all gates pass, summarize the completed work and any material limitations. Leave deployment/push for explicit user instruction; any requested commit must omit co-author trailers.
+
+## Phase 6 record — 20 October 2026
+
+Implemented keyboard navigation/focus containment, removed retired hero dependencies, stabilized contact confirmation height, and aligned generated sharing/icon colors. No redesign or homepage composition change. Added read-only release checks and a loopback QA harness. Production build (migration hook bypassed), typecheck, lint (four baseline warnings), 17 tests and 24-page production SEO crawl pass. Interior initial script payload reduced by about 205 KB gzip. Final detector: nine advisory typography notes, zero non-advisory findings.
+
+See [validation-report.md](validation-report.md) for exact routes, screenshots, measured performance and superseded/stale captures. Single local home LCP sample is 3332ms; no valid field INP or same-condition phase 1 performance baseline exists. Authenticated content-state, hardware/assistive-technology, full desktop capture and instrumented lifecycle checks remain open. Therefore this phase is **implemented with verification limits, not release-approved**. No commit/push/deployment/indexing changes or database migrations.

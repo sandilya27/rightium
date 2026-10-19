@@ -17,7 +17,7 @@ This folder is a planning packet, not an implementation or a replacement for PRO
 | 3 | [Services](03-services.md) | Services index and all seven service pages | Implemented; evidence/limits in phase record |
 | 4 | [About and contact](04-about-contact.md) | Company narrative and complete enquiry flow | Implemented; evidence/limits in phase record |
 | 5 | [Reading and utility pages](05-reading-utility.md) | Insights, articles, work, legal pages, both 404 paths | Implemented; evidence/limits in phase record |
-| 6 | [Release audit](06-release-audit.md) | Whole-site visual, functional, accessibility, performance and SEO checks | Pending |
+| 6 | [Release audit](06-release-audit.md) | Whole-site visual, functional, accessibility, performance and SEO checks | Hardening implemented; release gate open — [validation report](validation-report.md) |
 
 Start a phase by copying its prompt into chat. Read this file, the route matrix, and prior phase evidence first. Finish only that phase; record files changed, screenshots, checks, unresolved issues, and the next handoff in that phase document. Do not mark a gate passed without evidence. Commit/push only when requested; commits must have no co-author trailer.
 

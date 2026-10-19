@@ -15,14 +15,13 @@ export default function AppleIcon() {
           justifyContent: "center",
           gap: 8,
           paddingBottom: 44,
-          backgroundColor: "#0a1f33",
-          backgroundImage: "linear-gradient(135deg, #0f2f4c, #061524)",
+          backgroundColor: "#202f3d",
           color: "#ffffff",
           fontFamily: "serif",
         }}
       >
         <span style={{ fontSize: 104, lineHeight: 1 }}>R</span>
-        <span style={{ width: 18, height: 18, backgroundColor: "#00a8b6", marginBottom: 12 }} />
+        <span style={{ width: 18, height: 18, backgroundColor: "#a5d6ca", marginBottom: 12 }} />
       </div>
     ),
     size,

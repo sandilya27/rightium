@@ -20,6 +20,7 @@ export function ContactForm() {
   const reduce = useReducedMotion();
   const submitting = useRef(false);
   const feedback = useRef<HTMLDivElement>(null);
+  const [confirmationHeight, setConfirmationHeight] = useState<number>();
 
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Errors>({});
@@ -85,6 +86,7 @@ export function ContactForm() {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(body.error ?? "Failed");
       }
+      setConfirmationHeight(form.getBoundingClientRect().height);
       setStatus("success");
       capture("enquiry_submitted", {
         service: data.service || "Not sure yet",
@@ -122,6 +124,7 @@ export function ContactForm() {
             ref={feedback}
             tabIndex={-1}
             aria-label="Brief received"
+            style={{ minHeight: confirmationHeight }}
             onAnimationComplete={() => feedback.current?.focus()}
             initial={{ opacity: 0, transform: reduce ? "none" : "scale(0.97)" }}
             animate={{ opacity: 1, transform: "scale(1)" }}
@@ -146,7 +149,7 @@ export function ContactForm() {
             <Button
               variant="outline"
               className="mt-8"
-              onClick={() => setStatus("idle")}
+              onClick={() => { setStatus("idle"); setConfirmationHeight(undefined); }}
             >
               Send another brief
             </Button>

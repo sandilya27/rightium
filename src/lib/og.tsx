@@ -21,9 +21,7 @@ export function renderOgImage({ eyebrow, title }: { eyebrow: string; title: stri
           justifyContent: "space-between",
           padding: "72px 80px",
           color: "#ffffff",
-          backgroundColor: "#0a1f33",
-          backgroundImage:
-            "radial-gradient(circle at 85% 40%, rgba(0,168,182,0.28), transparent 55%), linear-gradient(135deg, #0f2f4c 0%, #0a1f33 55%, #061524 100%)",
+          backgroundColor: "#202f3d",
           fontFamily: "sans-serif",
         }}
       >
@@ -31,7 +29,7 @@ export function renderOgImage({ eyebrow, title }: { eyebrow: string; title: stri
           <span style={{ fontSize: 44, fontWeight: 500, letterSpacing: "-0.01em" }}>
             {site.name}
           </span>
-          <span style={{ width: 12, height: 12, backgroundColor: "#00a8b6", marginBottom: 8 }} />
+          <span style={{ width: 12, height: 12, backgroundColor: "#a5d6ca", marginBottom: 8 }} />
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
@@ -40,7 +38,7 @@ export function renderOgImage({ eyebrow, title }: { eyebrow: string; title: stri
               fontSize: 24,
               textTransform: "uppercase",
               letterSpacing: "0.14em",
-              color: "#3cc4cf",
+              color: "#a5d6ca",
             }}
           >
             {eyebrow}
@@ -63,7 +61,7 @@ export function renderOgImage({ eyebrow, title }: { eyebrow: string; title: stri
             display: "flex",
             gap: 40,
             fontSize: 24,
-            color: "rgba(255,255,255,0.7)",
+            color: "#d2dfe4",
             borderTop: "1px solid rgba(255,255,255,0.18)",
             paddingTop: 28,
           }}

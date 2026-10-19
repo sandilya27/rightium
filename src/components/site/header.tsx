@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { nav, site } from "@/lib/site";
 import { serviceCount, services } from "@/lib/services";
@@ -24,6 +24,9 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerServices, setDrawerServices] = useState(false);
+  const menuTrigger = useRef<HTMLAnchorElement>(null);
+  const drawerTrigger = useRef<HTMLButtonElement>(null);
+  const drawer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -44,11 +47,35 @@ export function Header() {
     }
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setDrawerOpen(false);
+    const background = [...document.querySelectorAll<HTMLElement>("main, footer")];
+    const previousInert = background.map((element) => element.inert);
+    background.forEach((element) => { element.inert = true; });
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setDrawerOpen(false);
+        drawerTrigger.current?.focus();
+      }
+      if (e.key === "Tab") {
+        const controls = [drawerTrigger.current, ...Array.from(drawer.current?.querySelectorAll<HTMLElement>("a[href], button") ?? [])]
+          .filter((element): element is HTMLElement => !!element && element.getClientRects().length > 0);
+        const first = controls[0];
+        const last = controls.at(-1);
+        if (e.shiftKey && (document.activeElement === first || !controls.includes(document.activeElement as HTMLElement))) {
+          e.preventDefault(); last?.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault(); first?.focus();
+        }
+      }
+    };
+    const onResize = () => { if (window.innerWidth >= 1024) setDrawerOpen(false); };
     window.addEventListener("keydown", onKey);
+    window.addEventListener("resize", onResize);
     return () => {
       document.body.style.overflow = prev;
+      background.forEach((element, index) => { element.inert = previousInert[index]; });
       window.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", onResize);
     };
   }, [drawerOpen]);
 
@@ -68,6 +95,12 @@ export function Header() {
 
       <header
         onMouseLeave={() => setMenuOpen(false)}
+        onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setMenuOpen(false); }}
+        onKeyDown={(event) => {
+          if (event.key === "Escape" && menuOpen) {
+            event.preventDefault(); setMenuOpen(false); menuTrigger.current?.focus();
+          }
+        }}
         data-at-rest={!(scrolled || menuOpen || drawerOpen)}
         className={cn(
           "fixed inset-x-0 top-0 z-[60] transition-[background-color,box-shadow,color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
@@ -89,6 +122,15 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  ref={item.href === "/services" ? menuTrigger : undefined}
+                  aria-expanded={item.href === "/services" ? menuOpen : undefined}
+                  aria-controls={item.href === "/services" ? "practice-menu" : undefined}
+                  onKeyDown={(event) => {
+                    if (item.href === "/services" && event.key === "ArrowDown") {
+                      event.preventDefault(); setMenuOpen(true);
+                      requestAnimationFrame(() => document.querySelector<HTMLElement>("#practice-menu a")?.focus());
+                    }
+                  }}
                   aria-current={active ? "page" : undefined}
                   onMouseEnter={() => setMenuOpen(item.href === "/services")}
                   className={cn(
@@ -133,12 +175,14 @@ export function Header() {
           </ButtonLink>
 
           <button
+            ref={drawerTrigger}
             type="button"
+            aria-controls="mobile-navigation"
             aria-label={drawerOpen ? "Close menu" : "Open menu"}
             aria-expanded={drawerOpen}
             onClick={() => setDrawerOpen((v) => !v)}
             className={cn(
-              "grid size-10 place-items-center border transition-colors duration-200 lg:hidden",
+              "grid size-11 place-items-center border transition-colors duration-200 lg:hidden",
               "border-line-strong",
             )}
           >
@@ -164,6 +208,7 @@ export function Header() {
         <AnimatePresence>
           {menuOpen && (
             <motion.div
+              id="practice-menu"
               key="mega"
               initial={{ opacity: 0, transform: "translate3d(0,-6px,0)" }}
               animate={{ opacity: 1, transform: "translate3d(0,0,0)" }}
@@ -212,6 +257,8 @@ export function Header() {
       <AnimatePresence>
         {drawerOpen && (
           <motion.div
+            ref={drawer}
+            id="mobile-navigation"
             key="drawer"
             className="deep-field fixed inset-0 z-50 overflow-y-auto overscroll-contain pt-[var(--nav-h)] text-white lg:hidden"
             initial={{ opacity: 0, transform: "translate3d(0,-8px,0)" }}
@@ -220,7 +267,7 @@ export function Header() {
             transition={{ duration: reduce ? 0 : 0.28, ease: EASE_OUT }}
           >
             <div className="shell flex min-h-full flex-col justify-between gap-10 py-8">
-              <nav className="flex flex-col">
+              <nav aria-label="Mobile navigation" className="flex flex-col">
                 {nav.map((item) =>
                   item.href === "/services" ? (
                     <div key={item.href} className="border-b border-deep-line">
