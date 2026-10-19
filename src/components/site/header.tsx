@@ -12,12 +12,8 @@ import { ArrowRight, ButtonLink, TextLink } from "@/components/ui/button";
 import { EASE_OUT } from "@/components/motion/reveal";
 
 /**
- * Fixed header that starts invisible.
- *
- * Every page opens on a navy hero, so at rest the bar is transparent
- * and white — it belongs to the hero rather than sitting on top of it.
- * Past 40px it resolves to near-opaque paper with a hairline, and the
- * type flips to ink. Hovering Services drops the practice index; the
+ * Fixed paper header with dark text for consistent contrast over every hero.
+ * Hovering Services drops the practice index; the
  * panel closes when the pointer leaves the whole header, so moving
  * diagonally from the trigger into the list never dismisses it.
  */
@@ -56,10 +52,6 @@ export function Header() {
     };
   }, [drawerOpen]);
 
-  // Solid whenever the page has moved, a panel is open, or the mobile
-  // drawer is up — in all three cases the bar is no longer over hero art.
-  const solid = pathname === "/" || scrolled || menuOpen || drawerOpen;
-
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
@@ -79,9 +71,7 @@ export function Header() {
         data-at-rest={!(scrolled || menuOpen || drawerOpen)}
         className={cn(
           "fixed inset-x-0 top-0 z-[60] transition-[background-color,box-shadow,color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
-          solid
-            ? "bg-[rgba(255,255,255,0.96)] text-ink-heading shadow-[0_1px_0_rgba(10,31,51,0.1)] backdrop-blur-md"
-            : "bg-transparent text-white",
+          "bg-[rgba(255,255,255,0.96)] text-ink-heading shadow-[0_1px_0_rgba(10,31,51,0.1)] backdrop-blur-md",
         )}
       >
         <div
@@ -134,7 +124,7 @@ export function Header() {
           <ButtonLink
             href="/contact"
             size="sm"
-            variant={solid ? "ink" : "outline-invert"}
+            variant="ink"
             className="hidden lg:inline-flex"
           >
             Request a quote
@@ -148,7 +138,7 @@ export function Header() {
             onClick={() => setDrawerOpen((v) => !v)}
             className={cn(
               "grid size-10 place-items-center border transition-colors duration-200 lg:hidden",
-              solid ? "border-line-strong" : "border-white/40",
+              "border-line-strong",
             )}
           >
             <span className="relative block h-3 w-4">
