@@ -21,20 +21,13 @@ export async function Insights() {
   }));
 
   return (
-    <section className="relative isolate overflow-hidden border-t border-line bg-surface py-20 md:py-[120px]">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 opacity-60"
-        style={{
-          background:
-            "radial-gradient(45rem 28rem at 92% 62%, rgba(0,168,182,0.08), transparent 72%)",
-        }}
-      />
+    <section id="insights" aria-labelledby="insights-title" className="home-insights relative isolate scroll-mt-24 overflow-hidden border-t border-line py-20 md:py-[120px]">
       <div className="shell">
         <SectionHead
           layout="split"
-          eyebrow="Insights"
-          title="Notes from the research desk."
+          className="research-heading border-b border-line-strong pb-8 md:pb-10"
+          maxWidth="max-w-none"
+          title={<span id="insights-title">Notes from the research desk.</span>}
           action={<TextLink href="/blog">All insights</TextLink>}
         />
 

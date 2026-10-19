@@ -1,89 +1,49 @@
 "use client";
 
+import { useRef, type ReactNode } from "react";
+import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
 import { process } from "@/lib/services";
-import { Reveal } from "@/components/motion/reveal";
-import { SectionHead } from "@/components/ui/section";
-import { Tick } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { motion, useScroll } from "motion/react";
-import { useRef } from "react";
 
-/**
- * Three steps with animated progress indicators and interactive hover states.
- */
+/** An open engagement brief: every stage and deliverable stays visible. */
 export function Process() {
-  const stepsRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: stepsRef,
-    offset: ["start 85%", "end 62%"],
-  });
+  const stages = useRef<HTMLOListElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: stages, offset: ["start 55%", "end 55%"] });
 
   return (
-    <section className="bg-paper py-24 md:py-[130px]">
-      <div className="shell">
-        <SectionHead
-          layout="split"
-          eyebrow="How it works"
-          title="Three steps. No open-ended retainers."
-          action={
-            <p className="lede m-0 max-w-[36ch]">
-              You will always know what the question is, who is answering it, and
-              when it lands.
-            </p>
-          }
-        />
-
-        <div ref={stepsRef} className="relative mt-14 grid md:mt-[72px] md:grid-cols-3">
-          <div aria-hidden className="absolute top-0 bottom-0 left-[7px] w-px bg-line-strong md:top-[7px] md:right-0 md:bottom-auto md:left-0 md:h-px md:w-auto">
-            <motion.div
-              className="absolute inset-x-0 top-0 h-full origin-top bg-accent md:hidden"
-              style={{ scaleY: scrollYProgress }}
-            />
-            <motion.div
-              className="absolute inset-y-0 left-0 hidden h-px w-full origin-left bg-accent md:block"
-              style={{ scaleX: scrollYProgress }}
-            />
+    <section className="engagement" aria-labelledby="engagement-title">
+      <div className="shell engagement-layout">
+        <div className="engagement-intro">
+          <h2 id="engagement-title">Three steps.<br />No open-ended retainers.</h2>
+          <p>You will always know what the question is, who is answering it, and when it lands.</p>
+          <div className="engagement-agreement">
+            <span>Written scope</span>
+            <span>Fixed fee</span>
+            <span>Agreed deadline</span>
           </div>
-          {process.map((p, i) => (
-            <Reveal
-              key={p.step}
-              delay={i * 0.14}
-              className={cn(
-                "group relative py-8 pl-8 pr-4 transition-colors duration-300 hover:bg-surface/60 sm:pl-10 sm:pr-8 md:min-h-[27rem] md:border-r md:px-8 md:pt-12 md:pb-8 first:md:pl-0 last:md:border-r-0 last:md:pr-0",
-              )}
-            >
-              <span
-                aria-hidden
-                className="absolute top-8 left-[7px] z-[1] size-4 -translate-x-1/2 border-2 border-accent bg-paper transition-[background-color,transform] duration-300 group-hover:scale-125 group-hover:bg-accent md:top-0 md:left-0"
-              />
-
-              <span className="font-serif block text-[clamp(2.75rem,5vw,4.5rem)] leading-none tracking-[-0.03em] text-ink-heading transition-[color,transform] duration-300 group-hover:translate-x-1 group-hover:text-accent">
-                {p.step}
-              </span>
-
-              <h3 className="font-serif mt-6 text-[1.65rem] leading-[1.15] text-ink-heading transition-colors duration-300 group-hover:text-accent md:mt-7 md:text-[1.75rem]">
-                {p.title}
-              </h3>
-
-              <p className="mt-4 pr-4 text-[0.9375rem] leading-[1.65] text-ink-2">
-                {p.body}
-              </p>
-
-              <ul className="mt-6 flex list-none flex-col gap-2.5 border-t border-line pt-5 p-0">
-                {p.outcomes.map((o) => (
-                  <li
-                    key={o}
-                    className="flex items-center gap-2.5 text-[0.84375rem] text-ink-heading"
-                  >
-                    <Tick className="size-[14px]" />
-                    {o}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          ))}
         </div>
+        <ol ref={stages} className="engagement-stages">
+          <li aria-hidden="true" className="engagement-rail"><motion.span style={{ scaleY: reduce ? 1 : scrollYProgress }} /></li>
+          {process.map((stage, index) => (
+            <ProcessStage key={stage.step} index={index} progress={scrollYProgress}>
+              <h3>{stage.title}</h3>
+              <p>{stage.body}</p>
+              <ul className="engagement-deliverables" aria-label={`${stage.title} deliverables`}>
+                {stage.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}
+              </ul>
+            </ProcessStage>
+          ))}
+        </ol>
       </div>
     </section>
   );
+}
+
+function ProcessStage({ children, index, progress }: { children: ReactNode; index: number; progress: MotionValue<number> }) {
+  const reduce = useReducedMotion();
+  const reached = useTransform(progress, [Math.max(0, (index - 0.45) / 3), Math.max(0.01, index / 3)], [0, 1]);
+  return <li className="engagement-stage">
+    <motion.span aria-hidden="true" className="engagement-marker" style={{ opacity: reduce ? 1 : reached, scale: reduce ? 1 : reached }} />
+    {children}
+  </li>;
 }

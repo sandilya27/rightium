@@ -1,9 +1,8 @@
 import { reasons } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
-import { Spotlight } from "@/components/motion/spotlight";
 
 /**
- * Four reasons on navy with interactive spotlight glow and tactile elevation.
+ * Four reasons on navy, with staggered entrances and one-time accent rules.
  */
 export function Why() {
   return (
@@ -29,17 +28,14 @@ export function Why() {
           {reasons.map((r, i) => (
             <Reveal
               key={r.title}
-              delay={i * 0.09}
+              delay={i * 0.06}
             >
-              <Spotlight className="group relative border-t border-deep-line bg-deep-well/40 p-6 pt-7 transition-all duration-300 hover:border-accent-bright hover:bg-deep-lift/30">
-                <span
-                  aria-hidden
-                  className="absolute top-[-1px] left-0 h-[2px] w-12 bg-accent-bright transition-all duration-500 group-hover:w-full"
-                />
+              <div className="relative border-t border-deep-line bg-deep-well/40 p-6 pt-7">
+                <span aria-hidden="true" className="absolute -top-px left-0 h-[2px] w-full bg-accent-bright" />
                 <span className="font-serif text-[0.9375rem] text-accent-bright font-bold">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <h3 className="font-serif mt-5 text-[1.5rem] leading-[1.18] tracking-[-0.01em] balance text-white group-hover:text-accent-bright transition-colors duration-300">
+                <h3 className="font-serif mt-5 text-[1.5rem] leading-[1.18] tracking-[-0.01em] balance text-white ">
                   {r.title}
                 </h3>
                 <p className="mt-4 text-[0.90625rem] leading-[1.65] text-deep-ink-2">
@@ -48,7 +44,7 @@ export function Why() {
                 <p className="mt-6 font-mono text-[0.72rem] tracking-[0.08em] uppercase text-deep-ink-3">
                   {r.tag}
                 </p>
-              </Spotlight>
+              </div>
             </Reveal>
           ))}
         </div>

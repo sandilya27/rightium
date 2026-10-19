@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
-import type { ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
+import { useInView } from "motion/react";
 import { site } from "@/lib/site";
 import { Reveal } from "@/components/motion/reveal";
 import { Magnetic } from "@/components/motion/magnetic";
@@ -23,9 +26,11 @@ export function CTA({
   image?: string;
   secondary?: boolean;
 }) {
+  const section = useRef<HTMLElement>(null);
+  const entered = useInView(section, { once: true, amount: 0.2 });
   return (
-    <section className="bg-paper px-[var(--gutter)] pt-20 pb-10 md:pt-24">
-      <Reveal variant="scale" className="mx-auto max-w-[80rem]">
+    <section ref={section} data-entered={entered} className="bg-paper px-[var(--gutter)] pt-20 pb-10 md:pt-24">
+      <Reveal variant="scale" duration={0.35} className="mx-auto max-w-[80rem]">
         <div className="plate plate-banner relative overflow-hidden text-white shadow-2xl">
           <Image
             src={image}

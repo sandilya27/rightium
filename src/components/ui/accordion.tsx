@@ -46,7 +46,7 @@ export function Accordion({
                 <span
                   aria-hidden
                   className={cn(
-                    "grid size-8 shrink-0 place-items-center rounded-full border transition-[transform,background-color,color,border-color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
+                    "grid size-8 shrink-0 place-items-center rounded-full border transition-[transform,background-color,color,border-color] duration-[220ms] motion-reduce:transition-none ease-[cubic-bezier(0.23,1,0.32,1)]",
                     expanded
                       ? "rotate-45 border-deep bg-deep text-white"
                       : "border-line-strong text-ink-heading",
@@ -68,7 +68,7 @@ export function Accordion({
               id={`${id}-panel-${i}`}
               role="region"
               aria-labelledby={`${id}-trigger-${i}`}
-              className="grid transition-[grid-template-rows] duration-[450ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+              className="grid transition-[grid-template-rows] duration-[240ms] motion-reduce:transition-none ease-[cubic-bezier(0.23,1,0.32,1)]"
               style={{ gridTemplateRows: expanded ? "1fr" : "0fr" }}
             >
               <div className="overflow-hidden">

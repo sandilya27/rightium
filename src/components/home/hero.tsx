@@ -3,10 +3,12 @@ import { stats } from "@/lib/site";
 import { ArrowRight, ButtonLink } from "@/components/ui/button";
 import { Counter } from "@/components/motion/counter";
 import { InventionScene } from "@/components/home/invention-scene";
+import { HeroField } from "@/components/home/hero-field";
 
 export function Hero() {
   return (
     <section className="evidence-hero relative isolate overflow-hidden bg-deep text-white">
+      <HeroField />
       <div className="shell evidence-hero-grid">
         <div className="evidence-hero-copy">
           <h1 className="hero-title">Ideas move<br />the world.<br /><span>Evidence moves<br />them forward.</span></h1>

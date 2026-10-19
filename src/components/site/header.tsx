@@ -76,6 +76,7 @@ export function Header() {
 
       <header
         onMouseLeave={() => setMenuOpen(false)}
+        data-at-rest={!(scrolled || menuOpen || drawerOpen)}
         className={cn(
           "fixed inset-x-0 top-0 z-[60] transition-[background-color,box-shadow,color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
           solid

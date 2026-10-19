@@ -7,8 +7,6 @@ import type { BufferGeometry, NormalBufferAttributes } from "three";
 export function InventionScene() {
   const host = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
-  const [paused, setPaused] = useState(false);
-  const pausedRef = useRef(false);
   const callouts = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
@@ -50,7 +48,7 @@ export function InventionScene() {
       const dark = new THREE.MeshStandardMaterial({ color: 0x142d3d, metalness: 0.87, roughness: 0.29 });
       const teal = new THREE.MeshStandardMaterial({ color: 0x49667c, metalness: 0.72, roughness: 0.19 });
       const light = new THREE.MeshStandardMaterial({ color: 0xa5d6ca, emissive: 0x49667c, emissiveIntensity: 2, metalness: 0.3, roughness: 0.2 });
-      const glass = new THREE.MeshPhysicalMaterial({ color: 0xa5d6ca, metalness: 0.35, roughness: 0.08, clearcoat: 1, transparent: true, opacity: 0.7, side: THREE.DoubleSide });
+      const glass = new THREE.MeshPhysicalMaterial({ color: 0x1f9a74, emissive: 0x0f6b50, emissiveIntensity: 0.6, envMapIntensity: 0.2, metalness: 0.1, roughness: 0.15, clearcoat: 0.4, toneMapped: false, transparent: true, opacity: 0.9, side: THREE.DoubleSide });
       const materials = [silver, dark, teal, light, glass];
       const assembly = new THREE.Group();
       assembly.rotation.set(0.12, -0.22, -0.34);
@@ -127,7 +125,6 @@ export function InventionScene() {
 
       let labelLeft = 40;
       let labelRight = 900;
-      let needsRender = true;
       const resize = () => {
         const { width, height, left, right } = element.getBoundingClientRect();
         // The oversized stage extends past the hero. Keep annotations inside
@@ -137,7 +134,6 @@ export function InventionScene() {
         renderer.setSize(width, height);
         camera.aspect = width / Math.max(height, 1);
         camera.updateProjectionMatrix();
-        needsRender = true;
       };
       const resizeObserver = new ResizeObserver(resize);
       resizeObserver.observe(element);
@@ -165,9 +161,8 @@ export function InventionScene() {
         const dt = Math.min((now - last) / 1000, 0.05);
         last = now;
         if (!visible || document.hidden) return;
-        const animate = !reducedMotion && !pausedRef.current;
+        const animate = !reducedMotion;
         if (animate) elapsed += dt;
-        if (pausedRef.current && !reducedMotion && !firstFrame && !needsRender) return;
         // Exploded spin → horizontal assembly → upright separation → annotation hold.
         // Whole turns reset to the same pose, so the clock wraps without a jump.
         const phase = elapsed % 16;
@@ -207,7 +202,6 @@ export function InventionScene() {
           text?.setAttribute("text-anchor", left ? "start" : "end");
         });
         renderer.render(scene, camera);
-        needsRender = false;
         if (firstFrame) { firstFrame = false; setReady(true); }
       }
       frame = requestAnimationFrame(render);
@@ -252,19 +246,6 @@ export function InventionScene() {
           </div>
         </div>
       </div>
-      {ready && (
-        <button
-          type="button"
-          className="absolute bottom-3 right-6 z-10 rounded-full border border-white/30 px-4 py-2 text-xs text-white/80 transition-colors hover:border-white/60 hover:text-white motion-reduce:hidden"
-          aria-pressed={paused}
-          onClick={() => {
-            pausedRef.current = !pausedRef.current;
-            setPaused(pausedRef.current);
-          }}
-        >
-          {paused ? "Resume animation" : "Pause animation"}
-        </button>
-      )}
     </div>
   );
 }

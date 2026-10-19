@@ -11,9 +11,9 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
- * Scroll-scrubbed paragraph: words start dim and light up progressively
- * as the user scrolls, pacing the reading experience. Words wrapped
- * in *asterisks* illuminate with the teal accent color.
+ * Scroll-scrubbed emphasis: marked phrases illuminate as the reader scrolls.
+ * Unmarked words remain fully readable, and all words stay in place.
+ * Words wrapped in *asterisks* use the teal accent color.
  */
 export function ScrollWords({
   text,
@@ -49,6 +49,7 @@ export function ScrollWords({
                 progress={scrollYProgress}
                 range={[start, end]}
                 dim={reduce ? 1 : dim}
+                reduceMotion={!!reduce}
                 accent={accent}
               >
                 {word}
@@ -67,20 +68,21 @@ function Word({
   range,
   dim,
   accent,
+  reduceMotion,
 }: {
   children: string;
   progress: MotionValue<number>;
   range: [number, number];
   dim: number;
   accent: boolean;
+  reduceMotion: boolean;
 }) {
   const opacity = useTransform(progress, range, [dim, 1]);
-  const y = useTransform(progress, range, [4, 0]);
 
   return (
     <span aria-hidden className="relative mr-[0.28em] inline-block">
       <motion.span
-        style={{ opacity, y }}
+        style={{ opacity: reduceMotion || !accent ? 1 : opacity }}
         className={cn(accent && "accent-em italic font-medium")}
       >
         {children}{" "}

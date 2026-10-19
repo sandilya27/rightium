@@ -2,110 +2,98 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { formatDate } from "@/lib/post";
 import { SharedPostTitle } from "@/components/blog/shared-title";
 import type { InsightPost } from "@/components/home/insights";
 
+function ArticleImage({ post, sizes }: { post: InsightPost; sizes: string }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <Image
+      src={failed ? "/images/analysts.jpg" : post.image}
+      alt=""
+      fill
+      sizes={sizes}
+      onError={() => setFailed(true)}
+      className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] [@media(hover:hover)_and_(pointer:fine)]:group-hover:scale-[1.035] motion-reduce:transition-none motion-reduce:transform-none"
+    />
+  );
+}
+
+function ArticleArrow({ className = "" }: { className?: string }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={`size-5 ${className}`}>
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  );
+}
+
 export function InsightsDeck({ posts }: { posts: InsightPost[] }) {
+  const reduce = useReducedMotion();
   const [featured, ...stories] = posts;
   if (!featured) return null;
 
   return (
-    <div className="mt-10 grid border border-line bg-white md:mt-14 md:grid-cols-2">
+    <motion.div initial={false} whileInView="shown" viewport={{ once: true, amount: 0.15 }} className={`research-grid mt-8 grid gap-8 lg:mt-10 lg:gap-12 ${stories.length ? "lg:grid-cols-[1.18fr_1fr]" : ""}`}>
+      <motion.div className="flex min-w-0" variants={{ hidden: { opacity: 0, transform: reduce ? "none" : "translateY(12px)" }, shown: { opacity: 1, transform: "none", transition: { duration: 0.3 } } }}>
       <Link
         href={`/blog/${featured.slug}`}
-        className="group/featured block border border-transparent p-4 transition-[transform,border-color,box-shadow] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-accent/30 hover:shadow-[0_22px_55px_-38px_rgba(6,21,36,0.42)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transform-none motion-reduce:transition-none sm:p-6 md:border-r md:border-line md:p-7"
+        className="research-feature group flex w-full min-w-0 flex-col overflow-hidden bg-deep text-deep-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-safe:active:scale-[0.995]"
       >
-        <div className="plate relative aspect-[1.6/1] overflow-hidden bg-deep">
-          <Image
-            src={featured.image}
-            alt=""
-            fill
-            priority={false}
-            sizes="(min-width: 768px) 48vw, 100vw"
-            className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/featured:scale-[1.035]"
-          />
-          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#061524]/85 via-[#061524]/10 to-[#061524]/20 transition-colors duration-500 group-hover/featured:from-[#061524]/75" />
-          <div aria-hidden className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover/featured:opacity-100" style={{ background: "radial-gradient(32rem 20rem at 82% 18%, rgba(0,190,202,.32), transparent 68%)" }} />
-          <div className="absolute inset-x-5 top-5 flex items-center justify-between text-[0.7rem] font-semibold tracking-[0.14em] uppercase sm:inset-x-7 sm:top-7">
-            <span className="text-white">Rightium <span className="text-accent-bright">/</span> Research</span>
-            <span className="text-white/75">01</span>
+        <motion.div initial={false} whileInView={reduce ? undefined : { clipPath: ["inset(0 0 12% 0)", "inset(0 0 0% 0)"] }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }} className="relative aspect-[2/1] overflow-hidden bg-deep-lift sm:aspect-[2.2/1]">
+          <ArticleImage post={featured} sizes="(min-width: 1024px) 52vw, 100vw" />
+        </motion.div>
+        <div className="flex flex-1 flex-col p-6 sm:p-8 lg:p-9">
+          <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-deep-ink-2">
+            <span>{featured.category}</span>
+            <span>{featured.readingMinutes} min read</span>
           </div>
-          <p className="font-serif absolute inset-x-5 bottom-5 m-0 max-w-[19ch] text-[clamp(1.5rem,3vw,2.5rem)] leading-[1.08] text-white balance sm:inset-x-7 sm:bottom-7">
-            {featured.title}
-          </p>
-        </div>
-
-        <div className="pt-5 sm:pt-6">
-          <p className="m-0 inline-flex flex-col gap-1.5 text-xs font-medium tracking-[0.12em] text-accent uppercase">
-            Featured story
-            <span aria-hidden className="h-px w-8 origin-left bg-accent transition-[width] duration-300 group-hover/featured:w-full motion-reduce:transition-none" />
-          </p>
-          <h3 className="font-serif mt-3 text-[clamp(1.45rem,2.2vw,2rem)] leading-[1.16] text-ink-heading balance transition-colors duration-300 group-hover/featured:text-accent">
+          <h3 className="font-serif mt-5 max-w-[25ch] text-[clamp(1.8rem,2.8vw,2.65rem)] leading-[1.08] tracking-[-0.02em] text-deep-ink balance">
             {featured.title}
           </h3>
-          <p className="mt-3 max-w-[62ch] text-sm leading-[1.65] text-ink-2 sm:text-[0.9375rem]">
-            {featured.excerpt}
-          </p>
-          <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-accent">
-            <span className="border-b border-accent/40 pb-1 transition-[border-color] duration-300 group-hover/featured:border-accent">Read more</span>
-            <ArrowRight aria-hidden className="size-4 transition-transform duration-300 group-hover/featured:translate-x-1 motion-reduce:transition-none" />
-          </span>
+          <p className="mt-4 max-w-[60ch] text-sm leading-[1.75] text-deep-ink-2 sm:text-[0.9375rem]">{featured.excerpt}</p>
+          <div className="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-deep-line pt-5">
+            <time dateTime={featured.date} className="text-xs text-deep-ink-2">{formatDate(featured.date)}</time>
+            <span className="inline-flex items-center gap-3 text-sm font-medium text-accent-bright">
+              Read article <ArticleArrow className="transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" />
+            </span>
+          </div>
         </div>
       </Link>
+      </motion.div>
 
-      <div className="divide-y divide-line border-t border-line md:grid md:grid-rows-2 md:border-t-0">
-        {stories.map((post, index) => {
-          const storyNumber = index + 2;
-          const isSharedStory = storyNumber === 3;
-          return (
-            <Link
-              key={post.slug}
-              href={`/blog/${post.slug}`}
-              className="group/story grid min-h-[12rem] grid-cols-[minmax(0,0.95fr)_minmax(0,1fr)] items-center gap-4 border-l-2 border-transparent p-3 transition-[background-color,border-color,transform] duration-[350ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:translate-x-1 hover:border-accent hover:bg-accent-soft/40 focus-visible:relative focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent motion-reduce:transform-none motion-reduce:transition-none sm:min-h-[15rem] sm:gap-5 sm:p-5 md:min-h-0 md:grid-cols-[minmax(0,1fr)_minmax(0,0.86fr)] md:gap-5 md:p-5 lg:gap-6 lg:p-6"
-            >
-              <div className="plate relative aspect-[1.28/1] overflow-hidden bg-deep [perspective:900px]">
-                <Image
-                  src={post.image}
-                  alt=""
-                  fill
-                  sizes="(min-width: 768px) 24vw, 42vw"
-                  className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/story:scale-105 group-hover/story:rotate-[0.6deg] motion-reduce:transition-none"
-                />
-                <div aria-hidden className="absolute inset-0 bg-[#061524]/25 transition-colors duration-300 group-hover/story:bg-accent/25" />
-                <span className="absolute top-3 left-3 text-[0.6rem] font-semibold tracking-[0.12em] text-white uppercase sm:top-4 sm:left-4">Rightium</span>
-                <span className="absolute right-3 bottom-3 text-[0.65rem] font-mono text-white/80 sm:right-4 sm:bottom-4">0{storyNumber}</span>
-                <span aria-hidden className="absolute right-3 top-3 grid size-8 translate-y-1 -rotate-12 place-items-center bg-accent text-white opacity-0 transition-[opacity,transform] duration-300 group-hover/story:translate-y-0 group-hover/story:rotate-0 group-hover/story:opacity-100 sm:right-4 sm:top-4">
-                  <ArrowUpRight className="size-4" />
+      {stories.length > 0 && (
+        <div className="grid content-start divide-y divide-line border-y border-line">
+          {stories.map((post, index) => (
+            <motion.div key={post.slug} variants={{ hidden: { opacity: 0, transform: reduce ? "none" : "translateY(12px)" }, shown: { opacity: 1, transform: "none", transition: { duration: 0.3, delay: reduce ? 0 : (index + 1) * 0.06 } } }}>
+            <Link href={`/blog/${post.slug}`} className="research-story group grid min-w-0 grid-cols-[1fr_6rem] gap-x-5 gap-y-4 py-7 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:grid-cols-[1fr_8.5rem] sm:gap-x-7 sm:py-8 motion-safe:active:scale-[0.995]">
+              <div className="min-w-0">
+                <p className="m-0 text-xs font-medium text-accent">{post.category}</p>
+                <SharedPostTitle slug={post.slug} enabled={index === 1} className="font-serif mt-3 text-[clamp(1.45rem,2.1vw,1.95rem)] leading-[1.12] tracking-[-0.015em] text-ink-heading balance transition-colors duration-200 group-hover:text-accent">
+                  {post.title}
+                </SharedPostTitle>
+              </div>
+              <div className="relative aspect-square self-start overflow-hidden bg-surface-2">
+                <ArticleImage post={post} sizes="(min-width: 640px) 136px, 96px" />
+              </div>
+              <p className="col-span-2 m-0 max-w-[60ch] text-sm leading-[1.7] text-ink-2">{post.excerpt}</p>
+              <div className="col-span-2 flex items-center justify-between gap-3">
+                <p className="m-0 flex flex-wrap gap-x-3 gap-y-1 text-xs text-ink-2">
+                  <time dateTime={post.date}>{formatDate(post.date)}</time>
+                  <span aria-hidden="true">/</span>
+                  <span>{post.readingMinutes} min read</span>
+                </p>
+                <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center border border-line-strong text-accent transition-colors duration-200 group-hover:bg-accent group-hover:text-white">
+                  <ArticleArrow className="transition-transform duration-300 group-hover:-rotate-45 motion-reduce:transition-none" />
                 </span>
               </div>
-
-              <div className="py-2">
-                <p className="m-0 inline-flex flex-col gap-1 text-[0.65rem] font-medium tracking-[0.1em] text-accent uppercase sm:text-xs">
-                  {post.category}
-                  <span aria-hidden className="h-px w-5 origin-left bg-accent transition-[width] duration-300 group-hover/story:w-10 motion-reduce:transition-none" />
-                </p>
-                {isSharedStory ? (
-                  <SharedPostTitle
-                    slug={post.slug}
-                    enabled
-                    className="font-serif mt-3 text-[clamp(1.1rem,1.65vw,1.7rem)] leading-[1.16] text-ink-heading balance transition-colors duration-300 group-hover/story:text-accent"
-                  >
-                    {post.title}
-                  </SharedPostTitle>
-                ) : (
-                  <h3 className="font-serif mt-3 text-[clamp(1.1rem,1.65vw,1.7rem)] leading-[1.16] text-ink-heading balance transition-colors duration-300 group-hover/story:text-accent">
-                    {post.title}
-                  </h3>
-                )}
-                <p className="mt-3 hidden text-sm leading-[1.55] text-ink-2 lg:block">{post.excerpt}</p>
-                <p className="mt-4 text-[0.7rem] text-ink-2 sm:text-xs">{post.author.name} · {formatDate(post.date)}</p>
-              </div>
             </Link>
-          );
-        })}
-      </div>
-    </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+    </motion.div>
   );
 }

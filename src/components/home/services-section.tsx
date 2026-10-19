@@ -3,205 +3,122 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { serviceCount, services } from "@/lib/services";
+import { motion, useReducedMotion } from "motion/react";
+import { services, serviceCount } from "@/lib/services";
 import { Reveal } from "@/components/motion/reveal";
-import { Spotlight } from "@/components/motion/spotlight";
-import { SectionHead } from "@/components/ui/section";
-import { TextLink } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
-/**
- * Practice index with smooth kinetic cross-fades and interactive hover states.
- */
+function Arrow() {
+  return <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+}
+
 export function ServicesSection() {
-  const [active, setActive] = useState(0);
-  const sectionRef = useRef<HTMLElement>(null);
-  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
-  const current = services[active];
+  const [active, setActive] = useState(services[0].slug);
+  const reduceMotion = useReducedMotion();
+  const stopAnchor = useRef<() => void>(() => {});
+  useEffect(() => () => stopAnchor.current(), []);
 
-  useEffect(() => {
+  function selectPractice(slug: string, trigger: HTMLButtonElement) {
+    stopAnchor.current();
+    const top = trigger.getBoundingClientRect().top;
+    let started: number | undefined;
     let frame = 0;
-    const updateFromScroll = () => {
+    setActive(active === slug ? "" : slug);
+    // Compensate only for the collapsing panel above the clicked heading.
+    // A wheel, touch or key gesture immediately returns control to the reader.
+    let cancelled = false;
+    const cancel = () => {
+      cancelled = true;
       cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const section = sectionRef.current;
-        if (!section) return;
-        const bounds = section.getBoundingClientRect();
-        if (bounds.bottom < 0 || bounds.top > window.innerHeight) return;
-
-        const focusLine = window.innerHeight * 0.48;
-        let nearest = active;
-        let nearestDistance = Number.POSITIVE_INFINITY;
-        itemRefs.current.forEach((item, index) => {
-          if (!item) return;
-          const rect = item.getBoundingClientRect();
-          if (rect.bottom < 0 || rect.top > window.innerHeight) return;
-          const distance = Math.abs((rect.top + rect.bottom) / 2 - focusLine);
-          if (distance < nearestDistance) {
-            nearest = index;
-            nearestDistance = distance;
-          }
-        });
-        setActive((value) => (value === nearest ? value : nearest));
-      });
+      window.removeEventListener("wheel", cancel);
+      window.removeEventListener("touchstart", cancel);
+      window.removeEventListener("keydown", cancel);
     };
-
-    updateFromScroll();
-    window.addEventListener("scroll", updateFromScroll, { passive: true });
-    window.addEventListener("resize", updateFromScroll);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", updateFromScroll);
-      window.removeEventListener("resize", updateFromScroll);
+    stopAnchor.current = cancel;
+    window.addEventListener("wheel", cancel, { once: true, passive: true });
+    window.addEventListener("touchstart", cancel, { once: true, passive: true });
+    window.addEventListener("keydown", cancel, { once: true });
+    const track = (now: number) => {
+      started ??= now;
+      if (!cancelled && trigger.isConnected) {
+        const delta = trigger.getBoundingClientRect().top - top;
+        if (Math.abs(delta) > 0.5) window.scrollBy({ top: delta, behavior: "instant" });
+      }
+      if (!cancelled && now - started < 450) {
+        frame = requestAnimationFrame(track);
+      } else {
+        window.removeEventListener("wheel", cancel);
+        window.removeEventListener("touchstart", cancel);
+        window.removeEventListener("keydown", cancel);
+      }
     };
-  }, [active]);
+    frame = requestAnimationFrame(track);
+  }
 
   return (
-    <section ref={sectionRef} id="services" className="bg-surface border-t border-line py-20 md:py-[120px]">
+    <section id="services" className="practice-explorer" aria-labelledby="practices-heading">
       <div className="shell">
-        <SectionHead
-          layout="split"
-          eyebrow="What we do"
-          title={
-            <>
-              Seven practices.
-              <br />
-              One standard of evidence.
-            </>
-          }
-          action={<TextLink href="/services">All {serviceCount} services</TextLink>}
-        />
+        <Reveal className="practice-intro">
+          <h2 id="practices-heading">What we do.</h2>
+          <div>
+            <p>Seven practices.<br />One standard of evidence.</p>
 
-        <div className="mt-12 grid items-start gap-12 md:mt-16 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:gap-16">
-          <Reveal>
-            <ol className="m-0 list-none border-t border-line-strong p-0">
-              {services.map((s, i) => {
-                const on = i === active;
-                return (
-                  <li key={s.slug} ref={(node) => { itemRefs.current[i] = node; }} className="relative border-b border-line-strong">
-                    <Link
-                      href={`/services/${s.slug}`}
-                      onPointerEnter={() => setActive(i)}
-                      onFocus={() => setActive(i)}
-                      className={cn(
-                        "group relative grid grid-cols-[2.25rem_1fr_2.5rem] items-baseline gap-4 py-6 pr-2 transition-[background-color,padding] duration-300 md:grid-cols-[3.5rem_1fr_2.5rem] md:gap-5",
-                        on ? "bg-white/70 pl-4 shadow-sm" : "hover:pl-2",
-                      )}
-                    >
-                      <span
-                        aria-hidden
-                        className={cn(
-                          "absolute inset-y-0 left-0 w-[2px] origin-center bg-accent transition-transform duration-300",
-                          on ? "scale-y-100" : "scale-y-0",
-                        )}
-                      />
-                      <span className="font-serif text-[0.9375rem] text-accent">
-                        {s.index}
-                      </span>
-                      <span>
-                        <span
-                          className={cn(
-                            "font-serif block text-[clamp(1.4rem,2vw,1.9rem)] leading-[1.15] tracking-[-0.01em] transition-colors duration-300",
-                            on ? "text-accent" : "text-ink-heading group-hover:text-accent",
-                          )}
-                        >
-                          {s.title}
-                        </span>
-                        <span className="mt-2 block text-[0.90625rem] leading-[1.55] text-ink-2">
-                          {s.short}
-                        </span>
-                      </span>
-                      <span
-                        aria-hidden
-                        className={cn(
-                          "grid size-9 shrink-0 place-items-center self-center justify-self-end rounded-full border transition-all duration-300",
-                          on
-                            ? "-rotate-45 border-accent bg-accent text-white scale-105"
-                            : "border-line-strong text-ink-heading group-hover:border-accent group-hover:text-accent",
-                        )}
-                      >
-                        <svg viewBox="0 0 16 16" fill="none" className="size-[14px]">
-                          <path
-                            d="M2.5 8h11m0 0L9.25 3.75M13.5 8l-4.25 4.25"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ol>
-          </Reveal>
+          </div>
+        </Reveal>
 
-          <Reveal delay={0.15} className="md:sticky md:top-[6.875rem]">
-            <Spotlight className="border border-line bg-white shadow-xl transition-all duration-300">
-              <AnimatePresence mode="wait">
+        <div className="practice-collection">
+          {services.map((service) => {
+            const expanded = active === service.slug;
+            return (
+              <article key={service.slug} className="practice-entry" data-expanded={expanded}>
+                <h3>
+                  <button
+                    type="button"
+                    id={`practice-${service.slug}`}
+                    aria-expanded={expanded}
+                    aria-controls={`practice-panel-${service.slug}`}
+                    onClick={(event) => selectPractice(service.slug, event.currentTarget)}
+                    className="practice-trigger"
+                  >
+                    <span>{service.title}</span>
+                    <span className="practice-short">{service.short}</span>
+                    <span className="practice-toggle" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5v14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg></span>
+                  </button>
+                </h3>
                 <motion.div
-                  key={current.slug}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+                  id={`practice-panel-${service.slug}`}
+                  role="region"
+                  aria-labelledby={`practice-${service.slug}`}
+                  aria-hidden={!expanded}
+                  inert={!expanded}
+                  initial={false}
+                  animate={{ height: expanded ? "auto" : 0, opacity: expanded ? 1 : 0 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.36, ease: [0.22, 1, 0.36, 1] }}
+                  className="practice-collapse"
                 >
-                  <div className="plate aspect-[4/3]">
-                    <Image
-                      src={current.image}
-                      alt=""
-                      fill
-                      sizes="(min-width: 768px) 40vw, 100vw"
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 z-[1] bg-gradient-to-t from-[rgba(6,21,36,0.9)] to-transparent to-55%" />
-                    <div className="absolute inset-x-7 bottom-6 z-[2] text-white">
-                      <p className="m-0 text-xs font-semibold tracking-[0.14em] uppercase text-accent-bright">
-                        Practice {current.index}
-                      </p>
-                      <p className="font-serif mt-2 text-[1.625rem] leading-[1.1]">
-                        {current.title}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="px-7 pt-6 pb-7">
-                    <ul className="m-0 grid list-none grid-cols-1 gap-x-6 gap-y-2.5 p-0 sm:grid-cols-2">
-                      {current.items.map((it) => (
-                        <li
-                          key={it.slug}
-                          className="flex items-start gap-2.5 text-sm leading-[1.45] text-ink-heading"
-                        >
-                          <span
-                            aria-hidden
-                            className="mt-[9px] h-px w-3 shrink-0 bg-accent"
-                          />
-                          {it.title}
-                        </li>
+                <div className="practice-panel">
+                  <motion.div className="practice-image" initial={false} animate={{ opacity: expanded ? 1 : 0.6, transform: expanded || reduceMotion ? "scale(1)" : "scale(0.985)" }} transition={{ duration: reduceMotion ? 0 : 0.36, ease: [0.23, 1, 0.32, 1] }}>
+                    <Image src={service.image} alt="" fill sizes="(min-width: 900px) 42vw, 100vw" className="object-cover" />
+                  </motion.div>
+                  <motion.div className="practice-detail" initial={false} animate={{ opacity: expanded ? 1 : 0, y: expanded || reduceMotion ? 0 : 8 }} transition={{ duration: reduceMotion ? 0 : 0.22, delay: expanded && !reduceMotion ? 0.14 : 0 }}>
+                    <p className="practice-description">{service.short}</p>
+                    <ul className="practice-offerings">
+                      {service.items.map((item) => (
+                        <li key={item.slug}><Link href={`/services/${service.slug}#${item.slug}`}>{item.title}<Arrow /></Link></li>
                       ))}
                     </ul>
-                    <div className="mt-5.5 flex items-center justify-between gap-4 border-t border-line pt-4.5 text-[0.84375rem] text-ink-2">
-                      <span>
-                        Turnaround:{" "}
-                        <span className="font-medium text-ink-heading">
-                          {current.turnaround}
-                        </span>
-                      </span>
-                      <Link
-                        href={`/services/${current.slug}`}
-                        className="group inline-flex items-center gap-1 font-medium text-accent hover:underline"
-                      >
-                        View practice
-                        <span className="transition-transform group-hover:translate-x-1">→</span>
-                      </Link>
+                    <div className="practice-bottom">
+                      <p>Turnaround <strong>{service.turnaround}</strong></p>
+                      <Link href={`/services/${service.slug}`} className="practice-action">View practice <Arrow /></Link>
                     </div>
-                  </div>
+                  </motion.div>
+                </div>
                 </motion.div>
-              </AnimatePresence>
-            </Spotlight>
-          </Reveal>
+              </article>
+            );
+          })}
+        </div>
+        <div className="practice-footer">
+          <Link href="/services" className="practice-all practice-action">Explore all {serviceCount} services <Arrow /></Link>
         </div>
       </div>
     </section>

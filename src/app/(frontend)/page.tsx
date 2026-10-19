@@ -26,22 +26,22 @@ export const metadata: Metadata = pageMetadata({
 
 /**
  * Home. Slate and cool-white sections alternate so the brand frames the
- * reading: hero → manifesto → practice index → reasons → process →
- * case studies → voices → FAQ → insights → ask.
+ * reading: hero → selected work → insights → manifesto → practice index →
+ * reasons → process → voices → FAQ → ask.
  */
 export default async function HomePage() {
   const proofs = await getWorks();
   return (
     <div className="home-slate">
       <Hero />
+      {proofs.length > 0 && <Proof proofs={proofs} />}
+      <Insights />
       <Statement />
       <ServicesSection />
       <Why />
       <Process />
-      {proofs.length > 0 && <Proof proofs={proofs} />}
       <Testimonials />
       <FAQ />
-      <Insights />
       <CTA />
     </div>
   );

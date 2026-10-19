@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, useReducedMotion, useInView } from "motion/react";
 import { quotes } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
 import { cn } from "@/lib/utils";
@@ -9,29 +9,45 @@ import { cn } from "@/lib/utils";
 const ROTATE_MS = 7000;
 
 /**
- * Client voices with kinetic blur cross-fades and interactive progress timer rail.
+ * Client voices with a short crossfade and independent reading and playback controls.
  */
 export function Testimonials() {
   const reduce = useReducedMotion();
+  const section = useRef<HTMLElement>(null);
+  const visible = useInView(section, { amount: 0.15 });
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const stopped = !visible || paused || hovered || focused || hidden || !!reduce;
 
   useEffect(() => {
-    if (paused || reduce) return;
+    const update = () => setHidden(document.hidden);
+    update();
+    document.addEventListener("visibilitychange", update);
+    return () => document.removeEventListener("visibilitychange", update);
+  }, []);
+
+  useEffect(() => {
+    if (stopped) return;
     const timer = setInterval(
       () => setIndex((i) => (i + 1) % quotes.length),
       ROTATE_MS,
     );
     return () => clearInterval(timer);
-  }, [paused, reduce]);
+  }, [stopped]);
 
   const quote = quotes[index];
 
   return (
     <section
+      ref={section}
       className="relative isolate overflow-hidden bg-deep-well py-24 text-white md:py-[130px]"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocusCapture={() => setFocused(true)}
+      onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}
     >
       <div
         aria-hidden
@@ -66,10 +82,10 @@ export function Testimonials() {
                     className="absolute -left-[2px] top-0 bottom-0 w-[2px] origin-top bg-accent-bright"
                     style={{
                       transform: `scaleY(${on ? 1 : 0})`,
-                      transitionProperty: "transform",
+                      transitionProperty: reduce ? "none" : "transform",
                       transitionTimingFunction: "linear",
                       transitionDuration:
-                        on && !paused && !reduce ? `${ROTATE_MS}ms` : "300ms",
+                        on && !stopped ? `${ROTATE_MS}ms` : "300ms",
                     }}
                   />
                   {q.role.split(",")[0]} · {q.name}
@@ -77,6 +93,9 @@ export function Testimonials() {
               );
             })}
           </div>
+          <button type="button" aria-pressed={paused} onClick={() => setPaused((value) => !value)} className="mt-6 border border-white/30 px-4 py-2 text-sm text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-bright">
+            {paused ? "Resume rotation" : "Pause rotation"}
+          </button>
         </Reveal>
 
         <Reveal delay={0.12} className="min-h-[18.75rem]">
@@ -86,13 +105,15 @@ export function Testimonials() {
           >
             &ldquo;
           </span>
-          <AnimatePresence mode="wait">
+          <div className="grid" aria-live={stopped ? "polite" : "off"} aria-atomic="true">
+          <AnimatePresence initial={false}>
             <motion.div
               key={index}
-              initial={{ opacity: 0, filter: "blur(6px)", y: 10 }}
-              animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
-              exit={{ opacity: 0, filter: "blur(6px)", y: -10 }}
-              transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
+              className="col-start-1 row-start-1"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reduce ? 0 : 0.22, ease: [0.23, 1, 0.32, 1] }}
             >
               <blockquote className="m-0 text-[clamp(1.5rem,2.8vw,2.5rem)] leading-[1.25] tracking-[-0.01em] balance font-serif">
                 {quote.body}
@@ -103,6 +124,7 @@ export function Testimonials() {
               </p>
             </motion.div>
           </AnimatePresence>
+          </div>
         </Reveal>
       </div>
     </section>

@@ -47,16 +47,15 @@ export function Proof({ proofs }: { proofs: Work[] }) {
   }, [selectedProof]);
 
   return (
-    <section id="case-studies" className="scroll-mt-20 bg-surface border-t border-line py-20 md:scroll-mt-24 md:py-[120px]">
+    <section id="case-studies" className="selected-work scroll-mt-20 bg-surface border-t border-line py-20 md:scroll-mt-24 md:py-[120px]">
       <div className="shell">
         <SectionHead
-          eyebrow="Selected work"
-          title="Outcomes, not adjectives."
+          title="Selected work."
           lede="Client names are confidential; the mechanics are not. Each started as one question with a deadline attached."
           maxWidth="max-w-[45rem]"
         />
 
-        <motion.div layout className="mt-12 grid gap-5 md:mt-16 md:grid-cols-12">
+        <motion.div layout className="work-grid mt-10 grid gap-5 md:mt-12 md:grid-cols-12">
           <AnimatePresence initial={false} mode="popLayout">
             {proofs.map((proof, index) =>
               (
@@ -66,19 +65,21 @@ export function Proof({ proofs }: { proofs: Work[] }) {
                   className={index % 2 === 0 ? "md:col-span-7" : "md:col-span-5"}
                 >
                   <motion.article
-                    layoutId={`proof-card-${index}`}
+                    layoutId={reduce ? undefined : `proof-card-${index}`}
                     className="h-full"
-                    transition={{ duration: reduce ? 0 : 0.48, ease: [0.23, 1, 0.32, 1] }}
+                    transition={{ duration: reduce ? 0 : 0.55, ease: [0.23, 1, 0.32, 1] }}
                   >
                     <Spotlight className="group relative isolate flex min-h-[24rem] h-full overflow-hidden bg-deep text-white shadow-sm md:min-h-[28rem]">
+                      <motion.div layoutId={reduce ? undefined : `proof-image-${proof.slug}`} className="absolute inset-0 -z-10" transition={{ duration: reduce ? 0 : 0.55, ease: [0.23, 1, 0.32, 1] }}>
                       <Image
                         src={failedImages[proof.slug] ? (proof.fallbackImage || "/images/analysts.jpg") : proof.image}
                         alt={proof.imageAlt}
                         fill
                         sizes="(min-width: 768px) 55vw, 100vw"
-                        className="-z-10 object-cover opacity-55 transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-105"
+                        className="-z-10 object-cover opacity-55 transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] [@media(hover:hover)_and_(pointer:fine)]:group-hover:scale-105 motion-reduce:transition-none motion-reduce:transform-none"
                         onError={() => setFailedImages((prev) => ({ ...prev, [proof.slug]: true }))}
                       />
+                      </motion.div>
                       <div aria-hidden className="absolute inset-0 -z-[1] bg-gradient-to-t from-[#061524] via-[#061524]/55 to-[#061524]/10" />
                       <div className="relative z-[1] flex min-h-[24rem] w-full flex-col p-6 sm:p-8 md:min-h-[28rem] md:p-10">
                         <div className="flex items-start justify-between gap-4">
@@ -89,9 +90,9 @@ export function Proof({ proofs }: { proofs: Work[] }) {
                             CASE 0{index + 1}
                           </span>
                         </div>
-                        <h3 className="font-serif mt-auto max-w-[18ch] text-[clamp(1.75rem,3vw,2.65rem)] leading-[1.08] tracking-[-0.015em] text-white balance transition-transform duration-500 group-hover:translate-x-1">
+                        <motion.h3 layoutId={reduce ? undefined : `proof-title-${proof.slug}`} layout="position" transition={{ duration: reduce ? 0 : 0.55, ease: [0.23, 1, 0.32, 1] }} className="font-serif mt-auto max-w-[18ch] text-[clamp(1.75rem,3vw,2.65rem)] leading-[1.08] tracking-[-0.015em] text-white balance transition-transform duration-500 group-hover:translate-x-1">
                           {proof.title}
-                        </h3>
+                        </motion.h3>
                         <div className="mt-5 flex flex-wrap items-end justify-between gap-4 border-t border-white/20 pt-5">
                           <div className="flex items-baseline gap-3">
                             <span className="font-serif text-[2.5rem] leading-none tracking-[-0.02em] text-accent-bright">
@@ -134,16 +135,17 @@ export function Proof({ proofs }: { proofs: Work[] }) {
             }}
           >
             <motion.article
-              layoutId={`proof-card-${selected}`}
+              layoutId={reduce ? undefined : `proof-card-${selected}`}
               ref={dialogRef}
               role="dialog"
               aria-modal="true"
               aria-labelledby="case-file-title"
               data-lenis-prevent
               className="relative max-h-[90svh] w-full max-w-[54rem] overflow-y-auto bg-deep text-white shadow-2xl"
-              transition={{ duration: reduce ? 0 : 0.48, ease: [0.23, 1, 0.32, 1] }}
+              transition={{ duration: reduce ? 0 : 0.55, ease: [0.23, 1, 0.32, 1] }}
             >
-              <div className="plate relative aspect-[16/8] min-h-[15rem]">
+              <div className="plate relative w-full min-w-0 aspect-[16/8] min-h-[18rem]">
+                <motion.div layoutId={reduce ? undefined : `proof-image-${selectedProof.slug}`} className="absolute inset-0" transition={{ duration: reduce ? 0 : 0.55, ease: [0.23, 1, 0.32, 1] }}>
                 <Image
                   src={failedImages[selectedProof.slug] ? (selectedProof.fallbackImage || "/images/analysts.jpg") : selectedProof.image}
                   alt={selectedProof.imageAlt}
@@ -152,6 +154,7 @@ export function Proof({ proofs }: { proofs: Work[] }) {
                   className="object-cover opacity-65"
                   onError={() => setFailedImages((prev) => ({ ...prev, [selectedProof.slug]: true }))}
                 />
+                </motion.div>
                 <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#061524] via-[#061524]/35 to-transparent" />
                 <button
                   type="button"
@@ -161,12 +164,12 @@ export function Proof({ proofs }: { proofs: Work[] }) {
                 >
                   <X className="size-5" />
                 </button>
-                <div className="absolute inset-x-6 bottom-6 sm:inset-x-10 sm:bottom-9">
+                <div className="absolute inset-x-6 bottom-6 z-[2] sm:inset-x-10 sm:bottom-9">
                   <p className="text-xs font-semibold tracking-[0.14em] text-accent-bright uppercase">{selectedProof.sector} · Case 0{selected + 1}</p>
-                  <h3 id="case-file-title" className="font-serif mt-3 max-w-[22ch] text-[clamp(1.75rem,4vw,3.25rem)] leading-[1.08]">{selectedProof.title}</h3>
+                  <motion.h3 layoutId={reduce ? undefined : `proof-title-${selectedProof.slug}`} layout="position" transition={{ duration: reduce ? 0 : 0.55, ease: [0.23, 1, 0.32, 1] }} id="case-file-title" className="text-white font-serif mt-3 max-w-[22ch] text-[clamp(1.75rem,4vw,3.25rem)] leading-[1.08]">{selectedProof.title}</motion.h3>
                 </div>
               </div>
-              <div className="grid gap-8 p-6 sm:grid-cols-[1fr_auto] sm:items-end sm:p-10">
+              <motion.div initial={{ opacity: reduce ? 1 : 0, y: reduce ? 0 : 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.3, delay: reduce ? 0 : 0.3, ease: [0.23, 1, 0.32, 1] }} className="grid gap-8 p-6 sm:grid-cols-[1fr_auto] sm:items-end sm:p-10">
                 <div>
                   <p className="m-0 max-w-[62ch] text-[0.98rem] leading-[1.75] text-deep-ink-2">{selectedProof.body}</p>
                   <Link href={`/work/${selectedProof.slug}`} onClick={() => setSelected(null)} className="mt-6 inline-flex items-center gap-2 border-b border-accent-bright pb-1 text-sm font-medium text-white hover:text-accent-bright">
@@ -177,7 +180,7 @@ export function Proof({ proofs }: { proofs: Work[] }) {
                   <p className="font-serif m-0 text-4xl leading-none text-accent-bright">{selectedProof.metric}</p>
                   <p className="mt-2 max-w-[12rem] text-sm text-deep-ink-2">{selectedProof.metricLabel}</p>
                 </div>
-              </div>
+              </motion.div>
             </motion.article>
           </motion.div>
           )}

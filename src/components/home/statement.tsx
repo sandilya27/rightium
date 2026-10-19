@@ -12,15 +12,15 @@ const terms = ["Fixed scope", "Fixed fee", "Agreed before we start"];
  */
 export function Statement() {
   return (
-    <section className="bg-paper pt-24 pb-20 md:pt-[140px] md:pb-[120px]">
-      <div className="shell grid gap-12 md:grid-cols-[minmax(0,0.9fr)_minmax(0,2fr)] md:gap-16">
+    <section className="bg-paper pt-8 pb-16 md:pt-10 md:pb-24">
+      <div className="shell grid gap-9 border-t border-line pt-8 md:grid-cols-[minmax(0,0.9fr)_minmax(0,2fr)] md:gap-16 md:pt-10">
         <Reveal>
           <Eyebrow>Why Rightium</Eyebrow>
-          <p className="mt-5.5 max-w-[30ch] text-[0.96875rem] leading-[1.65] text-ink-2">
+          <p className="mt-4 max-w-[30ch] text-[0.96875rem] leading-[1.65] text-ink-2">
             A research partner for corporate IP teams, law firms and R&amp;D
             leaders across 30 countries.
           </p>
-          <ul className="mt-9 flex list-none flex-col gap-3 p-0">
+          <ul className="mt-7 flex list-none flex-col gap-3.5 p-0">
             {terms.map((t) => (
               <li
                 key={t}
@@ -35,11 +35,12 @@ export function Statement() {
 
         <Reveal delay={0.12}>
           <ScrollWords
-            className="font-serif m-0 text-[clamp(1.9rem,3.3vw,3.1rem)] leading-[1.25] tracking-[-0.015em] text-ink-heading text-pretty"
+            dim={0.72}
+            className="font-serif m-0 text-[clamp(1.9rem,3.15vw,3rem)] leading-[1.2] tracking-[-0.025em] text-ink-heading text-pretty"
             text="Most search reports arrive as a list of references and a shrug. Ours arrive with *the* *search* *log,* *the* *raw* *data* *and* *an* *opinion* *you* *can* *defend* — reviewed twice, by analysts who trained in your field."
           />
 
-          <div className="mt-10">
+          <div className="mt-8 md:mt-9">
             <Magnetic strength={0.2}>
               <ButtonLink href="/about" variant="ink">
                 How we work

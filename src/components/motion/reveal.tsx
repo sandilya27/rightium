@@ -49,8 +49,8 @@ export function Reveal({
     <Comp
       data-reveal=""
       className={className}
-      initial={{ opacity: 0, transform: from }}
-      whileInView={{ opacity: 1, transform: to }}
+      initial={false}
+      whileInView={{ opacity: [0.72, 1], transform: [from, to] }}
       viewport={{ once: true, margin: "-10% 0px -8% 0px" }}
       transition={{
         opacity: { duration: reduce ? 0.3 : duration, delay, ease: EASE_OUT },
@@ -81,7 +81,7 @@ export function RevealGroup({
     <motion.div
       data-reveal=""
       className={className}
-      initial="hidden"
+      initial={false}
       whileInView="shown"
       viewport={{ once: true, margin: "-8% 0px" }}
       transition={{ staggerChildren: stagger, delayChildren: delay }}
@@ -108,10 +108,10 @@ export function RevealItem({
       data-reveal=""
       className={className}
       variants={{
-        hidden: { opacity: 0, transform: `translate3d(0, ${distance}px, 0)` },
+        hidden: { opacity: 1, transform: `translate3d(0, ${distance}px, 0)` },
         shown: {
-          opacity: 1,
-          transform: "translate3d(0, 0px, 0)",
+          opacity: [0.72, 1],
+          transform: [`translate3d(0, ${distance}px, 0)`, "translate3d(0, 0px, 0)"],
           transition: { duration: 0.6, ease: EASE_OUT },
         },
       }}
