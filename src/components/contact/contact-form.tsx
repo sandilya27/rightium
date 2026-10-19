@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Check, Loader2 } from "lucide-react";
 import { serviceItems, services } from "@/lib/services";
@@ -18,6 +18,9 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export function ContactForm() {
   const reduce = useReducedMotion();
+  const submitting = useRef(false);
+  const feedback = useRef<HTMLDivElement>(null);
+
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Errors>({});
   const [serverError, setServerError] = useState<string | null>(null);
@@ -42,6 +45,8 @@ export function ContactForm() {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (submitting.current || status === "success") return;
+    setServerError(null);
     const form = e.currentTarget;
     const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
 
@@ -61,6 +66,7 @@ export function ContactForm() {
       return;
     }
 
+    submitting.current = true;
     setStatus("submitting");
     setServerError(null);
 
@@ -97,19 +103,26 @@ export function ContactForm() {
       setTurnstileToken("");
       setTurnstileKey((k) => k + 1);
       setServerError(
-        err instanceof Error && err.message !== "Failed"
+        err instanceof Error && !(err instanceof TypeError) && err.message !== "Failed"
           ? err.message
-          : "Something went wrong sending that. Email us directly and we will pick it up.",
+          : "Your brief could not be sent. Your entries are saved here. Try sending again, or email us directly.",
       );
+    } finally {
+      submitting.current = false;
     }
   }
 
   return (
-    <div className="relative border border-line-strong bg-white p-7 md:p-12">
+    <div className="relative border border-line-strong bg-white p-5 sm:p-7 md:p-10">
+      <p className="sr-only" role="status">{status === "submitting" ? "Sending your brief." : status === "success" ? "Brief received." : ""}</p>
       <AnimatePresence mode="wait" initial={false}>
         {status === "success" ? (
           <motion.div
             key="success"
+            ref={feedback}
+            tabIndex={-1}
+            aria-label="Brief received"
+            onAnimationComplete={() => feedback.current?.focus()}
             initial={{ opacity: 0, transform: reduce ? "none" : "scale(0.97)" }}
             animate={{ opacity: 1, transform: "scale(1)" }}
             transition={{ duration: 0.45, ease: EASE_OUT }}
@@ -143,11 +156,13 @@ export function ContactForm() {
             key="form"
             onSubmit={onSubmit}
             noValidate
+            aria-busy={status === "submitting"}
             initial={false}
             exit={{ opacity: 0, transform: "translate3d(0, -6px, 0)" }}
             transition={{ duration: 0.22, ease: EASE_OUT }}
             className="flex flex-col gap-6"
           >
+            <p className="m-0 text-sm text-ink-2">Fields marked * are required. Other details are optional.</p>
             {/* Honeypot — real people never fill this. */}
             <div aria-hidden className="absolute -left-[9999px]">
               <label htmlFor="company_website">Company website</label>
@@ -159,6 +174,7 @@ export function ContactForm() {
                 <input
                   id="name"
                   name="name"
+                  required
                   autoComplete="name"
                   aria-invalid={Boolean(errors.name)}
                   aria-describedby={errors.name ? "name-error" : undefined}
@@ -171,6 +187,7 @@ export function ContactForm() {
                 <input
                   id="email"
                   name="email"
+                  required
                   type="email"
                   autoComplete="email"
                   aria-invalid={Boolean(errors.email)}
@@ -250,6 +267,7 @@ export function ContactForm() {
               <textarea
                 id="message"
                 name="message"
+                required
                 rows={6}
                 aria-invalid={Boolean(errors.message)}
                 aria-describedby={errors.message ? "message-error" : undefined}
@@ -268,7 +286,7 @@ export function ContactForm() {
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.24, ease: EASE_OUT }}
-                  className="overflow-hidden border-l-2 border-[var(--danger)] bg-[rgba(192,57,43,0.06)] px-4 py-3 text-[0.875rem] text-[var(--danger)]"
+                  className="overflow-hidden border border-[var(--danger)] bg-paper px-4 py-3 text-[0.875rem] text-[var(--danger)]"
                 >
                   {serverError}
                 </motion.p>
@@ -278,13 +296,14 @@ export function ContactForm() {
             <div className="flex flex-wrap items-center gap-6 pt-2">
               <Button
                 type="submit"
+                aria-label={status === "submitting" ? "Sending brief" : "Send brief"}
                 size="lg"
                 disabled={status === "submitting"}
                 className="min-w-[13rem]"
               >
                 {/* Label crossfades through a blur so the two states read as
                     one element changing, not two swapping. */}
-                <span className="relative grid place-items-center">
+                <span aria-hidden="true" className="relative grid place-items-center">
                   <span
                     className="col-start-1 row-start-1 inline-flex items-center gap-2 transition-[opacity,filter] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]"
                     style={{

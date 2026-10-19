@@ -53,6 +53,6 @@ export function Field({
   );
 }
 
-/** Square field, teal focus ring. Errors turn the border red. */
-export const inputClass = "field";
+/** Square field, slate focus ring. Errors turn the border red. */
+export const inputClass = "field text-base! placeholder:text-ink-2!";
 export const inputErrorClass = "field field-error";

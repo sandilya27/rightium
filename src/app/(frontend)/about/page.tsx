@@ -19,11 +19,20 @@ export default function AboutPage() {
   return (
     <>
       <PageHero
+        assembly={{
+          description: "Conceptual optical assembly introducing the firm's research, review, evidence and team",
+          labels: [
+            { anchor: "housing", text: "Research" },
+            { anchor: "iris", text: "Review" },
+            { anchor: "lens", text: "Evidence" },
+            { anchor: "base", text: "Team" },
+          ],
+        }}
         eyebrow="About the firm"
         title={
           <>
             An IP research firm built around{" "}
-            <em className="accent-em-bright">one rule.</em>
+            <em className="accent-em">one rule.</em>
           </>
         }
         lede="Every conclusion ships with the evidence that produced it. Everything else about how we work follows from that."
@@ -33,7 +42,7 @@ export default function AboutPage() {
           page answers "do you know my field?" without a second scroll. */}
       <section className="bg-paper py-20 md:py-[112px]">
         <div className="shell grid items-start gap-12 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:gap-20">
-          <Reveal className="flex flex-col gap-6 text-[1.03125rem] leading-[1.75] text-[#3f4f5e]">
+          <Reveal className="flex flex-col gap-6 text-[1.03125rem] leading-[1.75] text-ink-2">
             <p className="font-serif m-0 text-[clamp(1.6rem,2.4vw,2.2rem)] leading-[1.3] tracking-[-0.01em] text-ink-heading balance">
               We started because too many search reports arrive as a list of
               references and a shrug.
