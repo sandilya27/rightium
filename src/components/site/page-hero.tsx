@@ -29,10 +29,10 @@ export function PageHero({
   aside?: ReactNode;
 }) {
   return (
-    <section className="relative isolate overflow-hidden bg-deep text-white">
+    <section className="on-deep relative isolate overflow-hidden bg-deep text-white">
       <div aria-hidden className="pointer-events-none absolute inset-0 opacity-65">
         <PixelBlast
-          color="#00a8b6"
+          color="#a5d6ca"
           variant="square"
           pixelSize={3}
           patternScale={2.6}
@@ -48,7 +48,7 @@ export function PageHero({
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 72% 68% at 50% 38%, rgba(6,21,36,0.48) 0%, rgba(4,14,23,0.82) 72%, rgba(2,11,20,0.96) 100%)",
+            "radial-gradient(ellipse 72% 68% at 50% 38%, rgba(25,39,51,0.48) 0%, rgba(25,39,51,0.82) 72%, rgba(25,39,51,0.96) 100%)",
         }}
       />
 

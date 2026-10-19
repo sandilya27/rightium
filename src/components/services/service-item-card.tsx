@@ -25,7 +25,7 @@ export function ServiceItemCard({
       id={item.slug}
       className={cn(
         "lift flex scroll-mt-[calc(var(--nav-h)+5rem)] flex-col border border-line-strong bg-white p-7",
-        "[@media(hover:hover)_and_(pointer:fine)]:hover:border-[rgba(0,168,182,0.5)]",
+        "[@media(hover:hover)_and_(pointer:fine)]:hover:border-accent",
         className,
       )}
     >

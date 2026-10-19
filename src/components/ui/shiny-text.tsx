@@ -22,7 +22,7 @@ export function ShinyText({
   disabled = false,
   speed = 2.5,
   className = "",
-  color = "#3cc4cf",
+  color = "#a5d6ca",
   shineColor = "#ffffff",
   spread = 120,
   yoyo = false,

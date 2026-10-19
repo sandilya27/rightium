@@ -31,7 +31,7 @@ export function CTA({
   return (
     <section ref={section} data-entered={entered} className="bg-paper px-[var(--gutter)] pt-20 pb-10 md:pt-24">
       <Reveal variant="scale" duration={0.35} className="mx-auto max-w-[80rem]">
-        <div className="plate plate-banner relative overflow-hidden text-white shadow-2xl">
+        <div className="plate plate-banner relative overflow-hidden text-white">
           <Image
             src={image}
             alt=""

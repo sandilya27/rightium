@@ -137,7 +137,7 @@ export default function AboutPage() {
                   className="grid aspect-square place-items-center"
                   style={{
                     background:
-                      "repeating-linear-gradient(135deg,#e6edf1 0 6px,#f3f6f8 6px 12px)",
+                      "repeating-linear-gradient(135deg,var(--surface-2) 0 6px,var(--surface) 6px 12px)",
                   }}
                 >
                   <span className="border border-line-strong bg-white px-2.5 py-1.5 font-mono text-[0.6875rem] tracking-[0.08em] uppercase text-ink-2">

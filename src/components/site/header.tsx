@@ -71,7 +71,7 @@ export function Header() {
         data-at-rest={!(scrolled || menuOpen || drawerOpen)}
         className={cn(
           "fixed inset-x-0 top-0 z-[60] transition-[background-color,box-shadow,color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
-          "bg-[rgba(255,255,255,0.96)] text-ink-heading shadow-[0_1px_0_rgba(10,31,51,0.1)] backdrop-blur-md",
+          "bg-paper text-ink-heading shadow-[0_1px_0_var(--line)]",
         )}
       >
         <div
@@ -168,7 +168,7 @@ export function Header() {
               animate={{ opacity: 1, transform: "translate3d(0,0,0)" }}
               exit={{ opacity: 0, transform: "translate3d(0,-6px,0)" }}
               transition={{ duration: reduce ? 0 : 0.26, ease: EASE_OUT }}
-              className="absolute inset-x-0 top-[var(--nav-h)] hidden border-t border-line bg-white text-ink shadow-[0_30px_60px_-30px_rgba(6,21,36,0.35)] lg:block"
+              className="absolute inset-x-0 top-[var(--nav-h)] hidden border-t border-line bg-paper text-ink shadow-[0_30px_60px_-30px_color-mix(in_srgb,var(--deep-ink-well)_35%,transparent)] lg:block"
             >
               <div className="shell grid grid-cols-[280px_1fr] gap-12 pt-9 pb-10">
                 <div>

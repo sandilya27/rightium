@@ -1,46 +1,11 @@
-/* Slate & Glacier is scoped to the home route, including its shared chrome.
-   :has also restores the incumbent theme immediately on client navigation. */
-body:has(.home-slate) {
-  --paper: #f1f5f5;
-  --surface: #e7eeee;
-  --surface-2: #d9e5e5;
-  --ink: #202f3d;
-  --ink-heading: #202f3d;
-  --ink-body: #374f60;
-  --ink-2: #49667c;
-  --line: #202f3d1f;
-  --line-strong: #202f3d33;
-  --accent: #49667c;
-  --accent-hover: #354f63;
-  --accent-bright: #a5d6ca;
-  --accent-soft: #dceee9;
-  --deep: #202f3d;
-  --deep-lift: #304858;
-  --deep-ink-well: #192733;
-  --deep-ink: #f1f5f5;
-  --deep-ink-2: #d2dfe4;
-  --deep-ink-3: #adc2cb;
-  --deep-line: #a5d6ca40;
-  background: var(--paper);
-  scrollbar-color: #49667c #f1f5f5;
-  caret-color: var(--accent);
-}
+/* Homepage composition only. The Slate & Glacier tokens, type mapping,
+   focus, selection, flat inverse fields and closing banner are shared
+   public styles in globals.css. */
 
-body:has(.home-slate) ::selection { background: #a5d6ca; color: #202f3d; }
-body:has(.home-slate) :focus-visible { outline: 2px solid #49667c; outline-offset: 5px; }
-body:has(.home-slate) .on-deep :focus-visible,
-body:has(.home-slate) footer :focus-visible { outline-color: #a5d6ca; }
-body:has(.home-slate) .font-serif,
-.home-slate :is(.display-lg, .display-md, .display-sm) {
-  font-family: var(--font-newsreader), Georgia, serif;
-  font-weight: 450;
-  letter-spacing: -.025em;
-}
-body:has(.home-slate) header { background: #f1f5f5; backdrop-filter: none; }
-/* At rest the bar sits on the hero field, so the field runs to the top edge. */
+/* Only the home hero runs to the top edge, so only home has a transparent
+   resting bar; elsewhere the header stays on paper until the heroes move
+   to the shared light field. */
 body:has(.home-slate) header[data-at-rest="true"] { background: transparent; box-shadow: none; }
-body:has(.home-slate) footer { background: #202f3d; }
-body:has(.home-slate) footer > [aria-hidden="true"] { display: none; }
 
 /* One field under the whole hero: the lens is its light source. The glow
    follows --field-x/y, which HeroField sets from the scene's real centre. */
@@ -110,51 +75,6 @@ body:has(.home-slate) footer > [aria-hidden="true"] { display: none; }
 .home-slate .hero-counters { padding-block: 1.75rem; }
 .home-slate .hero-counter-value { font-family: var(--font-newsreader), Georgia, serif; font-weight: 450; }
 .home-slate .hero-counter > span:last-child { color: #d2dfe4; }
-
-/* Flat slate fields and generous editorial type carry the selected sheet
-   through the existing sections without changing their content or behavior. */
-.home-slate .deep-field { background: #202f3d; }
-.home-slate .deep-field::before,
-.home-slate .deep-field > [aria-hidden="true"] { display: none; }
-.home-slate .eyebrow { letter-spacing: .08em; }
-.home-slate .plate-banner { background: #202f3d; box-shadow: none; }
-.home-slate .plate-banner > img,
-.home-slate .plate-banner > [aria-hidden="true"] { display: none; }
-.home-slate .plate-banner::after { background: none; }
-.home-slate .plate-banner::before {
-  content: "";
-  position: absolute;
-  width: min(76%, 920px);
-  aspect-ratio: 1;
-  right: -21%;
-  top: 50%;
-  background: url("/images/cta-lens.svg") center / contain no-repeat;
-  opacity: .6;
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-.home-slate section[data-entered="true"] .plate-banner::before {
-  animation: closing-lens-drift 1.2s cubic-bezier(.16,1,.3,1) both;
-}
-@keyframes closing-lens-drift {
-  from { transform: translate(2%, -48%) scale(1.04); opacity: .3; }
-  to { transform: translateY(-50%); opacity: .6; }
-}
-@media (max-width: 599px) {
-  .home-slate .plate-banner::before {
-    width: 140%;
-    right: -80%;
-    top: 80%;
-    opacity: .45;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .home-slate .plate-banner::before { animation: none; }
-}
-.home-slate .plate-banner .eyebrow,
-body:has(.home-slate) footer .eyebrow { color: #a5d6ca; }
-.home-slate .plate:not(.plate-banner)::after { background: #202f3d80; }
-.home-slate a { text-underline-offset: .25em; }
 
 /* Evidence leads straight out of the hero; the journal gets a lighter field. */
 .home-slate .selected-work { background: var(--surface); }
