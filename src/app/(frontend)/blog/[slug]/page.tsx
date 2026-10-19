@@ -1,3 +1,4 @@
+import { editorialAssembly } from "@/lib/reading-assembly";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { draftMode } from "next/headers";
@@ -80,6 +81,7 @@ export default async function PostPage({
       />
 
       <PageHero
+        assembly={editorialAssembly(post.category, headings, "article")}
         crumbs={[
           { label: "Home", href: "/" },
           { label: "Insights", href: "/blog" },
@@ -95,12 +97,12 @@ export default async function PostPage({
 
       {/* The meta row lives outside PageHero's lede so the byline can sit
           on its own baseline under the standfirst. */}
-      <div className="bg-deep pb-16 text-white md:pb-20">
-        <div className="shell flex flex-wrap items-center justify-between gap-x-8 gap-y-4 text-[0.84375rem] text-deep-ink-3">
+      <div className="border-y border-line bg-surface py-6 text-ink-heading">
+        <div className="shell flex flex-wrap items-center justify-between gap-x-8 gap-y-4 text-[0.84375rem] text-ink-2">
           <CloseArticle />
           <div className="flex flex-wrap gap-x-8 gap-y-3">
           <span>
-            <span className="font-medium text-white">{post.author.name}</span>
+            <span className="font-medium text-ink-heading">{post.author.name}</span>
             {post.author.role ? ` · ${post.author.role}` : ""}
           </span>
           <time dateTime={post.date}>{formatDate(post.date)}</time>
@@ -141,7 +143,7 @@ export default async function PostPage({
             </Link>
           </aside>
 
-          <Reveal delay={0.1} as="article">
+          <article className="min-w-0 [overflow-wrap:anywhere]">
             {post.coverImage && (
               /* Served directly from Cloudinary; next/image would re-proxy it. */
               /* eslint-disable-next-line @next/next/no-img-element */
@@ -169,7 +171,7 @@ export default async function PostPage({
                 </p>
               </div>
             </div>
-          </Reveal>
+          </article>
         </div>
       </section>
 

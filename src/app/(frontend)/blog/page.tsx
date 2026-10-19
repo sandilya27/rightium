@@ -3,7 +3,7 @@ import { pageMetadata } from "@/lib/seo";
 import { getPosts } from "@/lib/posts";
 import { PageHero } from "@/components/site/page-hero";
 import { BlogIndex } from "@/components/blog/blog-index";
-import { Reveal } from "@/components/motion/reveal";
+import { readingAssembly } from "@/lib/reading-assembly";
 import { SubscribeBand } from "@/components/blog/subscribe-band";
 
 export const metadata: Metadata = pageMetadata({
@@ -22,10 +22,11 @@ export default async function BlogPage() {
   return (
     <>
       <PageHero
+        assembly={readingAssembly(["Research", "Analysis", "IP Decisions"], "Conceptual optical assembly accompanying Rightium research and IP analysis.")}
         eyebrow="Insights"
         title={
           <>
-            Notes from the <em className="accent-em-bright">research desk.</em>
+            Notes from the <em className="accent-em">research desk.</em>
           </>
         }
         lede="Practical method, written by the analysts doing the work. No thought leadership."
@@ -34,9 +35,9 @@ export default async function BlogPage() {
       <section className="bg-paper pt-16 pb-20 md:pt-20 md:pb-[120px]">
         <div className="shell">
           {posts.length > 0 ? (
-            <Reveal>
+            <>
               <BlogIndex posts={posts} />
-            </Reveal>
+            </>
           ) : (
             <p className="mx-auto max-w-[52ch] py-10 text-center text-[1.0625rem] leading-[1.7] text-ink-2">
               New articles are on their way. In the meantime, send us the question

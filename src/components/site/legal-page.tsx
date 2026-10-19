@@ -1,5 +1,5 @@
 import { PageHero } from "@/components/site/page-hero";
-import { Reveal } from "@/components/motion/reveal";
+import { readingAssembly } from "@/lib/reading-assembly";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo";
 
 /** A paragraph, or a bulleted list when given an array. */
@@ -33,6 +33,7 @@ export function LegalPage({
         ])}
       />
       <PageHero
+        assembly={readingAssembly(path === "/privacy" ? ["Data Collection", "Data Use", "Your Rights"] : ["Engagement", "Responsibilities", "Terms"], `Conceptual optical assembly accompanying ${title}.`)}
         crumbs={[{ label: "Home", href: "/" }, { label: title }]}
         eyebrow={`Last updated ${updated}`}
         title={title}
@@ -60,9 +61,9 @@ export function LegalPage({
             </ol>
           </nav>
 
-          <div className="flex flex-col gap-12">
+          <div className="min-w-0 flex flex-col gap-12 [overflow-wrap:anywhere]">
             {sections.map((s, i) => (
-              <Reveal key={s.id}>
+              <div key={s.id}>
                 <section
                   id={s.id}
                   className="scroll-mt-[calc(var(--nav-h)+2rem)] border-t border-line-strong pt-7"
@@ -92,7 +93,7 @@ export function LegalPage({
                     )}
                   </div>
                 </section>
-              </Reveal>
+              </div>
             ))}
           </div>
         </div>

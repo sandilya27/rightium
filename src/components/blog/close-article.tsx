@@ -17,7 +17,7 @@ export function CloseArticle() {
     <button
       type="button"
       onClick={close}
-      className="inline-flex items-center gap-2 border-b border-accent-bright/70 pb-1 font-medium text-white transition-[gap,color] duration-200 [@media(hover:hover)_and_(pointer:fine)]:hover:gap-3 [@media(hover:hover)_and_(pointer:fine)]:hover:text-accent-bright"
+      className="inline-flex items-center gap-2 border-b border-accent pb-1 font-medium text-ink-heading transition-[gap,color] duration-200 [@media(hover:hover)_and_(pointer:fine)]:hover:gap-3 [@media(hover:hover)_and_(pointer:fine)]:hover:text-accent"
     >
       <ArrowLeft className="size-4" />
       Close article

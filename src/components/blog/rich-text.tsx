@@ -128,7 +128,7 @@ export function RichText({ content }: { content: NonNullable<Post["content"]> })
     <PayloadRichText
       data={content}
       converters={converters}
-      className="text-[1.09375rem] leading-[1.75] text-ink-body [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4"
+      className="min-w-0 max-w-[70ch] [overflow-wrap:anywhere] [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_pre]:bg-surface [&_pre]:p-4 [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto text-[1.09375rem] leading-[1.75] text-ink-body [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4"
     />
   );
 }

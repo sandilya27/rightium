@@ -11,21 +11,21 @@ import { Reveal } from "@/components/motion/reveal";
 export function SubscribeBand() {
   return (
     <section className="bg-surface border-t border-line py-20">
-      <Reveal className="shell grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_auto] md:gap-12">
+      <Reveal className="shell grid items-center gap-10 xl:grid-cols-[minmax(0,1fr)_auto] md:gap-12">
         <div>
           <p className="eyebrow m-0">Subscribe</p>
           <h2 className="font-serif mt-4 text-[clamp(1.8rem,3vw,2.6rem)] leading-[1.1] tracking-[-0.015em] text-ink-heading">
             One note a month. Method, not marketing.
           </h2>
         </div>
-        <form action="/contact" method="get" className="flex md:min-w-[26.25rem]">
+        <form action="/contact" method="get" className="flex min-w-0 flex-wrap gap-y-3">
           <input
             type="email"
             name="email"
             required
             placeholder="Work email"
             aria-label="Work email"
-            className="h-[52px] flex-1 border border-r-0 border-deep bg-white px-4.5 text-[0.9375rem] text-ink-heading outline-none"
+            className="h-[52px] min-w-0 flex-1 border border-r-0 border-deep bg-white px-4.5 text-base text-ink-heading"
           />
           <button
             type="submit"
