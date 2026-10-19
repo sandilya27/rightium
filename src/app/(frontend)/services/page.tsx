@@ -5,6 +5,8 @@ import { PageHero } from "@/components/site/page-hero";
 import { ServiceItemCard } from "@/components/services/service-item-card";
 import { Reveal } from "@/components/motion/reveal";
 import { TextLink } from "@/components/ui/button";
+import { ServiceNavigation } from "@/components/services/service-navigation";
+import { servicesAssembly } from "@/lib/service-assembly";
 import { CTA } from "@/components/site/cta";
 
 export const metadata: Metadata = pageMetadata({
@@ -18,11 +20,12 @@ export default function ServicesPage() {
   return (
     <>
       <PageHero
+        assembly={servicesAssembly}
         crumbs={[{ label: "Home", href: "/" }, { label: "Services" }]}
         title={
           <>
             Comprehensive IP solutions,{" "}
-            <em className="accent-em-bright">tailored for every need.</em>
+            <em className="text-accent">tailored for every need.</em>
           </>
         }
         lede={`${services.length} practices, ${serviceCount} services, one method: agree the question, run it twice, hand back the evidence. Order fixed-scope work directly, or talk to us about the rest.`}
@@ -30,23 +33,7 @@ export default function ServicesPage() {
 
       {/* Practice rail. Twenty-five services is a long page, so it docks
           under the header and stays there for the whole scroll. */}
-      <div className="sticky top-[var(--nav-h)] z-20 border-b border-line bg-[rgba(255,255,255,0.96)] backdrop-blur-md">
-        <nav
-          aria-label="Service categories"
-          className="shell flex gap-1 overflow-x-auto [scrollbar-width:none]"
-        >
-          {services.map((s) => (
-            <a
-              key={s.slug}
-              href={`#${s.slug}`}
-              className="inline-flex shrink-0 items-center gap-2.5 border-b-2 border-transparent px-3.5 py-[18px] text-[0.84375rem] font-medium text-ink-heading transition-[border-color,color] duration-[250ms] [@media(hover:hover)_and_(pointer:fine)]:hover:border-accent [@media(hover:hover)_and_(pointer:fine)]:hover:text-accent"
-            >
-              <span className="font-serif text-accent">{s.index}</span>
-              {s.title}
-            </a>
-          ))}
-        </nav>
-      </div>
+      <ServiceNavigation items={services.map(({slug, title, index}) => ({slug, title, index}))} />
 
       <section className="bg-paper pt-20 pb-10 md:pt-24">
         <div className="shell flex flex-col gap-20 md:gap-28">

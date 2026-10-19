@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getService, serviceCtaHref, serviceCtaLabel, services } from "@/lib/services";
+import { serviceAssemblies } from "@/lib/service-assembly";
 import { PageHero } from "@/components/site/page-hero";
 import { Reveal } from "@/components/motion/reveal";
 import { ArrowRight, ButtonLink, Tick, TextLink } from "@/components/ui/button";
@@ -52,6 +53,7 @@ export default async function ServicePage({
       />
 
       <PageHero
+        assembly={serviceAssemblies[service.slug]}
         crumbs={[
           { label: "Home", href: "/" },
           { label: "Services", href: "/services" },
@@ -61,28 +63,28 @@ export default async function ServicePage({
         title={service.title}
         aside={
           // The three facts a buyer checks before reading anything else.
-          <dl className="m-0 grid grid-cols-2 gap-px border border-deep-line bg-deep-line">
-            <div className="bg-deep p-6">
-              <dt className="m-0 text-xs tracking-[0.12em] uppercase text-deep-ink-3">
+          <dl className="m-0 grid grid-cols-2 gap-x-6 gap-y-5">
+            <div className="min-w-0">
+              <dt className="m-0 text-xs tracking-[0.12em] uppercase text-accent">
                 Typical turnaround
               </dt>
-              <dd className="font-serif m-0 mt-2.5 text-[1.625rem] leading-[1.1]">
+              <dd className="font-serif m-0 mt-2.5 text-[1.375rem] leading-[1.1]">
                 {service.turnaround}
               </dd>
             </div>
-            <div className="bg-deep p-6">
-              <dt className="m-0 text-xs tracking-[0.12em] uppercase text-deep-ink-3">
+            <div className="min-w-0">
+              <dt className="m-0 text-xs tracking-[0.12em] uppercase text-accent">
                 Jurisdictions
               </dt>
-              <dd className="font-serif m-0 mt-2.5 text-[1.625rem] leading-[1.1]">
+              <dd className="font-serif m-0 mt-2.5 text-[1.375rem] leading-[1.1]">
                 90+
               </dd>
             </div>
-            <div className="col-span-2 bg-deep p-6">
-              <dt className="m-0 text-xs tracking-[0.12em] uppercase text-deep-ink-3">
+            <div className="col-span-2 min-w-0">
+              <dt className="m-0 text-xs tracking-[0.12em] uppercase text-accent">
                 Built for
               </dt>
-              <dd className="m-0 mt-2.5 text-[0.9375rem] leading-[1.5] text-white/85">
+              <dd className="m-0 mt-2.5 text-[0.9375rem] leading-[1.5] text-ink-2">
                 {service.audience}
               </dd>
             </div>
@@ -121,12 +123,12 @@ export default async function ServicePage({
                     key={item.slug}
                     delay={i * 0.06}
                     as="article"
-                    className="grid scroll-mt-[calc(var(--nav-h)+2rem)] grid-cols-1 items-start gap-5 border-b border-line-strong py-7 sm:grid-cols-[3rem_minmax(0,1fr)_auto]"
+                    className="grid scroll-mt-[calc(var(--nav-h)+2rem)] grid-cols-1 items-start gap-5 border-b border-line-strong py-7 xl:grid-cols-[3rem_minmax(0,1fr)_auto]"
                   >
                     <span className="font-serif pt-1.5 text-[0.9375rem] text-accent">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <div id={item.slug}>
+                    <div id={item.slug} className="scroll-mt-[calc(var(--nav-h)+2rem)]">
                       <h3 className="font-serif m-0 text-2xl leading-[1.2] text-ink-heading">
                         {item.title}
                       </h3>

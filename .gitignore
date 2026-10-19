@@ -55,3 +55,7 @@ desing-inspiration/
 
 # Local hero plans and prompts
 /hero-option-plans/
+
+# Local design-tool state, review captures and scripts
+.impeccable/
+.taste-skill/

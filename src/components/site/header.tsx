@@ -89,11 +89,12 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={active ? "page" : undefined}
                   onMouseEnter={() => setMenuOpen(item.href === "/services")}
                   className={cn(
                     "group/nav relative px-3.5 py-2.5 text-[0.90625rem] font-medium transition-opacity duration-200",
                     active
-                      ? "opacity-100"
+                      ? "text-ink-heading opacity-100"
                       : "opacity-[0.78] [@media(hover:hover)_and_(pointer:fine)]:hover:opacity-100",
                   )}
                 >
@@ -102,7 +103,7 @@ export function Header() {
                     aria-hidden
                     viewBox="0 0 100 10"
                     preserveAspectRatio="none"
-                    className="pointer-events-none absolute inset-x-3.5 bottom-1 h-2 w-[calc(100%-1.75rem)] overflow-visible text-accent"
+                    className={cn("pointer-events-none absolute inset-x-3.5 bottom-1 h-2 w-[calc(100%-1.75rem)] overflow-visible", active ? "text-accent-hover" : "text-accent")}
                   >
                     <path
                       d="M1 7 C 16 7, 18 2, 31 3 S 53 9, 66 6 S 84 2, 99 3"

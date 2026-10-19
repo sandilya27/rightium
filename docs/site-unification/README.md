@@ -13,8 +13,8 @@ This folder is a planning packet, not an implementation or a replacement for PRO
 | Phase | Prompt | Outcome | Status |
 | --- | --- | --- | --- |
 | 1 | [Foundation](01-foundation.md) | Homepage baseline, product/design records, shared tokens and fonts | Implemented (uncommitted) |
-| 2 | [Compact hero](02-compact-hero.md) | Reusable smaller optical assembly and accessible callouts | Pending |
-| 3 | [Services](03-services.md) | Services index and all seven service pages | Pending |
+| 2 | [Compact hero](02-compact-hero.md) | Reusable smaller optical assembly and accessible callouts | Implemented; evidence/limits in phase record |
+| 3 | [Services](03-services.md) | Services index and all seven service pages | Implemented; evidence/limits in phase record |
 | 4 | [About and contact](04-about-contact.md) | Company narrative and complete enquiry flow | Pending |
 | 5 | [Reading and utility pages](05-reading-utility.md) | Insights, articles, work, legal pages, both 404 paths | Pending |
 | 6 | [Release audit](06-release-audit.md) | Whole-site visual, functional, accessibility, performance and SEO checks | Pending |

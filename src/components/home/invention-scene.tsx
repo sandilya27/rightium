@@ -3,8 +3,27 @@
 import { useEffect, useRef, useState } from "react";
 import type { BufferGeometry, NormalBufferAttributes } from "three";
 
+export const modelAnchors = { base: 0, fins: 1, lens: 2, iris: 3, housing: 4 } as const;
+export type ModelAnchor = keyof typeof modelAnchors;
+export type AssemblyProfile = {
+  description: string;
+  /** Relative camera distance; compact defaults to 1.15, home to 1. */
+  cameraScale?: number;
+  motion?: "cycle" | "drift" | "static";
+  maxDpr?: number;
+  labels: readonly { anchor: ModelAnchor; text: string }[];
+};
+export const homeAssemblyProfile: AssemblyProfile = {
+  description: "Conceptual assembly representing Rightium's patent search, IP intelligence, prosecution, licensing and IP consulting services",
+  labels: [
+    { anchor: "base", text: "IP Consulting" }, { anchor: "fins", text: "Licensing" },
+    { anchor: "lens", text: "Patent Prosecution" }, { anchor: "iris", text: "IP Intelligence" },
+    { anchor: "housing", text: "Patent Search" },
+  ],
+};
+
 /** A conceptual optical assembly, not a representation of a client's invention. */
-export function InventionScene() {
+export function InventionScene({ profile = homeAssemblyProfile, compact = false }: { profile?: AssemblyProfile; compact?: boolean }) {
   const host = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
   const callouts = useRef<SVGSVGElement>(null);
@@ -25,7 +44,7 @@ export function InventionScene() {
       } catch {
         return; // The CSS assembly remains visible without WebGL.
       }
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 768 ? 1.25 : 1.75));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, profile.maxDpr ?? (compact ? 1.25 : window.innerWidth < 768 ? 1.25 : 1.75)));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.15;
@@ -36,6 +55,7 @@ export function InventionScene() {
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 60);
       camera.position.set(6, 4.6, 8.4);
+      camera.position.multiplyScalar(profile.cameraScale ?? (compact ? 1.15 : 1));
       camera.lookAt(0, 0, 0);
       const pmrem = new THREE.PMREMGenerator(renderer);
       const room = new RoomEnvironment();
@@ -123,9 +143,19 @@ export function InventionScene() {
       rim.position.set(0, 0, -3);
       scene.add(rim);
 
+      let dirty = true;
+      let frame = 0;
+      let started = false;
+      let contextLost = false;
+      function wake() {
+        if (!started || disposed || contextLost) return;
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(render);
+      }
       let labelLeft = 40;
       let labelRight = 900;
       const resize = () => {
+        dirty = true;
         const { width, height, left, right } = element.getBoundingClientRect();
         // The oversized stage extends past the hero. Keep annotations inside
         // its intersection with the viewport, rather than the canvas bounds.
@@ -134,20 +164,22 @@ export function InventionScene() {
         renderer.setSize(width, height);
         camera.aspect = width / Math.max(height, 1);
         camera.updateProjectionMatrix();
+        wake();
       };
       const resizeObserver = new ResizeObserver(resize);
       resizeObserver.observe(element);
       resize();
       const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-      let reducedMotion = motionPreference.matches;
-      const preferenceChanged = () => { reducedMotion = motionPreference.matches; };
+      let reducedMotion = motionPreference.matches || profile.motion === "static";
+      const preferenceChanged = () => { reducedMotion = motionPreference.matches || profile.motion === "static"; dirty = true; wake(); };
       motionPreference.addEventListener("change", preferenceChanged);
       const anchor = new THREE.Vector3();
       const calloutNodes = callouts.current?.querySelectorAll<SVGGElement>("g[data-layer]");
       let visible = true;
-      const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; });
+      const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; wake(); });
       observer.observe(element);
-      let frame = 0;
+      const visibilityChanged = () => wake();
+      document.addEventListener("visibilitychange", visibilityChanged);
       let elapsed = 0;
       let last = performance.now();
       let firstFrame = true;
@@ -157,15 +189,17 @@ export function InventionScene() {
       };
       function render(now: number) {
         if (disposed) return;
-        frame = requestAnimationFrame(render);
         const dt = Math.min((now - last) / 1000, 0.05);
         last = now;
         if (!visible || document.hidden) return;
         const animate = !reducedMotion;
+        if (reducedMotion && !firstFrame && !dirty) return;
+        dirty = false;
         if (animate) elapsed += dt;
         // Exploded spin → horizontal assembly → upright separation → annotation hold.
         // Whole turns reset to the same pose, so the clock wraps without a jump.
-        const phase = elapsed % 16;
+        const drift = profile.motion === "drift";
+        const phase = drift ? 10 + Math.sin(elapsed * 0.35) * 0.25 : elapsed % 16;
         const spin = ease((phase - 0.4) / 1.7) * Math.PI * 2;
         const horizontal = ease((phase - 2.3) / 2) * (1 - ease((phase - 6) / 2));
         layers.forEach((layer, index) => {
@@ -176,11 +210,11 @@ export function InventionScene() {
           layer.position.y = (index - 2) * (0.34 + spread * 0.9);
           layer.rotation.y = (index - 2) * spread * 0.12;
         });
-        assembly.rotation.set(0.12, -0.22 + (reducedMotion ? 0 : spin), reducedMotion ? -0.12 : -0.12 - horizontal * Math.PI / 2);
+        assembly.rotation.set(0.12, -0.22 + (reducedMotion || drift ? 0 : spin), reducedMotion ? -0.12 : -0.12 - horizontal * Math.PI / 2);
         assembly.position.y = 0;
         assembly.updateMatrixWorld(true);
         calloutNodes?.forEach((node) => {
-          const index = Number(node.dataset.layer);
+          const index = modelAnchors[node.dataset.anchor as ModelAnchor];
           const opacity = reducedMotion ? 1
             : ease((phase - 9.2 - (4 - index) * 0.14) / 0.5) * (1 - ease((phase - 15) / 0.6));
           node.style.opacity = String(opacity);
@@ -203,13 +237,16 @@ export function InventionScene() {
         });
         renderer.render(scene, camera);
         if (firstFrame) { firstFrame = false; setReady(true); }
+        if (!reducedMotion) frame = requestAnimationFrame(render);
       }
+      started = true;
       frame = requestAnimationFrame(render);
-      const lost = (event: Event) => { event.preventDefault(); setReady(false); cancelAnimationFrame(frame); };
+      const lost = (event: Event) => { event.preventDefault(); contextLost = true; setReady(false); cancelAnimationFrame(frame); };
       renderer.domElement.addEventListener("webglcontextlost", lost);
       cleanup = () => {
         cancelAnimationFrame(frame);
         observer.disconnect();
+        document.removeEventListener("visibilitychange", visibilityChanged);
         resizeObserver.disconnect();
         motionPreference.removeEventListener("change", preferenceChanged);
         renderer.domElement.removeEventListener("webglcontextlost", lost);
@@ -222,17 +259,17 @@ export function InventionScene() {
     }
     initialize().catch(() => { /* Progressive enhancement: retain the static assembly. */ });
     return () => { disposed = true; cleanup?.(); };
-  }, []);
+  }, [profile, compact]);
 
   return (
-    <div className="invention" data-ready={ready}>
-      <div className="invention-stage" ref={host} role="img" aria-label="Conceptual assembly representing Rightium's patent search, IP intelligence, prosecution, licensing and IP consulting services">
+    <div className={compact ? "invention invention-compact" : "invention"} data-ready={ready}>
+      <div className="invention-stage" ref={host} role="img" aria-label={profile.description}>
         <svg ref={callouts} className="invention-callouts" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">
-          {["IP Consulting", "Licensing", "Patent Prosecution", "IP Intelligence", "Patent Search"].map((label, index) => (
-            <g key={label} data-layer={index} opacity="0">
+          {profile.labels.map(({ anchor, text }) => (
+            <g key={anchor} data-layer={modelAnchors[anchor]} data-anchor={anchor} opacity="0">
               <polyline fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" />
               <circle r="4" fill="currentColor" />
-              <text fill="currentColor">{label}</text>
+              <text fill="currentColor">{text}</text>
             </g>
           ))}
         </svg>
@@ -246,6 +283,9 @@ export function InventionScene() {
           </div>
         </div>
       </div>
+      <ul className={compact ? "assembly-legend" : "sr-only"}>
+        {profile.labels.map(({ anchor, text }) => <li key={anchor} data-anchor={anchor}>{text}</li>)}
+      </ul>
     </div>
   );
 }

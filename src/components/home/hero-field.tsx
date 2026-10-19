@@ -6,12 +6,12 @@ import { useEffect, useRef } from "react";
  * One continuous field behind the whole hero. The optical assembly is its
  * source: rings radiate from the lens across the copy, with periodic pulses.
  */
-export function HeroField() {
+export function HeroField({ compact = false }: { compact?: boolean }) {
   const canvas = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const element = canvas.current;
-    const section = element?.closest<HTMLElement>(".evidence-hero");
+    const section = element?.closest<HTMLElement>(compact ? ".compact-page-hero" : ".evidence-hero");
     const context = element?.getContext("2d");
     if (!element || !section || !context) return;
     const ctx = context;
@@ -30,7 +30,7 @@ export function HeroField() {
     function measure() {
       const bounds = host.getBoundingClientRect();
       const stage = host.querySelector(".invention-stage")?.getBoundingClientRect();
-      const text = host.querySelector(".evidence-hero-copy")?.getBoundingClientRect();
+      const text = host.querySelector(compact ? ".compact-hero-copy" : ".evidence-hero-copy")?.getBoundingClientRect();
       const band = host.querySelector(".hero-counter-band")?.getBoundingClientRect();
       width = bounds.width;
       height = (band ? band.top : bounds.bottom) - bounds.top;
@@ -118,7 +118,7 @@ export function HeroField() {
       observer.disconnect();
       motionPreference.removeEventListener("change", preferenceChanged);
     };
-  }, []);
+  }, [compact]);
 
   return <canvas ref={canvas} className="hero-field" aria-hidden="true" />;
 }

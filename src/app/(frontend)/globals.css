@@ -656,3 +656,31 @@ textarea.field {
 /* Let the optical surface reach the transparent navigation, then shade the copy. */
 .optical-field-veil { mask-image: linear-gradient(to bottom, transparent, #000 190px); }
 @media (max-width: 767px) { .optical-field-veil { mask-image: linear-gradient(to bottom, transparent, #000 105px); } }
+
+/* Interior assembly: real camera framing, with a persistent HTML key. */
+.compact-page-hero { padding: calc(var(--nav-h) + 2rem) 0 3rem; }
+.compact-hero-grid { display: grid; align-items: center; gap: 2rem; margin-top: 2rem; }
+.compact-hero-title { font-size: clamp(2.25rem, 4vw, 3.75rem); overflow-wrap: anywhere; }
+.invention.invention-compact { height: auto; margin: 0; min-width: 0; }
+.invention-compact .invention-stage { position: relative; inset: auto; height: 300px; }
+.invention-compact .invention-callouts { color: var(--ink-heading); }
+.invention-compact .invention-callouts text { font-size: 36px; }
+.invention[data-ready="true"] .assembly-legend { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); border: 0; }
+.assembly-legend { list-style: none; margin: 0; padding: 1rem 0 0; display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; border-top: 1px solid var(--line); color: var(--ink-2); font-size: .875rem; }
+.invention-compact .fallback-assembly { transform: rotate(-24deg); width: 190px; height: 240px; }
+.invention-compact .fallback-ring { height: 45px; border-width: 8px; background: var(--deep); box-shadow: 0 5px 0 var(--accent); }
+.invention-compact .fallback-ring-top { top: 0; }
+.invention-compact .fallback-ring-iris { top: 45px; }
+.invention-compact .fallback-ring-lens { top: 90px; border-color: var(--accent-bright); background: var(--accent-soft); }
+.invention-compact .fallback-ring-fins { top: 135px; }
+.invention-compact .fallback-ring-base { top: 180px; border-top-color: var(--accent); }
+@media (min-width: 1024px) {
+  .compact-hero-grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 3rem; }
+  .invention-compact .invention-stage { height: 340px; }
+  .invention-compact .invention-callouts text { font-size: 28px; }
+}
+
+/* The compact assembly shares the homepage's glacier light and optical field. */
+.compact-page-hero { position: relative; isolation: isolate; overflow: hidden; --field-x: 76%; --field-y: 55%; }
+.compact-page-hero::before { content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none; background: radial-gradient(circle at var(--field-x) var(--field-y), color-mix(in srgb, var(--accent-bright) 95%, transparent), color-mix(in srgb, var(--accent-bright) 60%, transparent) 10rem, color-mix(in srgb, var(--accent-bright) 20%, transparent) 22rem, transparent 34rem); }
+.compact-page-hero .hero-field { position: absolute; inset: 0 0 auto; z-index: -1; width: 100%; pointer-events: none; }
