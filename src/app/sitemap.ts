@@ -13,12 +13,12 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [posts, works] = await Promise.all([getPosts(), getWorks()]);
 
-  const staticRoutes = ["", "/services", "/about", "/blog", "/contact", "/privacy", "/terms"];
+  const staticRoutes = ["", "/services", "/about", "/blog", "/work", "/contact", "/privacy", "/terms"];
 
   return [
     ...staticRoutes.map((route) => ({
       url: `${site.url}${route}`,
-      lastModified: STATIC_UPDATED,
+      lastModified: route === "/work" ? new Date("2026-10-29") : STATIC_UPDATED,
       changeFrequency: "monthly" as const,
       priority: route === "" ? 1 : route === "/privacy" || route === "/terms" ? 0.3 : 0.7,
     })),

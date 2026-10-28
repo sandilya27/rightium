@@ -82,7 +82,8 @@ export default async function PostPage({
       />
 
       <PageHero
-        assembly={editorialAssembly(post.category, headings, "article")}
+        assembly={post.coverImage ? undefined : editorialAssembly(post.category, headings, "article")}
+        image={post.coverImage ?? undefined}
         crumbs={[
           { label: "Home", href: "/" },
           { label: "Insights", href: "/blog" },
@@ -129,20 +130,6 @@ export default async function PostPage({
           </aside>
 
           <article className="min-w-0 [overflow-wrap:anywhere]">
-            {post.coverImage && (
-              /* Served directly from Cloudinary; next/image would re-proxy it. */
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src={post.coverImage.url}
-                alt={post.coverImage.alt}
-                width={post.coverImage.width}
-                height={post.coverImage.height}
-                loading="lazy"
-                decoding="async"
-                className="mb-12 w-full border border-line"
-              />
-            )}
-
             {post.content && <RichText content={post.content} />}
 
             <div className="mt-14 flex items-center gap-5 border-t border-line-strong pt-8">

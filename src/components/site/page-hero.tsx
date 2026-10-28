@@ -1,11 +1,11 @@
 import { InventionScene, type AssemblyProfile } from "@/components/home/invention-scene";
 import { HeroField } from "@/components/home/hero-field";
 import Link from "next/link";
+import Image from "next/image";
 import type { ReactNode } from "react";
 export type Crumb = { label: string; href?: string };
 
-/** Server-rendered hero copy; an explicit assembly opts into the compact light field.
- * Every public route supplies its topic-specific compact profile. */
+/** Reading pages use cover artwork; other interior pages retain their assembly. */
 export function PageHero({
   eyebrow,
   crumbs,
@@ -14,6 +14,7 @@ export function PageHero({
   aside,
   assembly,
   actions,
+  image,
 }: {
   eyebrow?: string;
   crumbs?: Crumb[];
@@ -21,12 +22,19 @@ export function PageHero({
   lede?: ReactNode;
   /** Optional right-hand fact panel (used by the practice pages). */
   aside?: ReactNode;
-  assembly: AssemblyProfile;
+  assembly?: AssemblyProfile;
+  image?: { url: string; alt?: string };
   actions?: ReactNode;
 }) {
   return (
-    <section className="compact-page-hero bg-paper text-ink-heading">
-      <HeroField compact />
+    <section className={`compact-page-hero bg-paper text-ink-heading${image ? " image-page-hero" : ""}`}>
+      {image ? (
+        <div className="image-hero-media">
+          <Image src={image.url} alt={image.alt || ""} fill preload sizes="(min-width: 1024px) 68vw, 100vw" className="image-hero-photo" />
+          <span aria-hidden="true" className="image-hero-soften" />
+          <span aria-hidden="true" className="image-hero-tint" />
+        </div>
+      ) : <HeroField compact />}
       <div className="shell relative">
         {crumbs && <nav aria-label="Breadcrumb" className="flex flex-wrap gap-2 text-sm text-accent">
           {crumbs.map((crumb, index) => <span key={crumb.label}>
@@ -42,7 +50,7 @@ export function PageHero({
             {actions && <div className="mt-7 flex flex-wrap gap-4">{actions}</div>}
             {aside && <div className="mt-8 border-t border-line pt-6">{aside}</div>}
           </div>
-          <InventionScene compact profile={assembly} />
+          {!image && assembly && <InventionScene compact profile={assembly} />}
         </div>
       </div>
     </section>

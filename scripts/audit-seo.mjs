@@ -21,6 +21,11 @@ for (const canonical of urls) {
   const html = await response.text();
   if (route === "/") {
     for (const match of html.matchAll(/href="(\/work\/[^"?#]+)"/g)) workLinks.add(match[1]);
+    assert.ok(html.includes('href="/work"'), "Homepage must link to the complete Selected Work catalogue");
+    assert.ok(workLinks.size <= 4, "Homepage must retain at most four featured studies");
+  }
+  if (route === "/work") {
+    for (const match of html.matchAll(/href="(\/work\/[^"?#]+)"/g)) workLinks.add(match[1]);
   }
   const tags = [...html.matchAll(/<(?:meta|link)\b[^>]*>/gi)].map(match => {
     const attrs = {};
@@ -63,6 +68,10 @@ for (const path of workLinks) {
     .map(match => Object.fromEntries([...match[0].matchAll(/([\w:-]+)="([^"]*)"/g)].map(attr => [attr[1], attr[2]])))
     .find(tag => tag.rel === "canonical")?.href;
   assert.ok(urls.includes(canonical), `Work canonical is an indexable sitemap URL: ${path}`);
+  const sectionNumbers = [...html.matchAll(/<h2\b[^>]*>(.*?)<\/h2>/gs)]
+    .map(match => match[1].replace(/<[^>]+>/g, '').match(/^(\d+)\.\s/))
+    .filter(Boolean).map(match => Number(match[1]));
+  sectionNumbers.forEach((number, index) => assert.equal(number, index + 1, `Consecutive study sections: ${path}`));
 }
 for (const image of sharingImages) {
   const url = new URL(image);

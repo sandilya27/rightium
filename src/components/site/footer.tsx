@@ -35,6 +35,7 @@ export function Footer() {
             <ul>
               <li><Link href="/about">About</Link></li>
               <li><Link href="/blog">Insights</Link></li>
+              <li><Link href="/work">Selected work</Link></li>
               <li><Link href="/contact">Contact</Link></li>
             </ul>
             <ul className={styles.socials}>

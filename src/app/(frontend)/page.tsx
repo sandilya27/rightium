@@ -34,7 +34,7 @@ export default async function HomePage() {
   return (
     <div className="home-slate">
       <Hero />
-      {proofs.length > 0 && <Proof proofs={proofs} />}
+      {proofs.length > 0 && <Proof proofs={proofs.slice(0, 4)} />}
       <Insights />
       <Statement />
       <ServicesSection />

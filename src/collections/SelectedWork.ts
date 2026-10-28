@@ -31,12 +31,12 @@ export const SelectedWork: CollectionConfig = {
   hooks: {
     afterChange: [({ doc, previousDoc, req }) => {
       if (doc._status === "published" || previousDoc?._status === "published") {
-        revalidate(req, ["/", "/sitemap.xml", ...[doc.slug, previousDoc?.slug].filter(Boolean).map(slug => `/work/${slug}`)]);
+        revalidate(req, ["/", "/work", "/sitemap.xml", ...[doc.slug, previousDoc?.slug].filter(Boolean).map(slug => `/work/${slug}`)]);
       }
       return doc;
     }],
     afterDelete: [({ doc, req }) => {
-      revalidate(req, ["/", "/sitemap.xml", `/work/${doc.slug}`]);
+      revalidate(req, ["/", "/work", "/sitemap.xml", `/work/${doc.slug}`]);
       return doc;
     }],
   },

@@ -85,6 +85,7 @@ test('sitemap records article edits and excludes unpublished or private routes',
     '@/lib/services': { services: [] },
   }).default;
   const entries = await sitemap();
+  assert.ok(entries.some(entry => entry.url === 'https://www.rightium.org/work'), 'Selected Work listing must appear in the sitemap');
   assert.equal(entries.find(entry => entry.url.endsWith('/blog/search-guide')).lastModified.toISOString(), article.updatedAt.replace('Z', '.000Z'));
   assert.ok(entries.every(entry => !entry.url.includes('/admin') && !entry.url.includes('/next/')));
 });

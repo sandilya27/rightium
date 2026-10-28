@@ -10,6 +10,7 @@ import type { Work } from "@/lib/work";
 import { Reveal } from "@/components/motion/reveal";
 import { Spotlight } from "@/components/motion/spotlight";
 import { SectionHead } from "@/components/ui/section";
+import { TextLink } from "@/components/ui/button";
 
 export function Proof({ proofs }: { proofs: Work[] }) {
   const dialogRef = useRef<HTMLElement>(null);
@@ -53,6 +54,8 @@ export function Proof({ proofs }: { proofs: Work[] }) {
           title="Selected work."
           lede="Selected analyses of landmark patent judgments: the legal questions, the courts’ reasoning, and the practical lessons for innovators."
           maxWidth="max-w-[45rem]"
+          layout="split"
+          action={<TextLink href="/work">View all selected work</TextLink>}
         />
 
         <motion.div layout className="work-grid mt-10 grid gap-5 md:mt-12 md:grid-cols-12">
@@ -87,7 +90,7 @@ export function Proof({ proofs }: { proofs: Work[] }) {
                             {proof.sector}
                           </span>
                           <span className="font-mono text-[0.7rem] tracking-[0.12em] text-white/60">
-                            CASE 0{index + 1}
+                            CASE {String(index + 1).padStart(2, "0")}
                           </span>
                         </div>
                         <motion.h3 layoutId={reduce ? undefined : `proof-title-${proof.slug}`} layout="position" transition={{ duration: reduce ? 0 : 0.55, ease: [0.23, 1, 0.32, 1] }} className="font-serif mt-auto max-w-[18ch] text-[clamp(1.75rem,3vw,2.65rem)] leading-[1.08] tracking-[-0.015em] text-white balance transition-transform duration-500 group-hover:translate-x-1">
@@ -169,7 +172,7 @@ export function Proof({ proofs }: { proofs: Work[] }) {
                   <X className="size-5" />
                 </button>
                 <div className="absolute inset-x-6 bottom-6 z-[2] sm:inset-x-10 sm:bottom-9">
-                  <p className="text-xs font-semibold tracking-[0.14em] text-accent-bright uppercase">{selectedProof.sector} · Case 0{selected + 1}</p>
+                  <p className="text-xs font-semibold tracking-[0.14em] text-accent-bright uppercase">{selectedProof.sector} · Case {String(selected + 1).padStart(2, "0")}</p>
                   <motion.h3 layoutId={reduce ? undefined : `proof-title-${selectedProof.slug}`} layout="position" transition={{ duration: reduce ? 0 : 0.55, ease: [0.23, 1, 0.32, 1] }} id="case-file-title" className="text-white font-serif mt-3 max-w-[22ch] text-[clamp(1.75rem,4vw,3.25rem)] leading-[1.08]">{selectedProof.title}</motion.h3>
                 </div>
               </div>
