@@ -1,13 +1,27 @@
 import posthog from "posthog-js";
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 /**
- * Thin wrapper over PostHog so components never need to know whether
- * analytics is configured. Without NEXT_PUBLIC_POSTHOG_KEY every call
- * is a no-op.
+ * Dispatch to configured analytics providers. Google receives only
+ * the allowlisted events below, never enquiry text or contact details.
  */
 export function capture(event: string, properties?: Record<string, unknown>) {
-  if (typeof window === "undefined" || !posthog.__loaded) return;
-  posthog.capture(event, properties);
+  if (typeof window === "undefined") return;
+  if (navigator.doNotTrack === "1" || (window as Window & { doNotTrack?: string }).doNotTrack === "1") return;
+  if (posthog.__loaded) posthog.capture(event, properties);
+  // Only known events and non-identifying fields reach Google Analytics.
+  if (event === "enquiry_submitted") {
+    window.gtag?.("event", "generate_lead", { form_name: "contact" });
+  } else if (event === "enquiry_failed") {
+    window.gtag?.("event", "enquiry_failed", { form_name: "contact" });
+  } else if (event === "contact_click") {
+    window.gtag?.("event", "contact_click", { contact_channel: properties?.channel });
+  }
 }
 
 const UTM_KEY = "rightium_utm";

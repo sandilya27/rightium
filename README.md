@@ -107,6 +107,17 @@ Site pages live in `src/app/(frontend)/`; the Payload admin and API in `src/app/
 
 ### Analytics events
 
+Google Analytics 4 uses Rightium's public measurement ID `G-WZKBE4WHF9`
+(override with `NEXT_PUBLIC_GA_MEASUREMENT_ID`). The Google tag runs only in
+production public layouts and honours Do Not Track. Leave GA4 Enhanced
+Measurement's history-based page views enabled; do not add a second page-view
+tag in Tag Manager. Successful contact submissions send `generate_lead`;
+contact links send `contact_click` with the contact channel. Form contents
+and contact details are excluded from these custom Google event parameters.
+After deployment, check Realtime and mark `generate_lead` as a key event.
+Configure any region-specific consent requirements before collecting traffic
+there; the current integration does not implement a consent banner.
+
 PostHog records page views and clicks automatically, plus these named events for
 conversion reporting: `enquiry_submitted` (with service and deadline), `enquiry_failed`,
 and `contact_click` (`channel`: phone, email, whatsapp or map). Analytics are off when

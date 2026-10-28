@@ -35,7 +35,7 @@ const sections: LegalSection[] = [
       [
         "Technical data such as IP address, browser type, device type, referring page and the pages you view, recorded in server and security logs.",
         "Signals used by our bot-protection provider (Cloudflare Turnstile) to distinguish people from automated traffic.",
-        "Usage analytics — pages visited, links and buttons clicked, the campaign that brought you here (UTM tags), approximate location derived from your IP address, and device and browser type — collected with PostHog to understand how the Site is used.",
+        "Usage analytics — pages visited, links and buttons clicked, the campaign that brought you here (UTM tags), approximate location derived from your IP address, and device and browser type — collected with Google Analytics and, when configured, PostHog to understand how the Site is used. We do not send enquiry text or contact details as Google Analytics event parameters.",
       ],
       `We do not use advertising trackers, we do not sell or share data with advertisers, we do not build marketing profiles, and we do not knowingly collect sensitive personal data such as financial, health or biometric information through the Site. Please do not send us such data unless an engagement specifically requires it.`,
     ],
@@ -70,7 +70,7 @@ const sections: LegalSection[] = [
         "Database hosting (Neon).",
         "File storage and bot protection (Cloudflare).",
         "Email delivery (Resend).",
-        "Product analytics (PostHog).",
+        "Product analytics (PostHog, when configured) and website analytics (Google Analytics).",
         "Professional advisers such as accountants and lawyers, where necessary.",
       ],
       `We may also disclose information where required by law, court order or a government authority, or to protect our rights, property or safety. Some of these providers process data outside India; where they do, we rely on transfers permitted under Indian law and on the provider's contractual safeguards.`,
@@ -83,7 +83,7 @@ const sections: LegalSection[] = [
       `The Site does not set advertising or cross-site tracking cookies. It uses:`,
       [
         "Strictly necessary cookies set by our bot-protection provider (Cloudflare Turnstile) to protect the contact form against automated abuse.",
-        "First-party analytics cookies and local storage set by PostHog, which assign your browser a random identifier so we can count visits and understand which pages are useful. They are served from our own domain and are not used to track you on other websites.",
+        "First-party analytics cookies set by Google Analytics and, when configured, PostHog cookies and local storage. These help count visits and understand which pages are useful. Google signals and advertising personalization are disabled in our Google tag configuration.",
       ],
       `We honour your browser's "Do Not Track" setting: when it is switched on, analytics are not collected. You can also block or delete cookies in your browser settings; the Site will keep working.`,
     ],
@@ -152,7 +152,7 @@ export default function PrivacyPage() {
     <LegalPage
       title="Privacy Policy"
       path="/privacy"
-      updated="September 2026"
+      updated="October 2026"
       intro={`What ${site.name} collects when you visit this site or send us a brief, why we collect it, and the control you have over it.`}
       sections={sections}
     />

@@ -4,6 +4,7 @@ import { Footer } from "@/components/site/footer";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { SharedLayout } from "@/components/motion/shared-layout";
+import { GoogleAnalytics } from "@/components/site/google-analytics";
 
 // Self-hosted (SIL OFL, see src/fonts/LICENSE-*), so builds never depend
 // on fetching from Google Fonts. Variable fonts, Latin subset.
@@ -33,6 +34,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-IN" className={`${newsreader.variable} ${plex.variable}`}>
       <body className="antialiased">
+        <GoogleAnalytics />
         <noscript><style>{`[data-reveal] { opacity: 1 !important; transform: none !important; }`}</style></noscript>
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={websiteJsonLd()} />

@@ -24,7 +24,10 @@ if (key && !isAdmin) {
     session_recording: { maskAllInputs: true },
   });
 
-  // Name the high-intent clicks so they're easy to chart as conversions.
+}
+
+if (!isAdmin) {
+  // Track contact channels even when only Google Analytics is configured.
   document.addEventListener(
     "click",
     (event) => {
