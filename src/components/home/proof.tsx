@@ -51,7 +51,7 @@ export function Proof({ proofs }: { proofs: Work[] }) {
       <div className="shell">
         <SectionHead
           title="Selected work."
-          lede="Client names are confidential; the mechanics are not. Each started as one question with a deadline attached."
+          lede="Selected analyses of landmark patent judgments: the legal questions, the courts’ reasoning, and the practical lessons for innovators."
           maxWidth="max-w-[45rem]"
         />
 
