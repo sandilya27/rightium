@@ -7,9 +7,9 @@ import { readingAssembly } from "@/lib/reading-assembly";
 import { SubscribeBand } from "@/components/blog/subscribe-band";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Insights — Patent Search & IP Strategy Articles",
+  title: "Patent Law Insights & Landmark Judgments",
   description:
-    "Practical articles on patent search, FTO, invalidity, landscaping, licensing, IP due diligence and chemical safety — written by the analysts doing the work.",
+    "Explore landmark U.S. patent judgments and their practical lessons for eligibility, obviousness, claim construction, damages and patent exhaustion.",
   path: "/blog",
 });
 
@@ -29,7 +29,7 @@ export default async function BlogPage() {
             Notes from the <em className="accent-em">research desk.</em>
           </>
         }
-        lede="Practical method, written by the analysts doing the work. No thought leadership."
+        lede="Landmark patent judgments, explained through the facts, the courts’ reasoning, and their practical implications for innovators and IP teams."
       />
 
       <section className="bg-paper pt-16 pb-20 md:pt-20 md:pb-[120px]">

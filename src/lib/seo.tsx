@@ -28,6 +28,7 @@ export function pageMetadata({
   title,
   description,
   path,
+  canonicalPath = path,
   type = "website",
   publishedTime,
   modifiedTime,
@@ -39,6 +40,7 @@ export function pageMetadata({
   title: string;
   description: string;
   path: string;
+  canonicalPath?: string;
   type?: "website" | "article";
   publishedTime?: string;
   modifiedTime?: string;
@@ -54,12 +56,12 @@ export function pageMetadata({
   return {
     title: path === "/" ? { absolute: title } : title,
     description: snippet,
-    alternates: { canonical: absoluteUrl(path) },
+    alternates: { canonical: absoluteUrl(canonicalPath) },
     ...(noIndex && { robots: { index: false, follow: false, googleBot: { index: false, follow: false } } }),
     ...(authors && { authors: authors.map(name => ({ name })) }),
     openGraph: {
       type,
-      url: absoluteUrl(path),
+      url: absoluteUrl(canonicalPath),
       siteName: site.name,
       locale: site.locale,
       title: fullTitle,
@@ -99,7 +101,6 @@ export function organizationJsonLd() {
     telephone: site.phone,
     address: postalAddress,
     areaServed: "Worldwide",
-    priceRange: "₹₹₹",
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
@@ -203,8 +204,18 @@ export function articleJsonLd(post: {
   };
 }
 
-export function workJsonLd(work: { slug: string; title: string; body: string; sector: string; image: string; updatedAt?: string }) {
-  const url = absoluteUrl(`/work/${work.slug}`);
+/** Condensed judgment studies consolidate with their matching full analysis. */
+export function workCanonicalPath(
+  work: { slug: string; title: string; sector: string },
+  posts: { slug: string; title: string }[],
+) {
+  return work.sector.startsWith("Judgment study") && posts.some(post => post.slug === work.slug && post.title === work.title)
+    ? `/blog/${work.slug}`
+    : `/work/${work.slug}`;
+}
+
+export function workJsonLd(work: { slug: string; title: string; body: string; sector: string; image: string; updatedAt?: string }, canonicalPath = `/work/${work.slug}`) {
+  const url = absoluteUrl(canonicalPath);
   return {
     "@context": "https://schema.org", "@type": "Article", "@id": `${url}#article`,
     headline: work.title, description: work.body, url, mainEntityOfPage: url,

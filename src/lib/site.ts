@@ -9,7 +9,7 @@ export const site = {
   tagline: "IP intelligence, delivered with evidence.",
   description:
     "Patent search, IP intelligence, licensing research and chemical safety services from Rightium in Bengaluru. Evidence-led support for legal and R&D teams.",
-  url: "https://rightium.in",
+  url: "https://www.rightium.org",
   locale: "en_IN",
   email: "contact@rightium.in",
   phone: "+91 9606068707",
@@ -53,17 +53,16 @@ export const site = {
     "chemical safety intelligence",
     "toxicology literature search",
   ],
-  socials: [
-    { label: "LinkedIn", href: "https://www.linkedin.com/" },
-    { label: "X", href: "https://x.com/" },
-  ],
+  // Add only verified business profiles, never social-network homepages.
+  socials: [] as { label: string; href: string }[],
 } as const;
 
 /**
- * Search engines are kept out until launch: set ALLOW_INDEXING=true in
- * the production environment (and redeploy) when the site goes public.
+ * The public production site is launched. Development and Vercel preview
+ * deployments remain excluded, independent of the retired launch switch.
+ * Keep this policy in sync with next.config.ts HTTP headers.
  */
-export const allowIndexing = process.env.ALLOW_INDEXING === "true";
+export const allowIndexing = process.env.NODE_ENV === "production" && process.env.VERCEL_ENV !== "preview";
 
 export const telHref = `tel:${site.phone.replace(/[^+\d]/g, "")}`;
 export const whatsappHref = `https://wa.me/${site.whatsapp}`;

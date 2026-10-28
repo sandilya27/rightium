@@ -31,10 +31,10 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Pre-launch: every response carries noindex, including images and
-  // files that meta tags can't cover. Set ALLOW_INDEXING=true to lift it.
+  // Public production pages are indexable; previews and private endpoints are not.
   async headers() {
-    if (process.env.ALLOW_INDEXING === "true") return ["/admin/:path*", "/next/:path*", "/ingest/:path*"].map(source => ({
+    const allowIndexing = process.env.NODE_ENV === "production" && process.env.VERCEL_ENV !== "preview";
+    if (allowIndexing) return ["/admin/:path*", "/next/:path*", "/ingest/:path*", "/api/:path((?!media/file/).*)"].map(source => ({
       source, headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
     }));
     return [

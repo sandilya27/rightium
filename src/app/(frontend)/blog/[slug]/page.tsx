@@ -13,6 +13,7 @@ import { initialsOf } from "@/lib/content";
 import { JsonLd, articleJsonLd, breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 import { SharedArticleTitle } from "@/components/blog/shared-title";
 import { CloseArticle } from "@/components/blog/close-article";
+import { ArticleContents } from "@/components/blog/article-contents";
 
 // Articles are prerendered at build and cached. Publishing in the admin
 // purges the cached copy; the timer is only a safety net.
@@ -117,23 +118,7 @@ export default async function PostPage({
       <section className="bg-paper pt-20 pb-20 md:pt-24 md:pb-[120px]">
         <div className="shell grid gap-12 lg:grid-cols-[13.75rem_minmax(0,42.5rem)_minmax(0,1fr)] lg:gap-16">
           <aside className="self-start text-[0.84375rem] lg:sticky lg:top-[6.875rem]">
-            {headings.length > 0 && (
-              <>
-                <p className="eyebrow m-0 text-xs">In this article</p>
-                <ol className="mt-4 flex list-none flex-col gap-2.5 border-l border-line-strong p-0">
-                  {headings.map((h) => (
-                    <li key={h.id}>
-                      <a
-                        href={`#${h.id}`}
-                        className="-ml-px block border-l-2 border-transparent py-0.5 pl-3.5 text-ink-2 transition-[color,border-color] duration-200 [@media(hover:hover)_and_(pointer:fine)]:hover:border-accent [@media(hover:hover)_and_(pointer:fine)]:hover:text-ink-heading"
-                      >
-                        {h.text}
-                      </a>
-                    </li>
-                  ))}
-                </ol>
-              </>
-            )}
+            {headings.length > 0 && <ArticleContents headings={headings} />}
             <p className="eyebrow mt-8 text-xs">All insights</p>
             <Link
               href="/blog"
@@ -152,6 +137,8 @@ export default async function PostPage({
                 alt={post.coverImage.alt}
                 width={post.coverImage.width}
                 height={post.coverImage.height}
+                loading="lazy"
+                decoding="async"
                 className="mb-12 w-full border border-line"
               />
             )}

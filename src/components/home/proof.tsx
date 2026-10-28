@@ -102,14 +102,18 @@ export function Proof({ proofs }: { proofs: Work[] }) {
                               {proof.metricLabel}
                             </span>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => setSelected(index)}
+                          <Link
+                            href={`/work/${proof.slug}`}
+                            onClick={(event) => {
+                              if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                              event.preventDefault();
+                              setSelected(index);
+                            }}
                             aria-label={`Open case file: ${proof.title}`}
                             className="after:absolute after:inset-0 focus-visible:outline-2 focus-visible:outline-accent-bright inline-flex items-center gap-2 border-b border-accent-bright pb-1 text-sm font-medium text-white transition-[color,gap] duration-200 [@media(hover:hover)_and_(pointer:fine)]:hover:gap-3 [@media(hover:hover)_and_(pointer:fine)]:hover:text-accent-bright"
                           >
                             Open case file <ArrowRight className="size-4" />
-                          </button>
+                          </Link>
                         </div>
                       </div>
                     </Spotlight>

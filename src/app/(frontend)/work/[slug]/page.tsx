@@ -5,9 +5,10 @@ import Link from "next/link";
 import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { getWork, getWorks } from "@/lib/works";
+import { getPosts } from "@/lib/posts";
 import { RichText, extractHeadings } from "@/components/blog/rich-text";
 import { PageHero } from "@/components/site/page-hero";
-import { JsonLd, breadcrumbJsonLd, pageMetadata, workJsonLd } from "@/lib/seo";
+import { JsonLd, breadcrumbJsonLd, pageMetadata, workJsonLd, workCanonicalPath } from "@/lib/seo";
 
 export const revalidate = 3600;
 
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const { isEnabled: draft } = await draftMode();
   const work = await getWork(slug, { draft });
-  return work ? pageMetadata({ title: work.title, description: work.body, path: `/work/${work.slug}`, type: "article", modifiedTime: work.updatedAt, section: work.sector, authors: ["Rightium Team"], image: { url: work.image, alt: work.imageAlt || work.title }, noIndex: draft }) : {};
+  return work ? pageMetadata({ title: work.title, description: work.body, path: `/work/${work.slug}`, canonicalPath: workCanonicalPath(work, await getPosts()), type: "article", modifiedTime: work.updatedAt, section: work.sector, authors: ["Rightium Team"], image: { url: work.image, alt: work.imageAlt || work.title }, noIndex: draft }) : {};
 }
 
 export default async function WorkPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -27,10 +28,11 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
   const { isEnabled: draft } = await draftMode();
   const work = await getWork(slug, { draft });
   if (!work) notFound();
+  const canonicalPath = workCanonicalPath(work, await getPosts());
   const headings = work.content ? extractHeadings(work.content) : [];
   return (
     <>
-      <JsonLd data={workJsonLd(work)} />
+      <JsonLd data={workJsonLd(work, canonicalPath)} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: work.title, path: `/work/${work.slug}` }])} />
       {draft && <div className="fixed inset-x-0 bottom-4 z-50 mx-auto flex w-fit gap-4 bg-deep px-5 py-3 text-sm text-white">Previewing the latest draft <a className="underline" href={`/next/exit-preview?path=/work/${slug}`}>Exit preview</a></div>}
       <PageHero assembly={editorialAssembly(work.sector, headings, "case study")} crumbs={[{ label: "Home", href: "/" }, { label: "Selected work", href: "/#case-studies" }, { label: work.sector }]} title={work.title} lede={work.body} />

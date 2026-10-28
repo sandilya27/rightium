@@ -3,7 +3,7 @@
 Next.js 16 (App Router) · Payload CMS 3 · Tailwind v4 · Motion. Hosted on **Vercel**,
 with the database on **NeonDB** (Postgres) and uploaded images on **Cloudinary**.
 
-## Current status: preview 
+## Production and preview environments
 
 The site deploys and runs with **no configuration at all**. Until `DATABASE_URI` is set:-
 
@@ -11,9 +11,10 @@ The site deploys and runs with **no configuration at all**. Until `DATABASE_URI`
 - `/admin`, the Payload API and draft preview return 404 (`src/proxy.ts`).
 - The contact form validates and responds; enquiries are emailed if `RESEND_API_KEY`
   is set, otherwise reports a delivery error. **Nothing is stored in preview mode.**
-- Search engines are blocked: `robots.txt` disallows everything, every page has
-  `noindex, nofollow`, and every response (images too) carries `X-Robots-Tag: noindex`.
-  Set `ALLOW_INDEXING=true` and redeploy only at launch.
+- Public production pages at `https://www.rightium.org` allow search indexing.
+  Development and Vercel preview deployments retain `Disallow: /`, metadata noindex,
+  and HTTP noindex headers. Admin, API JSON, preview and analytics endpoints remain
+  excluded in production; public media files can be crawled. `ALLOW_INDEXING` is retired.
 
 ## Deploy the preview to Vercel
 
@@ -94,7 +95,7 @@ npm run generate:importmap      # only if you added admin components
 | Launch articles + seeding helper | `src/seed/` |
 | Insights data for the site (Payload, or the launch set in preview mode) | `src/lib/posts.ts` |
 | Preview-mode gate for `/admin` and the API | `src/proxy.ts` |
-| Search-engine switch (`ALLOW_INDEXING`) | `src/lib/site.ts`, `src/app/robots.ts`, `next.config.ts` |
+| Production/preview indexing policy | `src/lib/site.ts`, `src/app/robots.ts`, `next.config.ts` |
 | Contact endpoint (validate → Turnstile → save → email) | `src/app/api/contact/route.ts` |
 | Analytics setup (PostHog, contact-click events) | `src/instrumentation-client.ts`, `src/lib/analytics.ts` |
 | SEO: metadata helper and structured data | `src/lib/seo.tsx` |

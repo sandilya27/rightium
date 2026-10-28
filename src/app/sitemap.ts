@@ -3,6 +3,7 @@ import type { MetadataRoute } from "next";
 import { services } from "@/lib/services";
 import { getPosts } from "@/lib/posts";
 import { site } from "@/lib/site";
+import { workCanonicalPath } from "@/lib/seo";
 
 /** Bump when static page copy changes materially. */
 const STATIC_UPDATED = new Date("2026-09-25");
@@ -27,7 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
-    ...works.map((work) => ({
+    ...works.filter(work => workCanonicalPath(work, posts).startsWith("/work/")).map((work) => ({
       url: `${site.url}/work/${work.slug}`,
       lastModified: work.updatedAt ? new Date(work.updatedAt) : STATIC_UPDATED,
       changeFrequency: "monthly" as const,

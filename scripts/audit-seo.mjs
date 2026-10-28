@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 // Run against a production server: SEO_BASE_URL=http://localhost:3111 npm run seo:audit.
 // Canonicals always point to the public domain, even when auditing locally.
 const origin = process.env.SEO_BASE_URL || "http://localhost:3111";
-const canonicalOrigin = "https://rightium.in";
+const canonicalOrigin = "https://www.rightium.org";
 const requireIndexing = process.env.SEO_EXPECT_INDEXING === "true";
 const sitemap = await fetch(new URL("/sitemap.xml", origin));
 assert.equal(sitemap.status, 200, "Sitemap must be accessible");
@@ -12,12 +12,16 @@ const urls = [...sitemapText.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[
 assert.ok(urls.length >= 20, "Sitemap should include static pages, services, articles and work");
 const titles = new Set();
 const sharingImages = new Set();
+const workLinks = new Set();
 for (const canonical of urls) {
   assert.equal(new URL(canonical).origin, canonicalOrigin);
   const route = new URL(canonical).pathname;
   const response = await fetch(new URL(route, origin));
   assert.equal(response.status, 200, route);
   const html = await response.text();
+  if (route === "/") {
+    for (const match of html.matchAll(/href="(\/work\/[^"?#]+)"/g)) workLinks.add(match[1]);
+  }
   const tags = [...html.matchAll(/<(?:meta|link)\b[^>]*>/gi)].map(match => {
     const attrs = {};
     for (const attribute of match[0].matchAll(/([\w:-]+)=["']([^"']*)["']/g)) attrs[attribute[1]] = attribute[2];
@@ -50,6 +54,16 @@ for (const canonical of urls) {
   if (route.startsWith("/work/")) assert.ok(schemas.some(schema => schema["@type"] === "Article"), `Work schema: ${route}`);
   console.log(`PASS ${route}`);
 }
+assert.ok(workLinks.size > 0, "Selected Work detail links must exist in server-rendered homepage HTML");
+for (const path of workLinks) {
+  const response = await fetch(new URL(path, origin));
+  assert.equal(response.status, 200, `Work detail accessible: ${path}`);
+  const html = await response.text();
+  const canonical = [...html.matchAll(/<link\b[^>]*>/g)]
+    .map(match => Object.fromEntries([...match[0].matchAll(/([\w:-]+)="([^"]*)"/g)].map(attr => [attr[1], attr[2]])))
+    .find(tag => tag.rel === "canonical")?.href;
+  assert.ok(urls.includes(canonical), `Work canonical is an indexable sitemap URL: ${path}`);
+}
 for (const image of sharingImages) {
   const url = new URL(image);
   const target = url.origin === canonicalOrigin ? new URL(`${url.pathname}${url.search}`, origin) : url;
@@ -72,5 +86,11 @@ if (requireIndexing) {
   const text = await robots.text();
   assert.ok(!/^Disallow: \/\s*$/m.test(text), "Production robots must permit public pages");
   assert.ok(text.includes(`${canonicalOrigin}/sitemap.xml`));
+}
+if (requireIndexing) {
+  const api = await fetch(new URL("/api/posts?limit=1&depth=0", origin));
+  assert.ok(api.headers.get("x-robots-tag")?.includes("noindex"), "API JSON must retain noindex after launch");
+  const publicImage = await fetch(new URL("/icon.svg", origin));
+  assert.ok(!publicImage.headers.get("x-robots-tag")?.includes("noindex"), "Public image assets must remain indexable");
 }
 console.log(`SEO audit passed for ${urls.length} public pages.`);
