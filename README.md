@@ -189,4 +189,3 @@ and summary; **See complete details** opens its article at /work/[slug].
 The database migration preserves the four original cases as starter content. Expand
 their full details in the editor as needed.
 
-<!-- Deploy image heroes and Selected Work catalogue -->
