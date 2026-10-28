@@ -10,6 +10,7 @@ import { ArrowRight, ButtonLink, Tick, TextLink } from "@/components/ui/button";
 import { JsonLd, breadcrumbJsonLd, pageMetadata, serviceJsonLd } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import { serviceSeo } from "@/lib/service-seo";
+import { serviceGuidance } from "@/lib/service-guidance";
 
 export function generateStaticParams() {
   return services.map((s) => ({ slug: s.slug }));
@@ -40,6 +41,7 @@ export default async function ServicePage({
   if (!service) notFound();
 
   const others = services.filter((s) => s.slug !== service.slug).slice(0, 3);
+  const guidance = serviceGuidance[service.slug];
 
   return (
     <>
@@ -188,6 +190,33 @@ export default async function ServicePage({
           </Reveal>
         </div>
       </section>
+
+      {guidance && (
+        <section className="bg-paper border-t border-line py-20 md:py-24">
+          <div className="shell max-w-5xl">
+            <h2 className="display-md m-0 text-ink-heading">Before you brief us</h2>
+            <div className="mt-10 space-y-8">
+              {guidance.questions.map(({ q, a }) => (
+                <div key={q}>
+                  <h3 className="font-serif text-2xl leading-snug text-ink-heading">{q}</h3>
+                  <p className="mt-3 max-w-[75ch] leading-relaxed text-ink-2">{a}</p>
+                </div>
+              ))}
+            </div>
+            <h3 className="eyebrow mt-12">Plan the next step</h3>
+            <ul className="mt-4 space-y-3">
+              {guidance.related.map((link) => (
+                <li key={link.href}><TextLink href={link.href}>{link.label}</TextLink></li>
+              ))}
+            </ul>
+            {guidance.resource && (
+              <p className="mt-8 text-sm text-ink-2">
+                Further reading: <a className="underline underline-offset-4" href={guidance.resource.href}>{guidance.resource.label}</a>
+              </p>
+            )}
+          </div>
+        </section>
+      )}
 
       <section className="bg-surface border-t border-line py-20 md:py-24">
         <div className="shell">

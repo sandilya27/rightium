@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "keyword-research": {
+      "source": "every-app/open-seo",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/keyword-research/SKILL.md",
+      "computedHash": "5c2970f4221c5bc40356b18baa109374fa54ee66d974edd5065eaab5787122fe"
+    }
+  }
+}

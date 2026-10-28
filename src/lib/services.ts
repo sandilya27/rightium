@@ -51,7 +51,7 @@ export const services: Service[] = [
   {
     slug: "search-solutions",
     index: "01",
-    title: "Search Solutions",
+    title: "Patent Search Services",
     short: "Know what exists before you file, launch or litigate.",
     summary:
       "Examiner-grade searching across patent and non-patent literature in 90+ jurisdictions. Every report ships with the search strings, the databases queried and the reasoning behind each exclusion — so your attorney can defend it, not just read it.",
@@ -65,42 +65,42 @@ export const services: Service[] = [
         slug: "patentability-search",
         title: "Patentability or Novelty Search",
         description:
-          "Establish whether an invention is truly novel before you draft, with a ranked map of the closest art.",
+          "A patentability or novelty search compares your invention with published patent and non-patent literature before drafting. Receive ranked prior art and feature mapping to help your attorney assess the filing options.",
         cta: "order",
       },
       {
         slug: "invalidity-search",
         title: "Invalidity or Opposition Search",
         description:
-          "Find the art that predates a target claim set, structured for opposition, IPR or litigation use.",
+          "Patent invalidity search services identify prior art relevant to a target claim set and its critical dates. References are mapped to claim elements for counsel reviewing an opposition, IPR or litigation matter.",
         cta: "order",
       },
       {
         slug: "patent-watch",
         title: "Patent Watch",
         description:
-          "Track the legal status of competitor filings across patent offices, with alerts routed to your docket.",
+          "Patent watch services track competitor filings and legal-status changes across the agreed patent offices. Set the competitors, technology scope and reporting frequency so alerts support your team's ongoing review.",
         cta: "order",
       },
       {
         slug: "fto-search",
-        title: "FTO or Clearance Search",
+        title: "Freedom to Operate (FTO) Search",
         description:
-          "Confirm a product can ship without infringing live patents, with risk tiered per jurisdiction.",
+          "A freedom to operate search reviews potentially relevant patent claims and legal status in your intended markets. Share the product features, launch plans and jurisdictions so your counsel can assess potential infringement risks; a search does not guarantee clearance.",
         cta: "order",
       },
       {
         slug: "knockout-search",
         title: "Knockout Search",
         description:
-          "A fast, focused pass for the one reference that would stop a patent from being granted.",
+          "A patent knockout search is an initial, focused prior art review for an early filing decision. It highlights close references and questions that may warrant a fuller patentability search.",
         cta: "contact",
       },
       {
         slug: "state-of-the-art-search",
         title: "State of the Art Search",
         description:
-          "A broad picture of a technology field to steer R&D spend and position new product development.",
+          "A state of the art patent search maps published approaches in a defined technology field. Use the research to compare technical directions and frame R&D questions before narrowing the search to a specific invention.",
         cta: "contact",
       },
     ],
@@ -114,7 +114,7 @@ export const services: Service[] = [
   {
     slug: "intelligence-solutions",
     index: "02",
-    title: "Intelligence Solutions",
+    title: "Patent Landscaping & Competitive Intelligence",
     short: "See the whole field, not just your corner of it.",
     summary:
       "Landscapes, competitor tracking and technology scouting rendered as decisions rather than charts. We normalise assignee data, cluster by real technical problems instead of raw CPC codes, and tell you where the room to move actually is.",
@@ -133,21 +133,21 @@ export const services: Service[] = [
       },
       {
         slug: "landscaping",
-        title: "Landscaping",
+        title: "Patent Landscape Analysis",
         description:
-          "Map a whole domain — players, clusters, filing velocity and geography — to understand market and technology trends.",
+          "Patent landscape analysis maps a technology domain by assignee, patent family, technical theme and geography. A cleaned dataset and executive findings help R&D teams assess competitive activity and areas for further investigation.",
         cta: "order",
       },
       {
         slug: "competitive-intelligence",
-        title: "Competitive Intelligence",
+        title: "Patent Competitive Intelligence",
         description:
-          "Follow a rival's filing behaviour, inventor movement and strategic direction over time.",
+          "Patent competitive intelligence follows a rival's filing patterns, inventor activity and technology focus over time. Define the competitors and research questions to distinguish observed patent activity from strategic interpretation.",
         cta: "order",
       },
       {
         slug: "innovation-scouting",
-        title: "Innovation Scouting",
+        title: "Technology & Innovation Scouting",
         description:
           "Surface emerging technologies, partners and acquisition targets in a defined problem space.",
         cta: "order",
@@ -210,28 +210,28 @@ export const services: Service[] = [
     items: [
       {
         slug: "prosecution",
-        title: "Prosecution",
+        title: "Patent Prosecution Support",
         description:
           "Office action analysis, response strategy and drafted arguments for your attorney to review and sign.",
         cta: "contact",
       },
       {
         slug: "drafting",
-        title: "Drafting",
+        title: "Patent Drafting Support",
         description:
-          "Specifications and claim sets drafted by subject-matter experts, written for a faster grant.",
+          "Patent drafting support turns invention disclosures into specifications and claim sets for attorney review. Share the technical details, known prior art and target jurisdictions so the draft fits your filing strategy.",
         cta: "order",
       },
       {
         slug: "paralegal-support",
-        title: "Paralegal Support",
+        title: "Patent Paralegal Support",
         description:
           "Formalities, filings and correspondence handled so your IP team stays focused on substance.",
         cta: "order",
       },
       {
         slug: "docketing-support",
-        title: "Docketing Support",
+        title: "Patent Docketing Support",
         description:
           "Reliable deadline tracking and record-keeping across every matter and jurisdiction you hold.",
         cta: "order",
@@ -247,7 +247,7 @@ export const services: Service[] = [
   {
     slug: "licensing",
     index: "05",
-    title: "Licensing",
+    title: "Patent Licensing Research",
     short: "Turn a dormant portfolio into a revenue line.",
     summary:
       "Evidence of use built to the standard a licensing negotiation actually demands. We find the assets worth asserting, map claims to real products, cite the public proof, and shape prosecution so future claims read on the market.",
@@ -259,16 +259,16 @@ export const services: Service[] = [
     items: [
       {
         slug: "portfolio-mining",
-        title: "Portfolio Mining",
+        title: "Patent Portfolio Mining",
         description:
           "Find the high-value assets in your portfolio and rank them by licensing potential.",
         cta: "order",
       },
       {
         slug: "evidence-of-use",
-        title: "Evidence of Use (EoU)",
+        title: "Evidence of Use (EoU) Claim Charts",
         description:
-          "Element-by-element claim charts that support licensing negotiations and enforcement.",
+          "Evidence of use claim chart services map patent claim elements to documented product features. Charts include source citations and identify evidence gaps for your counsel's review before licensing negotiations or enforcement decisions.",
         cta: "order",
       },
       {
@@ -308,9 +308,9 @@ export const services: Service[] = [
       },
       {
         slug: "literature-search",
-        title: "Literature Search",
+        title: "Toxicology Literature Search",
         description:
-          "Screening across 80+ public databases for toxicology endpoints and scientific and regulatory information.",
+          "Toxicology literature search services identify scientific and regulatory evidence for agreed substances and endpoints. Receive source citations, endpoint summaries and a database coverage log for your regulatory team's assessment.",
         cta: "order",
       },
       {

@@ -1,0 +1,28 @@
+# Rightium
+
+> Rightium provides patent research, IP intelligence, licensing research and chemical safety intelligence services from Bengaluru, India.
+
+This file is a guide to public website content. Service scope, fees and timelines are agreed for each engagement. Patent research supports review by the responsible legal or business team.
+
+## Main pages
+
+- [Home](https://www.rightium.org/): Overview of Rightium.
+- [Services](https://www.rightium.org/services): Service catalogue.
+- [About](https://www.rightium.org/about): Company information.
+- [Contact](https://www.rightium.org/contact): Discuss scope and request a proposal.
+
+## Services
+
+- [Patent search services](https://www.rightium.org/services/search-solutions): Patentability, novelty, invalidity, freedom to operate, patent watch and state of the art searches.
+- [Patent landscaping and competitive intelligence](https://www.rightium.org/services/intelligence-solutions): Landscape analysis, competitor research and technology scouting.
+- [Patent database strategy](https://www.rightium.org/services/patent-database-strategy): Database evaluation and migration.
+- [Patent drafting and prosecution support](https://www.rightium.org/services/prep-and-prosecution): Drafting, prosecution, paralegal and docketing support.
+- [Patent licensing research](https://www.rightium.org/services/licensing): Portfolio mining, evidence of use claim charts and directed prosecution research.
+- [Chemical safety intelligence](https://www.rightium.org/services/chemical-safety-intelligence): Toxicology data, literature searches and safety reports.
+- [IP consulting and audit](https://www.rightium.org/services/ip-consulting-and-audit): Strategy, process and asset audits.
+
+## Optional
+
+- [Insights](https://www.rightium.org/blog): Published articles.
+- [Privacy](https://www.rightium.org/privacy): Privacy policy.
+- [Terms](https://www.rightium.org/terms): Terms of use.
