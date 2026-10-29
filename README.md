@@ -188,4 +188,4 @@ entry in Selected Work and the hero carousel. Clicking a homepage card opens its
 and summary; **See complete details** opens its article at /work/[slug].
 The database migration preserves the four original cases as starter content. Expand
 their full details in the editor as needed.
-<!--deploy-->
+
