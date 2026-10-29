@@ -1,6 +1,8 @@
 import "server-only";
 import { services } from "@/lib/services";
-import { site } from "@/lib/site";
+import { site, stats } from "@/lib/site";
+import { faqs, practiceAreas, principles, reasons } from "@/lib/content";
+import { serviceGuidance } from "@/lib/service-guidance";
 import { getPosts, getPost } from "@/lib/posts";
 import { getWorks, getWork } from "@/lib/works";
 
@@ -18,15 +20,21 @@ function textOf(value: unknown): string {
 export async function chatKnowledge(query: string) {
   const sources: Source[] = [
     { title: "Rightium", href: "/", text: site.description },
-    { title: "About Rightium", href: "/about", text: site.tagline + " Based in " + site.address.short },
+    { title: "About Rightium", href: "/about", text: `${site.tagline} Based in ${site.address.short}, ${site.address.region} ${site.address.postalCode}, ${site.address.countryName}. Sectors: ${practiceAreas.join("; ")}. Principles: ${principles.map(p => `${p.title}: ${p.body}`).join(" ")}` },
     { title: "Contact the team", href: "/contact", text: `${site.email}; ${site.phone}; ${site.hours.label}. Request a quote through the contact form.` },
     { title: "All services", href: "/services", text: services.map(s => s.title).join("; ") },
     { title: "Insights", href: "/blog", text: "Research articles and guides from Rightium." },
-    ...services.flatMap(s => [
-      { title: s.title, href: `/services/${s.slug}`, text: `${s.summary} Deliverables: ${s.deliverables.join("; ")}` },
-      ...s.items.map(item => ({ title: item.title, href: `/services/${s.slug}#${item.slug}`, text: item.description })),
-    ]),
+    // Keep core company facts and FAQs in EVERY request. Ranking alone can
+    // discard short factual answers, especially for misspellings and follow-ups.
+    { title: "Published company statistics", href: "/", text: stats.map(s => `${s.label}: ${s.value.toLocaleString("en-IN")}${s.suffix}`).join(". ") + ". These are the website's published figures, not live counters. Typical turnaround is an overall headline; service-specific schedules and agreed deadlines take precedence." },
+    { title: "How Rightium works", href: "/", text: reasons.map(r => `${r.title}: ${r.body}`).join(" ") },
+    ...faqs.map(faq => ({ title: faq.q, href: "/", text: faq.a })),
   ];
+  const coreCount = sources.length;
+  sources.push(...services.flatMap(s => [
+      { title: s.title, href: `/services/${s.slug}`, text: `${s.short} ${s.summary} Audience: ${s.audience}. Turnaround: ${s.turnaround}. Deliverables: ${s.deliverables.join("; ")}. Services: ${s.items.map(i => i.title).join("; ")}. ${(serviceGuidance[s.slug]?.questions ?? []).map(faq => `${faq.q} ${faq.a}`).join(" ")}` },
+      ...s.items.map(item => ({ title: item.title, href: `/services/${s.slug}#${item.slug}`, text: item.description })),
+    ]));
   // Published CMS content uses the same adapters as the site, including preview seeds.
   // A CMS outage still leaves the core service catalogue available.
   const [posts, works] = await Promise.allSettled([getPosts(), getWorks()]);
@@ -50,7 +58,7 @@ export async function chatKnowledge(query: string) {
       if (source) source.text += " " + textOf(result.value.content).slice(0, 8000);
     }
   }
-  const ranked = sources.slice(5).sort((a, b) => score(b.title + " " + b.text) - score(a.title + " " + a.text));
-  const selected = [...sources.slice(0, 5), ...ranked.slice(0, 14)];
+  const ranked = sources.slice(coreCount).sort((a, b) => score(b.title + " " + b.text) - score(a.title + " " + a.text));
+  const selected = [...sources.slice(0, coreCount), ...ranked.slice(0, 14)];
   return { context: JSON.stringify(selected), allowed: new Set(selected.map(s => s.href)) };
 }

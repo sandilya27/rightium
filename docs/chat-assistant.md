@@ -10,7 +10,7 @@ Protocol: [Groq chat completions](https://console.groq.com/docs/text-chat). No a
 
 ## Content and boundaries
 
-`src/lib/chat-knowledge.ts` reads the shared service catalogue and contact configuration, plus published articles and case studies through the same CMS adapters used by the pages. It ranks entries against recent user questions, includes the best matching article/case-study bodies, and supplies a bounded source set. Draft CMS content is excluded. An unavailable CMS leaves the service catalogue usable.
+`src/lib/chat-knowledge.ts` always includes the shared company statistics, homepage FAQs, research approach, About-page sectors and principles, and contact configuration. These facts come directly from the modules that render the website, so updates stay in sync. It also reads the service catalogue (including audience, turnaround and service-page FAQs), plus published articles and case studies through the same CMS adapters used by the pages. It ranks these entries against recent user questions, includes the best matching article/case-study bodies, and supplies a bounded source set. Draft CMS content is excluded. An unavailable CMS leaves core company facts and the service catalogue usable.
 
 This is bounded retrieval, not an exhaustive site crawl: general pages have short descriptions, service data is structured, and long article bodies are truncated. New static informational pages should be added to the source list. The model is instructed to acknowledge gaps and route visitors to the team. Grounding reduces but cannot eliminate incorrect answers.
 

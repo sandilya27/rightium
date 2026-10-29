@@ -9,6 +9,53 @@ const compile = file => ts.transpileModule(fs.readFileSync(path.join(__dirname, 
 const shared = {};
 vm.runInNewContext(compile('src/lib/chat.ts'), { exports: shared });
 
+function knowledge({ cmsFails = false } = {}) {
+  const cache = {};
+  function load(name) {
+    if (name === 'server-only') return {};
+    if (name === '@/lib/posts') return { getPosts: async () => {
+      if (cmsFails) throw new Error('CMS offline');
+      return Array.from({ length: 30 }, (_, i) => ({ slug: `patent-${i}`, title: 'Patent project research', excerpt: 'Delivered project research for clients.' }));
+    }, getPost: async () => undefined };
+    if (name === '@/lib/works') return { getWorks: async () => [], getWork: async () => undefined };
+    if (cache[name]) return cache[name];
+    const exports = {}; cache[name] = exports;
+    vm.runInNewContext(compile(`src/lib/${name.replace('@/lib/', '')}.ts`), { exports, process: { env: {} }, require: load });
+    return exports;
+  }
+  return load('@/lib/chat-knowledge').chatKnowledge;
+}
+
+test('published stats stay available for misspellings, follow-ups and competing CMS matches', async () => {
+  const getKnowledge = knowledge();
+  for (const question of ['how many project delivred', 'and how many clients?', 'what is your repeat engagement rate?', 'patent project research delivered']) {
+    const result = await getKnowledge(question);
+    assert.match(result.context, /Projects delivered: 12,000\+/);
+    assert.match(result.context, /Clients served worldwide: 480\+/);
+    assert.match(result.context, /Repeat engagement rate: 96%/);
+    assert.ok(result.allowed.has('/'));
+  }
+});
+
+test('pricing, confidentiality, sectors and contact facts remain available during a CMS outage', async () => {
+  const result = await knowledge({ cmsFails: true })('How does pricing work and can you sign our NDA?');
+  assert.match(result.context, /Fixed scope, fixed fee/);
+  assert.match(result.context, /sign your NDA/);
+  assert.match(result.context, /Consumer electronics & semiconductors/);
+  assert.match(result.context, /contact@rightium.in/);
+  assert.match(result.context, /Mon – Sat/);
+});
+
+test('service results include published turnaround, audience and service-page FAQs', async () => {
+  const result = await knowledge()('patentability freedom to operate search brief');
+  const sources = JSON.parse(result.context);
+  const source = sources.find(s => s.href === '/services/search-solutions');
+  assert.ok(source);
+  assert.match(source.text, /Turnaround: 2–5 business days/);
+  assert.match(source.text, /Audience: In-house counsel/);
+  assert.match(source.text, /What should a patent search brief include/);
+});
+
 function route({ key = 'test-key', answer, status = 200, throws = false } = {}) {
   const exports = {};
   let upstream;
