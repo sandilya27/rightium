@@ -1,4 +1,4 @@
-# Rightium 
+# Rightium IP
 
 Next.js 16 (App Router) · Payload CMS 3 · Tailwind v4 · Motion. Hosted on **Vercel**,
 with the database on **NeonDB** (Postgres) and uploaded images on **Cloudinary**.
