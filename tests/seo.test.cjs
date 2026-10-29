@@ -24,6 +24,41 @@ function load(file, env = {}, mocks = {}) {
 const seo = load('src/lib/seo.tsx');
 const article = { slug: 'search-guide', title: 'Search guide', excerpt: 'A guide to research.', date: '2026-09-01T09:00:00Z', updatedAt: '2026-10-11T09:00:00Z', category: 'Practice', author: { name: 'Rightium Team', role: 'Research' }, coverImage: { url: 'https://res.cloudinary.com/example/image/upload/cover.jpg' } };
 
+test('favicon contains square, decodable PNG frames including a 96px search icon', async () => {
+  const ico = fs.readFileSync(path.join(__dirname, '../src/app/favicon.ico'));
+  assert.equal(ico.readUInt16LE(0), 0);
+  assert.equal(ico.readUInt16LE(2), 1);
+  const sizes = [];
+  for (let i = 0; i < ico.readUInt16LE(4); i++) {
+    const entry = 6 + i * 16;
+    const width = ico[entry] || 256;
+    const height = ico[entry + 1] || 256;
+    const length = ico.readUInt32LE(entry + 8);
+    const offset = ico.readUInt32LE(entry + 12);
+    assert.ok(offset >= 6 + ico.readUInt16LE(4) * 16 && offset + length <= ico.length);
+    const frame = await require('sharp')(ico.subarray(offset, offset + length)).metadata();
+    assert.equal(frame.format, 'png');
+    assert.equal(frame.width, width);
+    assert.equal(frame.height, height);
+    assert.equal(width, height);
+    sizes.push(width);
+  }
+  assert.ok(sizes.includes(48) && sizes.includes(96));
+});
+
+test('brand entities share the canonical hostname and linked publisher identity', () => {
+  const website = seo.websiteJsonLd();
+  const organization = seo.organizationJsonLd();
+  assert.equal(website.name, 'Rightium');
+  assert.equal(organization.name, website.name);
+  assert.equal(website.url, 'https://www.rightium.org');
+  assert.equal(organization.url, website.url);
+  assert.equal(website.publisher['@id'], organization['@id']);
+  const metadata = seo.pageMetadata({ title: 'Rightium', description: 'Research.', path: '/' });
+  assert.equal(metadata.openGraph.siteName, website.name);
+  assert.equal(new URL(metadata.alternates.canonical).origin, website.url);
+});
+
 test('metadata uses a canonical URL and usable images on both sharing platforms', () => {
   const metadata = seo.pageMetadata({ title: 'Search guide', description: 'Research guide.', path: '/blog/search-guide', image: article.coverImage });
   assert.equal(metadata.alternates.canonical, 'https://www.rightium.org/blog/search-guide');
