@@ -1,8 +1,9 @@
-.widget { position: fixed; right: max(1.25rem, env(safe-area-inset-right)); bottom: max(1.25rem, env(safe-area-inset-bottom)); z-index: 45; color: var(--ink); }
+.widget { position: fixed; right: max(1.25rem, env(safe-area-inset-right)); bottom: max(1.25rem, env(safe-area-inset-bottom)); z-index: 60; color: var(--ink); }
 .launcher { margin-left: auto; display: flex; align-items: center; gap: .75rem; min-height: 50px; padding: 0 1.1rem; background: var(--deep); color: var(--deep-ink); cursor: pointer; font-size: .875rem; font-weight: 500; }
 .launcher:hover { background: var(--accent-hover); }
 .launcher svg { color: var(--accent-bright); }
-.panel { width: min(400px, calc(100vw - 2.5rem)); height: min(620px, calc(100dvh - 105px)); margin-bottom: .75rem; display: flex; flex-direction: column; background: var(--paper); box-shadow: 0 12px 45px #19273330; animation: arrive 220ms var(--ease-out); }
+.panel { width: min(400px, calc(100vw - 2.5rem)); height: min(620px, calc(100dvh - var(--nav-h) - 105px - env(safe-area-inset-bottom))); margin-bottom: .75rem; display: flex; flex-direction: column; background: var(--paper); box-shadow: 0 12px 45px #19273330; animation: arrive 220ms var(--ease-out); }
+.header, .composer { flex-shrink: 0; }
 .header { display: flex; align-items: flex-start; justify-content: space-between; gap: .75rem; background: var(--deep); color: var(--deep-ink); padding: 1.25rem; }
 .header h2 { font-family: var(--font-newsreader), Georgia, serif; font-size: 1.65rem; line-height: 1.1; }
 .header p { color: var(--deep-ink-2); margin-top: .5rem; font-size: .75rem; }
@@ -39,5 +40,5 @@
 .composer > p a { text-decoration: underline; text-underline-offset: 2px; }
 .contact { display: flex; align-items: center; justify-content: space-between; gap: .5rem; font-size: .75rem; color: var(--accent); padding-top: .75rem; min-height: 32px; }
 @keyframes arrive { from { transform: translateY(8px); opacity: .7; } to { transform: translateY(0); opacity: 1; } }
-@media (max-width: 480px) { .widget { right: max(.75rem, env(safe-area-inset-right)); bottom: max(.75rem, env(safe-area-inset-bottom)); } .panel { width: calc(100vw - 1.5rem); height: min(620px, calc(100dvh - 90px)); } }
+@media (max-width: 480px) { .widget { left: max(.75rem, env(safe-area-inset-left)); right: max(.75rem, env(safe-area-inset-right)); bottom: max(.75rem, env(safe-area-inset-bottom)); } .panel { width: 100%; } }
 @media (prefers-reduced-motion: reduce) { .panel { animation: none; } }
