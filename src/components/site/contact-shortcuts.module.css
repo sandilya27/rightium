@@ -1,0 +1,8 @@
+.shortcuts { position: fixed; left: max(1.25rem, env(safe-area-inset-left)); bottom: max(1.25rem, env(safe-area-inset-bottom)); z-index: 40; display: flex; flex-direction: column; gap: .5rem; }
+.shortcuts a { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--deep); color: var(--accent-bright); transition: background-color 160ms ease; }
+.shortcuts a:hover { background: var(--accent-hover); }
+.shortcuts a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.label { position: absolute; left: calc(100% + .5rem); padding: .35rem .65rem; background: var(--deep); color: var(--deep-ink); font-size: .75rem; line-height: 1.4; white-space: nowrap; pointer-events: none; opacity: 0; }
+.shortcuts a:hover .label, .shortcuts a:focus-visible .label { opacity: 1; }
+@media (max-width: 480px) { .shortcuts { left: max(.75rem, env(safe-area-inset-left)); bottom: max(.75rem, env(safe-area-inset-bottom)); } }
+@media (prefers-reduced-motion: reduce) { .shortcuts a { transition: none; } }
