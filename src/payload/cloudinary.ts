@@ -34,6 +34,9 @@ export const createCloudinaryAdapter = (settings: ReturnType<typeof cloudinarySe
     const generateURL = ({ filename, prefix }: { filename: string; prefix?: string }) =>
       cloudinary.url(cloudinaryPublicId(path.posix.join(prefix || "", filename)), {
         cloud_name: configured().cloud_name, secure: true, resource_type: "image", type: "upload",
+        // Next's server bundle can omit SDK version metadata. Delivery URLs
+        // don't need Cloudinary's optional SDK analytics signature.
+        urlAnalytics: false,
       });
     return {
       name: "cloudinary",

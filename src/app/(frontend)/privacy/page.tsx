@@ -54,6 +54,14 @@ const sections: LegalSection[] = [
     ],
   },
   {
+    id: "ai-assistant",
+    heading: "AI website assistant",
+    body: [
+      "If you use the AI assistant, your messages and recent conversation are sent to Groq to generate an answer using public website content. Chat history is held in your current browser page’s memory and is cleared when you reload or start a new chat. Please do not share confidential invention details or personal information in the assistant. Use the contact form to arrange a conversation with the team instead.",
+      "AI answers can contain mistakes and should be checked against the linked website pages. For information about Groq’s handling of submitted messages, see Groq’s privacy policy at https://groq.com/privacy-policy/.",
+    ],
+  },
+  {
     id: "confidentiality",
     heading: "Confidentiality of briefs",
     body: [

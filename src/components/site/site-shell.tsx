@@ -5,6 +5,7 @@ import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { SharedLayout } from "@/components/motion/shared-layout";
 import { GoogleAnalytics } from "@/components/site/google-analytics";
+import { ChatAssistant } from "@/components/site/chat-assistant";
 
 // Self-hosted (SIL OFL, see src/fonts/LICENSE-*), so builds never depend
 // on fetching from Google Fonts. Variable fonts, Latin subset.
@@ -44,6 +45,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           <SharedLayout>{children}</SharedLayout>
         </main>
         <Footer />
+        <ChatAssistant />
       </body>
     </html>
   );
