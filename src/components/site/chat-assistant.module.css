@@ -1,5 +1,5 @@
 .widget { position: fixed; right: max(1.25rem, env(safe-area-inset-right)); bottom: max(1.25rem, env(safe-area-inset-bottom)); z-index: 60; color: var(--ink); }
-.launcher { margin-left: auto; display: flex; align-items: center; gap: .75rem; min-height: 50px; padding: 0 1.1rem; background: var(--deep); color: var(--deep-ink); cursor: pointer; font-size: .875rem; font-weight: 500; }
+.launcher { margin-left: auto; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: var(--deep); color: var(--deep-ink); cursor: pointer; }
 .launcher:hover { background: var(--accent-hover); }
 .launcher svg { color: var(--accent-bright); }
 .panel { width: min(400px, calc(100vw - 2.5rem)); height: min(620px, calc(100dvh - var(--nav-h) - 105px - env(safe-area-inset-bottom))); margin-bottom: .75rem; display: flex; flex-direction: column; background: var(--paper); box-shadow: 0 12px 45px #19273330; animation: arrive 220ms var(--ease-out); }

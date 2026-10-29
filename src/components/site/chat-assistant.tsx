@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, MessageSquare, RotateCcw, Send, X } from "lucide-react";
+import { ArrowRight, Bot, RotateCcw, Send, X } from "lucide-react";
 import type { ChatMessage } from "@/lib/chat";
 import styles from "./chat-assistant.module.css";
 
@@ -100,8 +100,8 @@ export function ChatAssistant() {
           </div>
         </section>
       )}
-      <button ref={launcher} type="button" className={styles.launcher} aria-expanded={open} aria-controls="rightium-chat" onClick={() => open ? close() : setOpen(true)}>
-        {open ? <X size={20} aria-hidden="true" /> : <MessageSquare size={20} aria-hidden="true" />}<span>{open ? "Close chat" : "Ask Rightium"}</span>
+      <button ref={launcher} type="button" className={styles.launcher} aria-label={open ? "Close chat" : "Open Rightium assistant"} aria-expanded={open} aria-controls="rightium-chat" onClick={() => open ? close() : setOpen(true)}>
+        {open ? <X size={24} aria-hidden="true" /> : <Bot size={26} aria-hidden="true" />}
       </button>
     </div>
   );
