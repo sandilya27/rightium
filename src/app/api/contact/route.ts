@@ -159,7 +159,7 @@ async function notify(
     return;
   }
 
-  const from = process.env.CONTACT_FROM ?? `${site.name} <noreply@${new URL(site.url).hostname}>`;
+  const from = process.env.CONTACT_FROM ?? `${site.name} <noreply@rightium.org>`;
   const send = async (payload: object) => {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -198,7 +198,7 @@ async function notify(
     send({
       from,
       to: [e.email],
-      reply_to: site.email,
+      reply_to: process.env.CONTACT_TO ?? site.email,
       subject: `We've received your enquiry — ${site.name}`,
       text: [
         `Hi ${e.name.split(" ")[0]},`,

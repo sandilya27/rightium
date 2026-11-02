@@ -58,7 +58,7 @@ export default buildConfig({
   email: process.env.RESEND_API_KEY
     ? resendAdapter({
         apiKey: process.env.RESEND_API_KEY,
-        defaultFromAddress: `noreply@${new URL(site.url).hostname}`,
+        defaultFromAddress: "noreply@rightium.org",
         defaultFromName: site.name,
       })
     : undefined,
